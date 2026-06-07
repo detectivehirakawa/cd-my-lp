@@ -516,6 +516,57 @@
       font-family: inherit;
     }
 
+    /* ── Photo Gallery ── */
+    .photo-section { background: #07121e; padding: 56px 24px; }
+    .photo-section-title { text-align:center; color:#fff; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:800; margin-bottom:8px; }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      max-width: 960px;
+      margin: 32px auto 0;
+    }
+    .photo-card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      box-shadow: 0 4px 20px rgba(0,0,0,.5);
+    }
+    .photo-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s;
+    }
+    .photo-card:hover img { transform: scale(1.04); }
+    .photo-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.65) 0%, transparent 55%);
+    }
+    .photo-card-label {
+      position: absolute; bottom: 12px; left: 12px;
+      color: #fff; font-size: .72rem; font-weight: 800;
+      background: rgba(232,93,38,.92);
+      padding: 3px 10px; border-radius: 4px;
+      letter-spacing: .05em;
+    }
+    .photo-card-rec {
+      position: absolute; top: 10px; right: 10px;
+      color: #fff; font-size: .65rem; font-weight: 800;
+      background: rgba(220,30,30,.85);
+      padding: 2px 8px; border-radius: 3px;
+      letter-spacing: .08em;
+    }
+    /* ── Evidence card with photo ── */
+    .evidence-card-img {
+      width: 100%; height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
     /* ── Floating CTA (mobile) ── */
     .float-cta {
       display: none;
@@ -582,6 +633,31 @@
   </div>
   <a href="#" class="btn-primary" onclick="openModal(event)">今すぐ無料相談する</a>
   <p class="note">相談・見積もり完全無料 ／ 強引な勧誘は一切なし ／ 匿名相談OK</p>
+</section>
+
+<!-- Photo Gallery -->
+<section class="photo-section">
+  <p class="section-label" style="color:#e85d26; margin-bottom:8px;">EVIDENCE SAMPLES</p>
+  <h2 class="photo-section-title">実際に取得できる証拠のイメージ</h2>
+  <p style="text-align:center; color:#4a6275; font-size:.85rem;">※ 掲載写真はイメージです。実際の調査は秘密厳守で行います。</p>
+  <div class="photo-grid">
+    <div class="photo-card">
+      <img src="https://images.unsplash.com/photo-1580982172477-9373ff9e5e27?w=480&h=270&fit=crop&q=80" alt="外出入り記録" loading="lazy" />
+      <div class="photo-card-overlay"></div>
+      <div class="photo-card-rec">● REC</div>
+      <div class="photo-card-label">外出・帰宅の記録</div>
+    </div>
+    <div class="photo-card">
+      <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=480&h=270&fit=crop&q=80" alt="カメラ機材" loading="lazy" />
+      <div class="photo-card-overlay"></div>
+      <div class="photo-card-label">高解像度カメラ機材</div>
+    </div>
+    <div class="photo-card">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=480&h=270&fit=crop&q=80" alt="調査報告書" loading="lazy" />
+      <div class="photo-card-overlay"></div>
+      <div class="photo-card-label">正式調査報告書</div>
+    </div>
+  </div>
 </section>
 
 <!-- Pain -->
@@ -780,18 +856,22 @@
     <p class="section-desc">不倫・浮気の法的証拠として有効な証拠を確実に取得します。</p>
     <div class="evidence-grid">
       <div class="evidence-card">
+        <img class="evidence-card-img" src="https://images.unsplash.com/photo-1580982172477-9373ff9e5e27?w=400&h=140&fit=crop&q=80" alt="出入り写真" loading="lazy" />
         <h4>📸 自宅外への出入り写真</h4>
         <p>対象者と浮気相手が同じ住居に出入りする様子を複数回撮影。日時情報も記録されます。</p>
       </div>
       <div class="evidence-card">
+        <img class="evidence-card-img" src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&h=140&fit=crop&q=80" alt="動画記録" loading="lazy" />
         <h4>🎥 動画による継続記録</h4>
         <p>写真だけでなく動画でも記録。宿泊・継続的な関係を裏付ける映像証拠を取得します。</p>
       </div>
       <div class="evidence-card">
+        <img class="evidence-card-img" src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=140&fit=crop&q=80" alt="複数回記録" loading="lazy" />
         <h4>📅 複数日・複数回の記録</h4>
         <p>1回だけでなく複数日にわたって記録することで、継続的な関係の証拠として有効性が高まります。</p>
       </div>
       <div class="evidence-card">
+        <img class="evidence-card-img" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=140&fit=crop&q=80" alt="調査報告書" loading="lazy" />
         <h4>📄 正式調査報告書</h4>
         <p>探偵業法に基づく正式な調査報告書を発行。裁判・離婚協議・慰謝料請求の場面でそのまま使用可能です。</p>
       </div>
