@@ -29,7 +29,7 @@
     body { font-family: "Noto Sans JP","Hiragino Sans","Meiryo",sans-serif; color: var(--text); line-height: 1.7; background: var(--white); overflow-x: hidden; }
 
     /* Announce bar */
-    .announce-bar { background: var(--primary); color: rgba(255,255,255,.85); text-align: center; font-size: .75rem; font-weight: 700; padding: 9px 16px; letter-spacing: .04em; }
+    .announce-bar { background: var(--primary); color: rgba(255,255,255,.85); text-align: center; font-size: .75rem; font-weight: 700; padding: 9px 16px; letter-spacing: .04em; padding-top: max(9px, env(safe-area-inset-top)); }
     .announce-bar a { color: var(--gold); text-decoration: none; }
     .announce-bar a:hover { text-decoration: underline; }
 
@@ -53,7 +53,7 @@
     .header-cta:hover { background: var(--accent-hover); border-color: #fff; transform: translateY(-1px); }
 
     /* Hero */
-    .hero { position: relative; min-height: 92vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); overflow: hidden; padding: 80px 24px 100px; }
+    .hero { position: relative; min-height: 92vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; color: var(--white); overflow: hidden; padding: 80px 24px 100px; }
     .hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80'); background-size: cover; background-position: center; z-index: 0; }
     .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(5,12,24,.93) 0%, rgba(10,26,52,.87) 50%, rgba(20,50,90,.82) 100%); z-index: 1; }
     .hero-content { position: relative; z-index: 2; max-width: 800px; }
@@ -283,8 +283,10 @@
       .section { padding: 52px 16px; }
       .section-desc { margin-bottom: 32px; }
 
-      .hero { padding: 60px 16px 80px; min-height: auto; }
-      .hero h1 { font-size: 1.65rem; }
+      .hero { padding: 48px 16px 80px; min-height: auto; align-items: flex-start; }
+      .badges { gap: 6px; margin-bottom: 16px; }
+      .badge { font-size: .65rem; padding: 4px 12px; }
+      .hero h1 { font-size: 1.55rem; margin-bottom: 14px; }
       .hero .sub { font-size: .88rem; }
       .hero .sub br { display: none; }
       .hero-stats { gap: 20px; padding: 18px 16px; margin: 24px auto 28px; }
