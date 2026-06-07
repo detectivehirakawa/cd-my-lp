@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>リモートで行える格安の浮気調査プラン</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #1a3a5c;
+      --accent: #e85d26;
+      --accent-hover: #c44d1a;
+      --light-bg: #f5f7fa;
+      --text: #222;
+      --muted: #666;
+      --border: #dde3ea;
+      --white: #fff;
+    }
+
+    body {
+      font-family: "Noto Sans JP", "Hiragino Sans", "Meiryo", sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      background: var(--white);
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--primary);
+      color: var(--white);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    header .logo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    header .header-cta {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      text-decoration: none;
+    }
+    header .header-cta:hover { background: var(--accent-hover); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #0f2540 0%, #1a3a5c 60%, #255080 100%);
+      color: var(--white);
+      padding: 80px 24px 72px;
+      text-align: center;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 20px;
+      letter-spacing: .02em;
+    }
+    .hero h1 em {
+      color: #f9c74f;
+      font-style: normal;
+    }
+    .hero .sub {
+      font-size: clamp(.95rem, 2.2vw, 1.15rem);
+      color: #b8ccdf;
+      max-width: 560px;
+      margin: 0 auto 36px;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 1.1rem;
+      font-weight: 800;
+      padding: 16px 48px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 18px rgba(232,93,38,.45);
+      letter-spacing: .04em;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(232,93,38,.55);
+    }
+    .hero .note {
+      margin-top: 14px;
+      font-size: .78rem;
+      color: #7fa0bc;
+    }
+
+    /* ── Section wrapper ── */
+    .section {
+      padding: 72px 24px;
+    }
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section-label {
+      text-align: center;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .section-desc {
+      text-align: center;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      font-size: .97rem;
+    }
+
+    /* ── Features ── */
+    .features-bg { background: var(--light-bg); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px 28px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .feature-card:hover {
+      box-shadow: 0 8px 28px rgba(26,58,92,.1);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      background: #e8f0fa;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      font-size: 1.5rem;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Steps ── */
+    .steps-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+      counter-reset: step;
+      position: relative;
+    }
+    .step {
+      text-align: center;
+      padding: 24px 16px;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 44px;
+      right: -1px;
+      width: 2px;
+      height: 32px;
+      background: var(--border);
+    }
+    @media (max-width: 600px) {
+      .step:not(:last-child)::after { display: none; }
+    }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0 auto 14px;
+    }
+    .step h4 {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .step p { font-size: .85rem; color: var(--muted); }
+
+    /* ── CTA Section ── */
+    .cta-section {
+      background: linear-gradient(135deg, #0f2540 0%, #1a3a5c 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .cta-section h2 {
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 900;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .cta-section p {
+      color: #b8ccdf;
+      margin-bottom: 36px;
+      font-size: .97rem;
+    }
+    .cta-group { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .cta-sub {
+      font-size: .78rem;
+      color: #7fa0bc;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #0a1a2e;
+      color: #556b82;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: .8rem;
+    }
+    footer a { color: #7fa0bc; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 40px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,.3);
+    }
+    .modal h3 { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+    .modal p { font-size: .9rem; color: var(--muted); margin-bottom: 24px; }
+    .modal input, .modal textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: .95rem;
+      margin-bottom: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .modal input:focus, .modal textarea:focus { border-color: var(--primary); }
+    .modal textarea { height: 90px; resize: vertical; }
+    .modal .btn-submit {
+      width: 100%;
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 13px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .modal .btn-submit:hover { background: var(--accent-hover); }
+    .modal .close-btn {
+      margin-top: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: .85rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">浮気調査リモートプラン</div>
+  <a href="#" class="header-cta" onclick="openModal(event)">今すぐ試す</a>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge">探偵業届出済・完全秘密厳守</div>
+  <h1>
+    <em>格安・リモート対応</em><br>
+    浮気調査プラン
+  </h1>
+  <p class="sub">カメラを設置し、浮気相手の自宅の出入りを複数回撮影。<br>確かな証拠を低コストでご提供します。</p>
+  <a href="#" class="btn-primary" onclick="openModal(event)">今すぐ試す</a>
+  <p class="note">無料相談受付中 ・ 全国対応 ・ 秘密厳守</p>
+</section>
+
+<!-- Features -->
+<section class="section features-bg">
+  <div class="section-inner">
+    <p class="section-label">Features</p>
+    <h2 class="section-title">このプランの3つの特徴</h2>
+    <p class="section-desc">リモート技術を活用し、低コストかつ高精度な調査を実現します。</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📷</div>
+        <h3>高解像度カメラによる撮影</h3>
+        <p>対象者の自宅外での出入りを、高精度なカメラで複数回記録。証拠として使用できる鮮明な映像・画像をご提供します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💴</div>
+        <h3>業界最安水準の料金</h3>
+        <p>リモート運用によりコストを大幅削減。従来の対面調査と比べて格段にリーズナブルな価格で、本格的な調査が可能です。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>完全秘密厳守</h3>
+        <p>探偵業法に基づき適正に業務を遂行。お客様の個人情報・相談内容は厳重に管理し、第三者への開示は一切行いません。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Steps -->
+<section class="section">
+  <div class="section-inner">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">ご依頼の流れ</h2>
+    <p class="section-desc">4ステップで簡単にご依頼いただけます。</p>
+    <div class="steps-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>無料相談</h4>
+        <p>フォームまたはお電話でご状況をお聞かせください。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>プラン確認・契約</h4>
+        <p>最適なプランをご提案し、ご納得の上で契約します。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>カメラ設置・調査</h4>
+        <p>対象者宅外に機材を設置し、複数回の出入りを記録します。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>証拠報告書の提出</h4>
+        <p>撮影データと報告書をセキュアにお届けします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-inner">
+    <h2>まずは無料でご相談ください</h2>
+    <p>秘密厳守・全国対応。24時間受付中です。</p>
+    <div class="cta-group">
+      <a href="#" class="btn-primary" onclick="openModal(event)">今すぐ試す</a>
+      <span class="cta-sub">相談・見積もり無料 ／ 強引な勧誘は一切ありません</span>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>&copy; 2026 浮気調査リモートプラン. All rights reserved. ／ 探偵業届出番号：埼玉県公安委員会第43230060号</p>
+  <p style="margin-top:6px;"><a href="#">プライバシーポリシー</a> ／ <a href="#">特定商取引法に基づく表記</a></p>
+</footer>
+
+<!-- Contact Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <h3>無料相談フォーム</h3>
+    <p>内容を入力して送信してください。担当者より折り返しご連絡いたします。</p>
+    <input type="text" placeholder="お名前（匿名可）" />
+    <input type="tel" placeholder="電話番号またはメールアドレス" />
+    <textarea placeholder="ご相談内容をお気軽にどうぞ"></textarea>
+    <button class="btn-submit" onclick="submitForm()">今すぐ試す</button>
+    <button class="close-btn" onclick="closeModal()">閉じる</button>
+  </div>
+</div>
+
+<script>
+  function openModal(e) {
+    e.preventDefault();
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+  function submitForm() {
+    alert('お問い合わせありがとうございます。\n担当者より24時間以内にご連絡いたします。');
+    closeModal();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>
