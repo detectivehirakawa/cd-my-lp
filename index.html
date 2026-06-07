@@ -859,6 +859,12 @@
 </div>
 
 <script>
+  if (window.location.hash) {
+    history.replaceState(null, null, window.location.pathname);
+    window.scrollTo(0, 0);
+  }
+  window.history.scrollRestoration = 'manual';
+
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
