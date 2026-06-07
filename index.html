@@ -275,6 +275,59 @@
     .float-cta { display: none; position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 99; width: calc(100% - 32px); max-width: 400px; }
     @media (max-width:640px) { .float-cta { display: block; } }
     .float-cta a { display: block; background: var(--accent); color: var(--white); text-align: center; padding: 16px; border-radius: 8px; font-size: 1.05rem; font-weight: 900; text-decoration: none; box-shadow: 0 6px 24px rgba(232,93,38,.6); }
+
+    /* ── Mobile overrides ── */
+    @media (max-width: 480px) {
+      .announce-bar { font-size: .68rem; padding: 7px 12px; }
+
+      .section { padding: 52px 16px; }
+      .section-desc { margin-bottom: 32px; }
+
+      .hero { padding: 60px 16px 80px; min-height: auto; }
+      .hero h1 { font-size: 1.65rem; }
+      .hero .sub { font-size: .88rem; }
+      .hero .sub br { display: none; }
+      .hero-stats { gap: 20px; padding: 18px 16px; margin: 24px auto 28px; }
+      .hero-stat .num { font-size: 1.6rem; }
+      .hero-cta-row { flex-direction: column; width: 100%; }
+      .btn-tel { width: 100%; justify-content: center; font-size: .95rem; padding: 14px 20px; }
+      .btn-line { width: 100%; justify-content: center; }
+      .btn-primary { width: 100%; text-align: center; padding: 16px 20px; font-size: 1rem; }
+
+      .pain-answer { padding: 24px 20px; }
+      .pain-answer p { font-size: .93rem; }
+      .pain-list { grid-template-columns: 1fr; }
+
+      .features-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .plan-body { padding: 20px 18px; }
+      .plan-head { padding: 22px 18px 18px; }
+
+      .steps-list { grid-template-columns: 1fr 1fr; }
+
+      .evidence-grid { grid-template-columns: 1fr; }
+      .photo-grid { grid-template-columns: 1fr; }
+
+      .case-grid { grid-template-columns: 1fr; }
+      .case-result-item { flex-direction: column; gap: 2px; }
+      .case-result-value { text-align: left; }
+
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .guarantee-grid { grid-template-columns: 1fr 1fr; }
+
+      .compare-table { font-size: .78rem; }
+      .compare-table th, .compare-table td { padding: 10px 10px; }
+
+      .faq-q { padding: 16px 16px; font-size: .9rem; }
+      .faq-a p { padding: 0 16px; }
+
+      .cta-section { padding: 64px 16px; }
+      .cta-tel-box a { font-size: 1.3rem; }
+      .cta-divider { max-width: 240px; }
+
+      .trust-bar-inner { gap: 14px; }
+      .trust-item-text strong { font-size: .8rem; }
+    }
   </style>
 </head>
 <body>
