@@ -49,6 +49,13 @@
     .header-tel .tel-num { font-size: 1rem; font-weight: 900; color: var(--gold); letter-spacing: .04em; white-space: nowrap; line-height: 1.2; }
     @media (max-width: 640px) { .header-tel .tel-num { font-size: .82rem; } .header-tel .tel-label { display: none; } }
     @media (max-width: 440px) { .header-tel { display: none; } }
+    @media (max-width: 480px) {
+      .header-left { flex-shrink: 1; min-width: 0; }
+      .logo-text { min-width: 0; }
+      .logo-img { height: 36px; }
+      .logo-name { font-size: .82rem; }
+      .logo-sub { font-size: .58rem; white-space: normal; word-break: keep-all; }
+    }
     .header-cta { background: var(--accent); color: var(--white); border: 2px solid rgba(255,255,255,.8); padding: 9px 18px; border-radius: 4px; font-size: .82rem; font-weight: 900; cursor: pointer; transition: all .2s; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 12px rgba(232,93,38,.4); }
     .header-cta:hover { background: var(--accent-hover); border-color: #fff; transform: translateY(-1px); }
 
