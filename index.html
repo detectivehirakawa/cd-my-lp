@@ -36,8 +36,7 @@
     /* Header */
     header { background: rgba(10,22,40,.97); backdrop-filter: blur(8px); color: var(--white); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,.4); border-bottom: 1px solid rgba(255,255,255,.06); gap: 12px; }
     .header-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-    .logo-img-wrap { display: block; overflow: hidden; width: 56px; height: 44px; flex-shrink: 0; }
-    .logo-img { height: 44px; width: auto; max-width: none; display: block; }
+    .logo-img { height: 44px; width: auto; flex-shrink: 0; }
     .logo-text { display: flex; flex-direction: column; }
     .logo-name { font-size: .95rem; font-weight: 900; letter-spacing: .04em; }
     .logo-sub { font-size: .62rem; color: #7fa0bc; margin-top: 1px; }
@@ -380,8 +379,8 @@
 
 <header>
   <div class="header-left">
-    <a href="https://exeresearch.jp/" target="_blank" rel="noopener" class="logo-img-wrap">
-      <img src="raccoon_logo.png" alt="ロゴ" class="logo-img" />
+    <a href="https://exeresearch.jp/" target="_blank" rel="noopener">
+      <img src="raccoon_logo.png" alt="ラクーン探偵社ロゴ" class="logo-img" />
     </a>
     <div class="logo-text">
       <div class="logo-sub">埼玉県公安委員会<br>第43230060号</div>
