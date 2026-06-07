@@ -54,7 +54,7 @@
 
     /* Hero */
     .hero { position: relative; min-height: 92vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; color: var(--white); overflow: hidden; padding: 80px 24px 100px; }
-    .hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80'); background-size: cover; background-position: center; z-index: 0; }
+    .hero-bg { position: absolute; inset: 0; background-image: url('hero_bg.jpg'); background-size: cover; background-position: center top; z-index: 0; }
     .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(5,12,24,.93) 0%, rgba(10,26,52,.87) 50%, rgba(20,50,90,.82) 100%); z-index: 1; }
     .hero-content { position: relative; z-index: 2; max-width: 800px; }
     .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 28px; }
@@ -162,6 +162,19 @@
     .evidence-card-body { padding: 20px; }
     .evidence-card h4 { font-size: .97rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
     .evidence-card p { font-size: .84rem; color: var(--muted); line-height: 1.75; }
+
+    /* Bike section */
+    .bike-section { background: #f4f6f9; padding: 64px 24px; }
+    .bike-inner { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .bike-text h2 { font-size: clamp(1.3rem,2.5vw,1.8rem); font-weight: 900; color: var(--primary); margin-bottom: 16px; line-height: 1.4; }
+    .bike-text p { color: var(--muted); line-height: 1.85; font-size: .95rem; }
+    .bike-img { border-radius: 14px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+    .bike-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 640px) {
+      .bike-inner { grid-template-columns: 1fr; gap: 28px; }
+      .bike-text { order: 2; }
+      .bike-img { order: 1; }
+    }
 
     /* Photo gallery */
     .photo-section { background: #050e1a; padding: 64px 24px; }
@@ -278,7 +291,7 @@
 
     /* ── Mobile overrides ── */
     @media (max-width: 480px) {
-      .announce-bar { font-size: .68rem; padding: 7px 12px; }
+      .announce-bar { font-size: .68rem; padding: 7px 12px; padding-top: max(7px, env(safe-area-inset-top)); }
 
       .section { padding: 52px 16px; }
       .section-desc { margin-bottom: 32px; }
@@ -537,6 +550,20 @@
   </div>
 </section>
 
+<!-- Bike Section -->
+<section class="bike-section">
+  <div class="bike-inner">
+    <div class="bike-text">
+      <p class="section-label" style="text-align:left;margin-bottom:10px;">INVESTIGATION METHOD</p>
+      <h2>調査にはバイクも活用</h2>
+      <p>尾行・張り込み調査では、機動力に優れたバイクを活用しています。渋滞に左右されず対象者の行動を追跡できるため、車では難しい都市部の路地や駐車場周辺での調査にも対応。素早く・確実に証拠を押さえます。</p>
+    </div>
+    <div class="bike-img">
+      <img src="bike.jpg" alt="調査用バイク" loading="lazy" />
+    </div>
+  </div>
+</section>
+
 <!-- Case Studies -->
 <section class="section case-bg">
   <div class="section-inner">
@@ -559,7 +586,7 @@
             <div class="case-result-item"><span class="case-result-label">調査期間</span><span class="case-result-value">11日間</span></div>
             <div class="case-result-item"><span class="case-result-label">カメラ稼働</span><span class="case-result-value">3日分（77,000円×3）</span></div>
             <div class="case-result-item"><span class="case-result-label">調査費用</span><span class="case-result-value">231,000円＋交通費</span></div>
-            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">浮気相手マンションへの出入りを7回記録</span></div>
+            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">浮気相手宅への宿泊の出入りを2回記録</span></div>
           </div>
           <div class="case-outcome">✓ 弁護士を通じて慰謝料200万円で離婚成立</div>
         </div>
