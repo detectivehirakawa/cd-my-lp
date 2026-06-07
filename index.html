@@ -572,6 +572,25 @@
       display: block;
     }
 
+    /* ── Fixed LINE Button ── */
+    .fixed-line {
+      position: fixed;
+      right: 16px;
+      bottom: 80px;
+      z-index: 100;
+      drop-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .fixed-line img {
+      display: block;
+      height: 44px;
+      width: auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .fixed-line img:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(0,0,0,.45); }
+    @media (max-width: 640px) { .fixed-line { bottom: 90px; } }
+
     /* ── Floating CTA (mobile) ── */
     .float-cta {
       display: none;
@@ -1035,6 +1054,13 @@
   </p>
   <p style="margin-top:12px;">&copy; 2026 ラクーン探偵社. All rights reserved.</p>
 </footer>
+
+<!-- Fixed LINE Button -->
+<div class="fixed-line">
+  <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener">
+    <img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" height="36" border="0">
+  </a>
+</div>
 
 <!-- Floating CTA (mobile) -->
 <div class="float-cta">
