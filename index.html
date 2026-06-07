@@ -56,17 +56,18 @@
     .header-cta {
       background: var(--accent);
       color: var(--white);
-      border: none;
+      border: 2px solid rgba(255,255,255,.8);
       padding: 9px 22px;
       border-radius: 4px;
       font-size: .875rem;
       font-weight: 800;
       cursor: pointer;
-      transition: background .2s;
+      transition: background .2s, border-color .2s;
       text-decoration: none;
       white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
     }
-    .header-cta:hover { background: var(--accent-hover); }
+    .header-cta:hover { background: var(--accent-hover); border-color: #fff; }
 
     /* ── Hero ── */
     .hero {
