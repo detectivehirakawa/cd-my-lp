@@ -24,26 +24,32 @@
       --success: #1a7a4a;
       --shadow-sm: 0 2px 8px rgba(13,31,53,.08);
       --shadow-md: 0 8px 32px rgba(13,31,53,.14);
-      --shadow-lg: 0 20px 60px rgba(13,31,53,.22);
     }
     html { scroll-behavior: smooth; overflow-x: hidden; }
     body { font-family: "Noto Sans JP","Hiragino Sans","Meiryo",sans-serif; color: var(--text); line-height: 1.7; background: var(--white); overflow-x: hidden; }
 
-    /* Announcement bar */
+    /* Announce bar */
     .announce-bar { background: var(--primary); color: rgba(255,255,255,.85); text-align: center; font-size: .75rem; font-weight: 700; padding: 9px 16px; letter-spacing: .04em; }
-    .announce-bar span { color: var(--gold); }
+    .announce-bar a { color: var(--gold); text-decoration: none; }
+    .announce-bar a:hover { text-decoration: underline; }
 
     /* Header */
-    header { background: rgba(10,22,40,.97); backdrop-filter: blur(8px); color: var(--white); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,.4); border-bottom: 1px solid rgba(255,255,255,.06); }
-    .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-img { height: 46px; width: auto; flex-shrink: 0; }
+    header { background: rgba(10,22,40,.97); backdrop-filter: blur(8px); color: var(--white); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,.4); border-bottom: 1px solid rgba(255,255,255,.06); gap: 12px; }
+    .header-left { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .logo-img { height: 44px; width: auto; flex-shrink: 0; }
     .logo-text { display: flex; flex-direction: column; }
-    .logo-name { font-size: 1rem; font-weight: 900; letter-spacing: .04em; }
-    .logo-sub { font-size: .65rem; color: #7fa0bc; margin-top: 1px; }
-    .header-site-link { font-size: .7rem; color: #7fa0bc; text-decoration: none; border: 1px solid #2a4a6a; border-radius: 3px; padding: 3px 8px; white-space: nowrap; transition: all .2s; }
+    .logo-name { font-size: .95rem; font-weight: 900; letter-spacing: .04em; }
+    .logo-sub { font-size: .62rem; color: #7fa0bc; margin-top: 1px; }
+    .header-site-link { font-size: .68rem; color: #7fa0bc; text-decoration: none; border: 1px solid #2a4a6a; border-radius: 3px; padding: 2px 7px; white-space: nowrap; transition: all .2s; }
     .header-site-link:hover { color: #a0c4e0; border-color: #4a7aa0; }
-    @media (max-width: 480px) { .header-site-link { display: none; } }
-    .header-cta { background: var(--accent); color: var(--white); border: 2px solid rgba(255,255,255,.8); padding: 10px 24px; border-radius: 4px; font-size: .875rem; font-weight: 900; cursor: pointer; transition: all .2s; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 12px rgba(232,93,38,.4); letter-spacing: .03em; }
+    @media (max-width: 600px) { .header-site-link { display: none; } }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .header-tel { display: flex; flex-direction: column; align-items: flex-end; text-decoration: none; }
+    .header-tel .tel-label { font-size: .6rem; color: #7fa0bc; letter-spacing: .04em; }
+    .header-tel .tel-num { font-size: 1rem; font-weight: 900; color: var(--gold); letter-spacing: .04em; white-space: nowrap; line-height: 1.2; }
+    @media (max-width: 640px) { .header-tel .tel-num { font-size: .82rem; } .header-tel .tel-label { display: none; } }
+    @media (max-width: 440px) { .header-tel { display: none; } }
+    .header-cta { background: var(--accent); color: var(--white); border: 2px solid rgba(255,255,255,.8); padding: 9px 18px; border-radius: 4px; font-size: .82rem; font-weight: 900; cursor: pointer; transition: all .2s; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 12px rgba(232,93,38,.4); }
     .header-cta:hover { background: var(--accent-hover); border-color: #fff; transform: translateY(-1px); }
 
     /* Hero */
@@ -58,28 +64,32 @@
     .hero h1 { font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.25; margin-bottom: 22px; letter-spacing: .02em; text-shadow: 0 2px 20px rgba(0,0,0,.5); }
     .hero h1 em { color: var(--gold); font-style: normal; display: block; font-size: .75em; margin-top: 8px; }
     .hero .sub { font-size: clamp(.9rem, 2vw, 1.1rem); color: rgba(255,255,255,.8); max-width: 560px; margin: 0 auto 20px; line-height: 1.85; }
-    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin: 32px auto 40px; padding: 24px 32px; background: rgba(255,255,255,.07); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; max-width: 600px; }
+    .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin: 32px auto 40px; padding: 24px 32px; background: rgba(255,255,255,.07); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; max-width: 620px; }
     .hero-stat .num { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; color: var(--gold); line-height: 1; }
     .hero-stat .label { font-size: .72rem; color: rgba(255,255,255,.7); margin-top: 6px; letter-spacing: .04em; }
-    .hero-cta-group { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .hero-cta-group { display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .btn-primary { display: inline-block; background: var(--accent); color: var(--white); font-size: 1.1rem; font-weight: 900; padding: 18px 56px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; transition: all .2s; box-shadow: 0 6px 30px rgba(232,93,38,.55); letter-spacing: .04em; }
     .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 40px rgba(232,93,38,.65); }
+    .btn-tel { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.3); color: var(--white); font-size: 1.1rem; font-weight: 900; padding: 14px 36px; border-radius: 6px; text-decoration: none; transition: all .2s; backdrop-filter: blur(4px); letter-spacing: .04em; }
+    .btn-tel:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.6); transform: translateY(-2px); }
+    .btn-tel span { font-size: .65rem; font-weight: 500; display: block; letter-spacing: .06em; opacity: .75; }
     .btn-line { display: inline-flex; align-items: center; gap: 10px; background: #06c755; color: var(--white); font-size: .95rem; font-weight: 800; padding: 13px 32px; border-radius: 6px; text-decoration: none; transition: all .2s; box-shadow: 0 4px 20px rgba(6,199,85,.35); }
     .btn-line:hover { background: #05a847; transform: translateY(-2px); }
+    .hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
     .hero .note { font-size: .72rem; color: rgba(255,255,255,.5); margin-top: 6px; }
     .hero-scroll { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 2; color: rgba(255,255,255,.35); font-size: .65rem; letter-spacing: .12em; display: flex; flex-direction: column; align-items: center; gap: 6px; animation: bounce 2s infinite; }
     .hero-scroll::after { content: '▼'; font-size: .55rem; }
     @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(7px)} }
 
     /* Trust bar */
-    .trust-bar { background: var(--white); border-bottom: 2px solid var(--light-bg); padding: 22px 24px; box-shadow: var(--shadow-sm); }
-    .trust-bar-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 28px; flex-wrap: wrap; }
+    .trust-bar { background: var(--white); border-bottom: 2px solid var(--light-bg); padding: 20px 24px; box-shadow: var(--shadow-sm); }
+    .trust-bar-inner { max-width: 960px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; }
     .trust-item { display: flex; align-items: center; gap: 10px; font-size: .82rem; color: var(--muted); font-weight: 700; }
     .trust-item-icon { font-size: 1.4rem; }
-    .trust-item-text .label { font-size: .68rem; color: var(--muted); font-weight: 400; }
+    .trust-item-text .label { font-size: .68rem; color: var(--muted); font-weight: 400; display: block; }
     .trust-item-text strong { color: var(--primary); font-size: .88rem; display: block; }
 
-    /* Section wrapper */
+    /* Section */
     .section { padding: 80px 24px; }
     .section-inner { max-width: 960px; margin: 0 auto; }
     .section-label { text-align: center; font-size: .7rem; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
@@ -114,7 +124,6 @@
     .plan-card { border: 2px solid var(--border); border-radius: 14px; overflow: hidden; transition: all .25s; background: var(--white); }
     .plan-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
     .plan-card.featured { border-color: var(--accent); box-shadow: 0 8px 40px rgba(232,93,38,.18); }
-    .plan-card.featured:hover { box-shadow: 0 16px 50px rgba(232,93,38,.28); }
     .plan-badge { background: linear-gradient(90deg,var(--accent),#ff7a45); color: var(--white); text-align: center; font-size: .72rem; font-weight: 900; padding: 8px; letter-spacing: .08em; }
     .plan-head { background: linear-gradient(160deg,#f8fafe,var(--light-bg)); padding: 28px 28px 22px; text-align: center; border-bottom: 1px solid var(--border); }
     .plan-name { font-size: 1.05rem; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
@@ -126,7 +135,7 @@
     .plan-body ul li { font-size: .88rem; color: var(--text); padding: 8px 0; border-bottom: 1px solid #f0f4f8; display: flex; align-items: flex-start; gap: 10px; }
     .plan-body ul li:last-child { border-bottom: none; }
     .plan-body ul li::before { content:"✓"; color:var(--success); font-weight:900; flex-shrink:0; margin-top:1px; }
-    .plan-cta { display: block; margin: 20px 0 0; background: var(--primary); color: var(--white); text-align: center; padding: 14px; border-radius: 8px; font-weight: 900; font-size: .97rem; text-decoration: none; transition: all .2s; letter-spacing: .02em; }
+    .plan-cta { display: block; margin: 20px 0 0; background: var(--primary); color: var(--white); text-align: center; padding: 14px; border-radius: 8px; font-weight: 900; font-size: .97rem; text-decoration: none; transition: all .2s; }
     .plan-cta:hover { background: var(--accent); transform: translateY(-1px); }
     .plan-card.featured .plan-cta { background: var(--accent); }
     .plan-card.featured .plan-cta:hover { background: var(--accent-hover); }
@@ -137,7 +146,7 @@
     .steps-bg .section-label { color: var(--gold); }
     .steps-bg .section-title { color: var(--white); }
     .steps-bg .section-desc { color: rgba(255,255,255,.6); }
-    .steps-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 0; position: relative; }
+    .steps-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 0; }
     .step { text-align: center; padding: 28px 18px; position: relative; }
     .step:not(:last-child)::after { content:"→"; position:absolute; top:40px; right:-12px; font-size:1.4rem; color:rgba(255,255,255,.2); }
     @media (max-width:600px) { .step:not(:last-child)::after { display:none; } }
@@ -165,91 +174,113 @@
     .photo-card-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 60%); }
     .photo-card-rec { position:absolute; top:12px; right:12px; color:#fff; font-size:.65rem; font-weight:900; background:rgba(220,30,30,.9); padding:3px 9px; border-radius:3px; letter-spacing:.1em; animation:blink 1.5s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
-    .photo-card-label { position:absolute; bottom:14px; left:14px; color:#fff; font-size:.75rem; font-weight:800; background:rgba(232,93,38,.95); padding:4px 12px; border-radius:4px; letter-spacing:.05em; }
+    .photo-card-label { position:absolute; bottom:14px; left:14px; color:#fff; font-size:.75rem; font-weight:800; background:rgba(232,93,38,.95); padding:4px 12px; border-radius:4px; }
+
+    /* Case studies */
+    .case-bg { background: var(--light-bg); }
+    .case-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 24px; }
+    .case-card { background: var(--white); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: all .25s; }
+    .case-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .case-head { background: var(--primary); padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .case-tag { background: var(--accent); color: var(--white); font-size: .68rem; font-weight: 800; padding: 3px 12px; border-radius: 20px; letter-spacing: .06em; }
+    .case-client { font-size: .78rem; color: rgba(255,255,255,.75); font-weight: 700; }
+    .case-body { padding: 22px; }
+    .case-situation { margin-bottom: 18px; }
+    .case-situation h4 { font-size: .72rem; font-weight: 800; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .case-situation p { font-size: .86rem; color: var(--text); line-height: 1.75; }
+    .case-results { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); padding-top: 16px; }
+    .case-result-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; font-size: .84rem; }
+    .case-result-label { color: var(--muted); font-weight: 700; flex-shrink: 0; }
+    .case-result-value { color: var(--text); font-weight: 500; text-align: right; }
+    .case-outcome { background: #e8f6ee; color: var(--success); font-size: .78rem; font-weight: 800; padding: 8px 14px; border-radius: 6px; margin-top: 12px; text-align: center; }
 
     /* Testimonials */
-    .testimonials-bg { background: var(--light-bg); }
+    .testimonials-bg { background: var(--white); }
     .testimonials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:24px; }
-    .testi-card { background:var(--white); border-radius:12px; padding:32px 28px; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; transition:all .25s; }
+    .testi-card { background: var(--light-bg); border-radius:12px; padding:32px 28px; border:1px solid var(--border); box-shadow:var(--shadow-sm); position:relative; transition:all .25s; }
     .testi-card:hover { box-shadow:var(--shadow-md); transform:translateY(-3px); }
-    .testi-quote { font-size:4.5rem; color:#e8f0fa; position:absolute; top:10px; left:18px; line-height:1; font-family:serif; }
+    .testi-quote { font-size:4.5rem; color:rgba(26,58,92,.08); position:absolute; top:10px; left:18px; line-height:1; font-family:serif; }
     .testi-stars { color:#f9c74f; font-size:.95rem; margin-bottom:12px; position:relative; z-index:1; }
     .testi-outcome { display:inline-block; background:#e8f6ee; color:var(--success); font-size:.7rem; font-weight:800; padding:4px 12px; border-radius:20px; margin-bottom:14px; letter-spacing:.04em; }
-    .testi-text { font-size:.88rem; color:var(--text); line-height:1.85; margin-bottom:18px; position:relative; z-index:1; }
+    .testi-text { font-size:.88rem; color:var(--text); line-height:1.9; margin-bottom:18px; position:relative; z-index:1; }
     .testi-author { font-size:.8rem; color:var(--muted); font-weight:700; border-top:1px solid var(--border); padding-top:14px; }
 
     /* Guarantee */
-    .guarantee-bg { background:linear-gradient(135deg,#0d1f35,#1a3a5c); color:var(--white); }
-    .guarantee-bg .section-label { color:var(--gold); }
-    .guarantee-bg .section-title { color:var(--white); }
-    .guarantee-bg .section-desc { color:rgba(255,255,255,.6); }
-    .guarantee-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:22px; }
-    .guarantee-card { text-align:center; padding:32px 22px; border:1px solid rgba(255,255,255,.12); border-radius:12px; background:rgba(255,255,255,.05); backdrop-filter:blur(4px); transition:all .25s; }
-    .guarantee-card:hover { background:rgba(255,255,255,.1); transform:translateY(-3px); }
-    .guarantee-icon { font-size:2.4rem; margin-bottom:16px; display:block; }
-    .guarantee-card h4 { font-size:1rem; font-weight:800; color:var(--gold); margin-bottom:10px; }
-    .guarantee-card p { font-size:.84rem; color:rgba(255,255,255,.65); line-height:1.8; }
-
-    /* FAQ */
-    .faq-list { max-width:720px; margin:0 auto; }
-    .faq-item { border-bottom:1px solid var(--border); background:var(--white); }
-    .faq-item:first-child { border-radius:10px 10px 0 0; border:1px solid var(--border); border-bottom:none; }
-    .faq-item:last-child { border-radius:0 0 10px 10px; border:1px solid var(--border); border-top:none; }
-    .faq-item + .faq-item { border-top: 1px solid var(--border); }
-    .faq-q { width:100%; background:none; border:none; text-align:left; padding:22px 24px; font-size:.97rem; font-weight:700; color:var(--primary); cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:12px; font-family:inherit; transition:color .2s; }
-    .faq-q:hover { color:var(--accent); }
-    .faq-icon { width:28px; height:28px; background:var(--light-bg); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; transition:transform .25s, background .2s; color:var(--primary); }
-    .faq-item.open .faq-icon { transform:rotate(45deg); background:var(--accent); color:#fff; }
-    .faq-a { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s; }
-    .faq-item.open .faq-a { max-height:400px; padding-bottom:22px; }
-    .faq-a p { font-size:.9rem; color:var(--muted); line-height:1.85; padding:0 24px; }
+    .guarantee-bg { background: linear-gradient(135deg,#0d1f35,#1a3a5c); color: var(--white); }
+    .guarantee-bg .section-label { color: var(--gold); }
+    .guarantee-bg .section-title { color: var(--white); }
+    .guarantee-bg .section-desc { color: rgba(255,255,255,.6); }
+    .guarantee-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 22px; }
+    .guarantee-card { text-align: center; padding: 32px 22px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; background: rgba(255,255,255,.05); transition: all .25s; }
+    .guarantee-card:hover { background: rgba(255,255,255,.1); transform: translateY(-3px); }
+    .guarantee-icon { font-size: 2.4rem; margin-bottom: 16px; display: block; }
+    .guarantee-card h4 { font-size: 1rem; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+    .guarantee-card p { font-size: .84rem; color: rgba(255,255,255,.65); line-height: 1.8; }
 
     /* Compare */
-    .compare-bg { background:var(--light-bg); }
-    .compare-wrap { overflow-x:auto; border-radius:12px; box-shadow:var(--shadow-md); }
-    .compare-table { width:100%; border-collapse:collapse; font-size:.9rem; min-width:560px; }
-    .compare-table th { background:var(--primary); color:var(--white); padding:16px 18px; text-align:center; font-weight:900; font-size:.88rem; }
-    .compare-table th:first-child { text-align:left; }
-    .compare-table th.col-us { background:var(--accent); }
-    .compare-table td { padding:14px 18px; border-bottom:1px solid var(--border); text-align:center; background:var(--white); }
-    .compare-table td:first-child { text-align:left; font-weight:700; color:var(--primary); }
-    .compare-table tr:last-child td { border-bottom:none; }
-    .compare-table .highlight td { background:#fff8f5; }
-    .compare-table .check { color:var(--success); font-weight:900; font-size:1.15rem; }
-    .compare-table .cross { color:#ccc; font-size:1.1rem; }
-    .compare-table .col-us { color:var(--accent); font-weight:900; }
+    .compare-bg { background: var(--light-bg); }
+    .compare-wrap { overflow-x: auto; border-radius: 12px; box-shadow: var(--shadow-md); }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 560px; }
+    .compare-table th { background: var(--primary); color: var(--white); padding: 16px 18px; text-align: center; font-weight: 900; font-size: .88rem; }
+    .compare-table th:first-child { text-align: left; }
+    .compare-table th.col-us { background: var(--accent); }
+    .compare-table td { padding: 14px 18px; border-bottom: 1px solid var(--border); text-align: center; background: var(--white); }
+    .compare-table td:first-child { text-align: left; font-weight: 700; color: var(--primary); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table .highlight td { background: #fff8f5; }
+    .compare-table .check { color: var(--success); font-weight: 900; font-size: 1.15rem; }
+    .compare-table .cross { color: #ccc; font-size: 1.1rem; }
+    .compare-table .col-us { color: var(--accent); font-weight: 900; }
+
+    /* FAQ */
+    .faq-list { max-width: 720px; margin: 0 auto; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .faq-item { border-bottom: 1px solid var(--border); background: var(--white); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { width: 100%; background: none; border: none; text-align: left; padding: 20px 24px; font-size: .97rem; font-weight: 700; color: var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: inherit; transition: color .2s, background .2s; }
+    .faq-q:hover { color: var(--accent); background: #fdf9f7; }
+    .faq-icon { width: 28px; height: 28px; background: var(--light-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; transition: transform .25s, background .2s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--accent); color: #fff; }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s; }
+    .faq-item.open .faq-a { max-height: 400px; padding-bottom: 22px; }
+    .faq-a p { font-size: .9rem; color: var(--muted); line-height: 1.85; padding: 0 24px; }
 
     /* CTA */
-    .cta-section { background:linear-gradient(160deg,#050c18,#0d1f35 50%,#1a3a5c); color:var(--white); text-align:center; padding:100px 24px; position:relative; overflow:hidden; }
+    .cta-section { background: linear-gradient(160deg,#050c18,#0d1f35 50%,#1a3a5c); color: var(--white); text-align: center; padding: 100px 24px; position: relative; overflow: hidden; }
     .cta-section::before { content:''; position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(232,93,38,.12) 0%,transparent 70%); pointer-events:none; }
-    .cta-section h2 { font-size:clamp(1.5rem,4vw,2.4rem); font-weight:900; margin-bottom:16px; line-height:1.35; position:relative; }
-    .cta-section .sub { color:rgba(255,255,255,.65); margin-bottom:44px; font-size:.97rem; position:relative; line-height:1.9; }
-    .cta-group { display:flex; flex-direction:column; align-items:center; gap:16px; position:relative; }
-    .cta-sub { font-size:.73rem; color:rgba(255,255,255,.42); }
+    .cta-section h2 { font-size: clamp(1.5rem,4vw,2.4rem); font-weight: 900; margin-bottom: 16px; line-height: 1.35; position: relative; }
+    .cta-section .sub { color: rgba(255,255,255,.65); margin-bottom: 44px; font-size: .97rem; position: relative; line-height: 1.9; }
+    .cta-group { display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; }
+    .cta-tel-box { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 6px; }
+    .cta-tel-box a { color: var(--gold); font-size: 1.6rem; font-weight: 900; text-decoration: none; letter-spacing: .06em; }
+    .cta-tel-box a:hover { text-decoration: underline; }
+    .cta-tel-box span { font-size: .72rem; color: rgba(255,255,255,.5); }
+    .cta-divider { display: flex; align-items: center; gap: 16px; width: 100%; max-width: 320px; color: rgba(255,255,255,.3); font-size: .75rem; }
+    .cta-divider::before, .cta-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.15); }
+    .cta-sub { font-size: .73rem; color: rgba(255,255,255,.42); }
 
     /* Footer */
-    footer { background:#030a12; color:#3a5268; text-align:center; padding:40px 24px; font-size:.78rem; line-height:2.2; }
-    @media (max-width:640px) { footer { padding-bottom:200px; } }
-    footer a { color:#5a7890; text-decoration:none; transition:color .2s; }
-    footer a:hover { color:#8aa8c0; }
-    .footer-license { display:inline-block; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:8px 20px; margin-bottom:14px; font-size:.75rem; color:#5a7890; }
+    footer { background: #030a12; color: #3a5268; text-align: center; padding: 40px 24px; font-size: .78rem; line-height: 2.2; }
+    @media (max-width:640px) { footer { padding-bottom: 200px; } }
+    footer a { color: #5a7890; text-decoration: none; transition: color .2s; }
+    footer a:hover { color: #8aa8c0; }
+    .footer-license { display: inline-block; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 6px; padding: 8px 20px; margin-bottom: 14px; font-size: .75rem; color: #5a7890; }
 
     /* Fixed LINE */
-    .fixed-line { position:fixed; right:16px; bottom:80px; z-index:100; }
-    .fixed-line img { display:block; height:44px; width:auto; border-radius:4px; box-shadow:0 4px 16px rgba(0,0,0,.4); transition:transform .2s, box-shadow .2s; }
-    .fixed-line img:hover { transform:scale(1.06); box-shadow:0 6px 22px rgba(0,0,0,.5); }
-    @media (max-width:640px) { .fixed-line { bottom:90px; } }
+    .fixed-line { position: fixed; right: 16px; bottom: 80px; z-index: 100; }
+    .fixed-line img { display: block; height: 44px; width: auto; border-radius: 4px; box-shadow: 0 4px 16px rgba(0,0,0,.4); transition: transform .2s; }
+    .fixed-line img:hover { transform: scale(1.06); }
+    @media (max-width:640px) { .fixed-line { bottom: 90px; } }
 
-    /* Floating CTA */
-    .float-cta { display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:99; width:calc(100% - 32px); max-width:400px; }
-    @media (max-width:640px) { .float-cta { display:block; } }
-    .float-cta a { display:block; background:var(--accent); color:var(--white); text-align:center; padding:16px; border-radius:8px; font-size:1.05rem; font-weight:900; text-decoration:none; box-shadow:0 6px 24px rgba(232,93,38,.6); letter-spacing:.02em; }
+    /* Float CTA */
+    .float-cta { display: none; position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 99; width: calc(100% - 32px); max-width: 400px; }
+    @media (max-width:640px) { .float-cta { display: block; } }
+    .float-cta a { display: block; background: var(--accent); color: var(--white); text-align: center; padding: 16px; border-radius: 8px; font-size: 1.05rem; font-weight: 900; text-decoration: none; box-shadow: 0 6px 24px rgba(232,93,38,.6); }
   </style>
 </head>
 <body>
 
 <div class="announce-bar">
-  <span>24時間365日</span> 無料相談受付中　｜　強引な勧誘は一切なし　｜　匿名OK
+  📞 <a href="tel:0489339980">048-933-9980</a>　｜　<span style="color:var(--gold)">24時間365日</span> 無料相談受付中　｜　強引な勧誘は一切なし
 </div>
 
 <header>
@@ -263,7 +294,13 @@
       <a href="https://exeresearch.jp/" target="_blank" rel="noopener" class="header-site-link">会社サイトはこちら →</a>
     </div>
   </div>
-  <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="header-cta">無料相談する</a>
+  <div class="header-right">
+    <a href="tel:0489339980" class="header-tel">
+      <span class="tel-label">📞 無料通話</span>
+      <span class="tel-num">048-933-9980</span>
+    </a>
+    <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="header-cta">無料相談する</a>
+  </div>
 </header>
 
 <section class="hero">
@@ -297,12 +334,18 @@
       </div>
     </div>
     <div class="hero-cta-group">
-      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">今すぐ無料相談する（完全無料）</a>
-      <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener" class="btn-line">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.208 2 11.4c0 2.897 1.402 5.484 3.59 7.19.186.146.291.374.249.607l-.373 1.857c-.067.333.288.598.592.435l2.073-1.12c.179-.097.393-.12.588-.053.836.281 1.733.434 2.681.434 5.523 0 10-4.208 10-9.4C22 6.208 17.523 2 12 2z"/></svg>
-        LINEで相談する
-      </a>
-      <p class="note">相談・見積もり完全無料 ／ 強引な勧誘は一切なし</p>
+      <div class="hero-cta-row">
+        <a href="tel:0489339980" class="btn-tel">
+          📞 048-933-9980
+          <span>24時間受付・通話無料</span>
+        </a>
+        <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener" class="btn-line">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.208 2 11.4c0 2.897 1.402 5.484 3.59 7.19.186.146.291.374.249.607l-.373 1.857c-.067.333.288.598.592.435l2.073-1.12c.179-.097.393-.12.588-.053.836.281 1.733.434 2.681.434 5.523 0 10-4.208 10-9.4C22 6.208 17.523 2 12 2z"/></svg>
+          LINEで相談
+        </a>
+      </div>
+      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
+      <p class="note">相談・見積もり完全無料 ／ 強引な勧誘は一切なし ／ 匿名OK</p>
     </div>
   </div>
   <div class="hero-scroll">SCROLL</div>
@@ -310,26 +353,11 @@
 
 <div class="trust-bar">
   <div class="trust-bar-inner">
-    <div class="trust-item">
-      <span class="trust-item-icon">🏅</span>
-      <div class="trust-item-text"><span class="label">公安委員会届出</span><strong>埼玉県第43230060号</strong></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-item-icon">📋</span>
-      <div class="trust-item-text"><span class="label">累計実績</span><strong>500件以上</strong></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-item-icon">🔒</span>
-      <div class="trust-item-text"><span class="label">情報管理</span><strong>完全秘密厳守</strong></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-item-icon">⏰</span>
-      <div class="trust-item-text"><span class="label">相談受付</span><strong>24時間365日</strong></div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-item-icon">📍</span>
-      <div class="trust-item-text"><span class="label">対応エリア</span><strong>全国対応</strong></div>
-    </div>
+    <div class="trust-item"><span class="trust-item-icon">🏅</span><div class="trust-item-text"><span class="label">公安委員会届出</span><strong>埼玉県第43230060号</strong></div></div>
+    <div class="trust-item"><span class="trust-item-icon">📋</span><div class="trust-item-text"><span class="label">累計実績</span><strong>500件以上</strong></div></div>
+    <div class="trust-item"><span class="trust-item-icon">🔒</span><div class="trust-item-text"><span class="label">情報管理</span><strong>完全秘密厳守</strong></div></div>
+    <div class="trust-item"><span class="trust-item-icon">⏰</span><div class="trust-item-text"><span class="label">相談受付</span><strong>24時間365日</strong></div></div>
+    <div class="trust-item"><span class="trust-item-icon">📍</span><div class="trust-item-text"><span class="label">対応エリア</span><strong>全国対応</strong></div></div>
   </div>
 </div>
 
@@ -338,7 +366,7 @@
     <p class="section-label">こんなお悩みはありませんか？</p>
     <h2 class="section-title">一人で抱え込まないでください</h2>
     <div class="pain-list">
-      <div class="pain-item"><div class="pain-icon">😔</div><p>最近帰りが遅くなり、スマホを隠すようになった</p></div>
+      <div class="pain-item"><div class="pain-icon">😔</div><p>最近帰りが遅くなり、スマホを肌身離さず持つようになった</p></div>
       <div class="pain-item"><div class="pain-icon">😰</div><p>探偵に頼みたいけど、料金が高くて踏み出せない</p></div>
       <div class="pain-item"><div class="pain-icon">😟</div><p>浮気の確証がなく、問い詰めても「疑いすぎ」と言われる</p></div>
       <div class="pain-item"><div class="pain-icon">😣</div><p>離婚・慰謝料請求のために証拠が必要だが方法がわからない</p></div>
@@ -411,7 +439,7 @@
         </div>
       </div>
     </div>
-    <p class="pricing-note">※ 交通費・経費はすべて実費のご請求となります。<br>事前にお見積もりをご提示しますのでご安心ください。</p>
+    <p class="pricing-note">※ 交通費・経費はすべて実費のご請求となります。事前にお見積もりをご提示しますのでご安心ください。</p>
   </div>
 </section>
 
@@ -421,7 +449,7 @@
     <h2 class="section-title">ご依頼の流れ</h2>
     <p class="section-desc">相談から証拠取得まで、最短で約1〜2週間。丁寧にサポートします。</p>
     <div class="steps-list">
-      <div class="step"><div class="step-num">1</div><h4>無料相談</h4><p>フォームまたはLINEで状況をお聞かせください。匿名でもOK。</p></div>
+      <div class="step"><div class="step-num">1</div><h4>無料相談</h4><p>電話・フォーム・LINEで状況をお聞かせください。匿名でもOK。</p></div>
       <div class="step"><div class="step-num">2</div><h4>プラン提案・契約</h4><p>状況に合わせた最適なプランをご提案。ご納得の上でご契約。</p></div>
       <div class="step"><div class="step-num">3</div><h4>カメラ設置・調査開始</h4><p>専門スタッフが対象者宅外に機材を設置。リモートで継続記録。</p></div>
       <div class="step"><div class="step-num">4</div><h4>証拠・報告書の提出</h4><p>撮影データと正式報告書をセキュアな方法でお届けします。</p></div>
@@ -454,15 +482,121 @@
   </div>
 </section>
 
+<!-- Case Studies -->
+<section class="section case-bg">
+  <div class="section-inner">
+    <p class="section-label">Case Studies</p>
+    <h2 class="section-title">解決事例</h2>
+    <p class="section-desc">実際にご依頼いただいた事例の一部をご紹介します（個人情報保護のため内容を一部変更しています）。</p>
+    <div class="case-grid">
+
+      <div class="case-card">
+        <div class="case-head">
+          <span class="case-tag">リモート調査プラン</span>
+          <span class="case-client">40代・女性｜埼玉県</span>
+        </div>
+        <div class="case-body">
+          <div class="case-situation">
+            <h4>ご状況</h4>
+            <p>夫の帰宅時間が急に遅くなり、スマホを肌身離さず持ち歩くように。「仕事が忙しい」の一点張りで信じられず、ご相談を決意されました。</p>
+          </div>
+          <div class="case-results">
+            <div class="case-result-item"><span class="case-result-label">調査期間</span><span class="case-result-value">11日間</span></div>
+            <div class="case-result-item"><span class="case-result-label">調査費用</span><span class="case-result-value">231,000円＋交通費</span></div>
+            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">浮気相手マンションへの出入りを7回記録</span></div>
+          </div>
+          <div class="case-outcome">✓ 弁護士を通じて慰謝料200万円で離婚成立</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-head">
+          <span class="case-tag">リモート調査プラン</span>
+          <span class="case-client">30代・男性｜東京都</span>
+        </div>
+        <div class="case-body">
+          <div class="case-situation">
+            <h4>ご状況</h4>
+            <p>妻が週末に「友人と会う」と言い外出する頻度が増加。SNSの投稿内容に不審点があり、真実を確かめるために調査を依頼。</p>
+          </div>
+          <div class="case-results">
+            <div class="case-result-item"><span class="case-result-label">調査期間</span><span class="case-result-value">8日間</span></div>
+            <div class="case-result-item"><span class="case-result-label">調査費用</span><span class="case-result-value">154,000円＋交通費</span></div>
+            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">特定男性の住居への定期的な出入りを記録</span></div>
+          </div>
+          <div class="case-outcome">✓ 証拠をもとに協議離婚成立・親権も獲得</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-head">
+          <span class="case-tag">通常調査プラン</span>
+          <span class="case-client">50代・男性｜神奈川県</span>
+        </div>
+        <div class="case-body">
+          <div class="case-situation">
+            <h4>ご状況</h4>
+            <p>妻と相手が直接接触する現場を押さえたかった。リモートでは難しいケースと判断し、調査員による尾行・張り込みプランを選択。</p>
+          </div>
+          <div class="case-results">
+            <div class="case-result-item"><span class="case-result-label">調査期間</span><span class="case-result-value">2日間</span></div>
+            <div class="case-result-item"><span class="case-result-label">調査費用</span><span class="case-result-value">141,400円＋交通費</span></div>
+            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">密会・スキンシップの現場を複数枚撮影</span></div>
+          </div>
+          <div class="case-outcome">✓ 裁判で証拠採用・慰謝料150万円で和解成立</div>
+        </div>
+      </div>
+
+      <div class="case-card">
+        <div class="case-head">
+          <span class="case-tag">リモート調査プラン</span>
+          <span class="case-client">30代・女性｜千葉県</span>
+        </div>
+        <div class="case-body">
+          <div class="case-situation">
+            <h4>ご状況</h4>
+            <p>夫の行動に不信感があったが証拠もなく、自分の「思い込みかも」という不安も。まず事実を確認したいとのことでご相談。</p>
+          </div>
+          <div class="case-results">
+            <div class="case-result-item"><span class="case-result-label">調査期間</span><span class="case-result-value">14日間</span></div>
+            <div class="case-result-item"><span class="case-result-label">調査費用</span><span class="case-result-value">308,000円＋交通費</span></div>
+            <div class="case-result-item"><span class="case-result-label">証拠内容</span><span class="case-result-value">不貞行為の証拠となる映像・写真を複数取得</span></div>
+          </div>
+          <div class="case-outcome">✓ 確実な証拠をもとに冷静な話し合いが実現</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <section class="section testimonials-bg">
   <div class="section-inner">
     <p class="section-label">Voice</p>
     <h2 class="section-title">ご依頼者様の声</h2>
     <p class="section-desc">実際にご利用いただいた方々からの声をご紹介します（個人情報保護のため一部変更）。</p>
     <div class="testimonials-grid">
-      <div class="testi-card"><div class="testi-quote">"</div><div class="testi-stars">★★★★★</div><div class="testi-outcome">✓ 離婚協議を有利に解決</div><p class="testi-text">他の探偵社では25万円以上と言われ諦めていましたが、こちらは77,000円から対応していただけました。証拠もしっかり取れて、離婚協議を有利に進めることができました。</p><div class="testi-author">40代・女性（埼玉県）</div></div>
-      <div class="testi-card"><div class="testi-quote">"</div><div class="testi-stars">★★★★★</div><div class="testi-outcome">✓ 弁護士も認めた証拠を取得</div><p class="testi-text">相談から調査開始まで4日でした。報告書も丁寧で、弁護士さんにも「これは証拠として申し分ない」と言っていただきました。料金が安くても品質は確かです。</p><div class="testi-author">30代・男性（東京都）</div></div>
-      <div class="testi-card"><div class="testi-quote">"</div><div class="testi-stars">★★★★☆</div><div class="testi-outcome">✓ 匿名で相談・証拠取得に成功</div><p class="testi-text">匿名で相談できたので、最初の一歩を踏み出せました。担当の方が親身に話を聞いてくれて、精神的にも助かりました。証拠もしっかり取得できました。</p><div class="testi-author">30代・女性（神奈川県）</div></div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-outcome">✓ 離婚協議を有利に解決</div>
+        <p class="testi-text">他の探偵社では25万円以上と言われ諦めていましたが、こちらは77,000円から対応していただけました。担当の方が親身に話を聞いてくれて、最初の電話から安心できました。証拠もしっかり取れて、弁護士の先生にも「これは申し分ない」と言っていただき、離婚協議を有利に進めることができました。</p>
+        <div class="testi-author">40代・女性（埼玉県）</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-outcome">✓ 弁護士も認めた証拠を取得</div>
+        <p class="testi-text">相談から調査開始まで4日でした。カメラを使ったリモート調査ということで最初は不安でしたが、鮮明な映像と日時がしっかり記録されていて驚きました。報告書も丁寧で、弁護士さんにも「証拠として申し分ない」と言っていただきました。料金が安くても品質は確かです。</p>
+        <div class="testi-author">30代・男性（東京都）</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★☆</div>
+        <div class="testi-outcome">✓ 匿名で相談・証拠取得に成功</div>
+        <p class="testi-text">家族に知られずに相談したかったので、匿名OKというのが決め手でした。最初の電話で「無理に契約しなくていいですよ」と言われてホッとしました。担当の方が精神的な部分にも寄り添ってくれて、調査後も弁護士の紹介までしていただけて本当に助かりました。</p>
+        <div class="testi-author">30代・女性（神奈川県）</div>
+      </div>
     </div>
   </div>
 </section>
@@ -525,7 +659,12 @@
     <h2>一人で悩まず、<br>まず無料相談から始めましょう</h2>
     <p class="sub">秘密厳守・匿名OK・見積もり無料。24時間受付中です。<br>強引な勧誘は一切行いません。</p>
     <div class="cta-group">
-      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">今すぐ無料相談する（完全無料）</a>
+      <div class="cta-tel-box">
+        <a href="tel:0489339980">📞 048-933-9980</a>
+        <span>24時間365日受付・通話無料</span>
+      </div>
+      <div class="cta-divider">または</div>
+      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
       <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener" class="btn-line">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.208 2 11.4c0 2.897 1.402 5.484 3.59 7.19.186.146.291.374.249.607l-.373 1.857c-.067.333.288.598.592.435l2.073-1.12c.179-.097.393-.12.588-.053.836.281 1.733.434 2.681.434 5.523 0 10-4.208 10-9.4C22 6.208 17.523 2 12 2z"/></svg>
         LINEで相談する
@@ -537,7 +676,7 @@
 
 <footer>
   <div class="footer-license">探偵業届出番号：埼玉県公安委員会第43230060号</div>
-  <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong></p>
+  <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong>　📞 <a href="tel:0489339980">048-933-9980</a></p>
   <p style="margin-top:8px;"><a href="#">プライバシーポリシー</a> ／ <a href="#">特定商取引法に基づく表記</a> ／ <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener">お問い合わせ</a> ／ <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a></p>
   <p style="margin-top:12px;">&copy; 2026 ラクーン探偵社. All rights reserved.</p>
 </footer>
@@ -549,7 +688,7 @@
 </div>
 
 <div class="float-cta">
-  <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener">今すぐ無料相談する</a>
+  <a href="tel:0489339980">📞 今すぐ無料相談 048-933-9980</a>
 </div>
 
 <script>
