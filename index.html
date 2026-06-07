@@ -49,6 +49,9 @@
     .logo-text { display: flex; flex-direction: column; }
     .logo { font-size: .95rem; font-weight: 800; letter-spacing: .03em; }
     .logo-sub { font-size: .68rem; color: #7fa0bc; margin-top: 1px; }
+    .header-site-link { font-size: .72rem; color: #7fa0bc; text-decoration: none; border: 1px solid #2a4a6a; border-radius: 3px; padding: 3px 8px; white-space: nowrap; transition: color .2s, border-color .2s; }
+    .header-site-link:hover { color: #a0c4e0; border-color: #4a7aa0; }
+    @media (max-width: 480px) { .header-site-link { display: none; } }
     .header-cta {
       background: var(--accent);
       color: var(--white);
@@ -600,9 +603,12 @@
 <!-- Header -->
 <header>
   <div class="header-left">
-    <img src="raccoon_logo.png" alt="ラクーン探偵社ロゴ" class="logo-img" />
+    <a href="https://exeresearch.jp/" target="_blank" rel="noopener">
+      <img src="raccoon_logo.png" alt="ラクーン探偵社ロゴ" class="logo-img" />
+    </a>
     <div class="logo-text">
       <div class="logo-sub">埼玉県公安委員会第43230060号</div>
+      <a href="https://exeresearch.jp/" target="_blank" rel="noopener" class="header-site-link">会社サイトはこちら →</a>
     </div>
   </div>
   <a href="#" class="header-cta" onclick="openModal(event)">無料相談する</a>
@@ -1019,14 +1025,15 @@
 
 <!-- Footer -->
 <footer>
-  <p><strong style="color:#6a8fa8;">浮気調査リモートプラン</strong></p>
+  <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong></p>
   <p>探偵業届出番号：埼玉県公安委員会第43230060号</p>
   <p style="margin-top:8px;">
     <a href="#">プライバシーポリシー</a> ／
     <a href="#">特定商取引法に基づく表記</a> ／
-    <a href="#" onclick="openModal(event)">お問い合わせ</a>
+    <a href="#" onclick="openModal(event)">お問い合わせ</a> ／
+    <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a>
   </p>
-  <p style="margin-top:12px;">&copy; 2026 浮気調査リモートプラン. All rights reserved.</p>
+  <p style="margin-top:12px;">&copy; 2026 ラクーン探偵社. All rights reserved.</p>
 </footer>
 
 <!-- Floating CTA (mobile) -->
