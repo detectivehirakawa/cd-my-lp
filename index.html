@@ -279,6 +279,24 @@
     .cta-sub { font-size: .73rem; color: rgba(255,255,255,.42); }
 
     /* Footer */
+    /* Legal sections */
+    .legal-section { background: #f9fafb; padding: 72px 24px; border-top: 1px solid #e0e6ed; }
+    .legal-section + .legal-section { border-top: 2px solid #d0dbe6; }
+    .legal-title { font-size: clamp(1.15rem,2.5vw,1.5rem); font-weight: 900; color: var(--primary); margin-bottom: 32px; padding-bottom: 12px; border-bottom: 3px solid var(--accent); display: inline-block; }
+    .legal-content { max-width: 820px; margin: 0 auto; font-size: .9rem; line-height: 1.9; color: #3a4a5a; }
+    .legal-content h3 { font-size: 1rem; font-weight: 800; color: var(--primary); margin: 28px 0 10px; }
+    .legal-content p { margin-bottom: 10px; }
+    .legal-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .legal-table th { background: var(--primary); color: #fff; padding: 10px 16px; font-size: .82rem; font-weight: 700; text-align: left; white-space: nowrap; width: 30%; vertical-align: top; }
+    .legal-table td { padding: 10px 16px; border-bottom: 1px solid #dde6ef; vertical-align: top; }
+    .legal-table tr:nth-child(even) td { background: #f0f5fa; }
+    @media (max-width: 600px) {
+      .legal-section { padding: 52px 16px; }
+      .legal-table th, .legal-table td { display: block; width: 100%; }
+      .legal-table th { padding: 8px 12px; border-radius: 0; }
+      .legal-table td { padding: 8px 12px; }
+    }
+
     footer { background: #030a12; color: #3a5268; text-align: center; padding: 40px 24px; font-size: .78rem; line-height: 2.2; }
     @media (max-width:640px) { footer { padding-bottom: 200px; } }
     footer a { color: #5a7890; text-decoration: none; transition: color .2s; }
@@ -766,10 +784,66 @@
   </div>
 </section>
 
+<!-- Privacy Policy -->
+<section class="legal-section" id="privacy-policy">
+  <div class="legal-content">
+    <h2 class="legal-title">プライバシーポリシー</h2>
+
+    <h3>1. 個人情報の取得について</h3>
+    <p>ラクーン探偵社（運営：合同会社EXE RESEARCH）は、お問い合わせ・ご相談の際に、氏名（ニックネーム可）、電話番号、メールアドレス、ご相談内容等の個人情報をご提供いただく場合があります。</p>
+
+    <h3>2. 利用目的</h3>
+    <p>取得した個人情報は、以下の目的のみに利用します。</p>
+    <p>・調査サービスのご提供およびご連絡<br>・お問い合わせへの回答<br>・サービス改善のための統計的な分析（個人を特定しない形で使用）</p>
+
+    <h3>3. 第三者への提供</h3>
+    <p>法令に基づく場合、または人命・財産の保護に必要な場合を除き、お客様の個人情報を第三者に提供・開示することは一切ありません。</p>
+
+    <h3>4. 個人情報の管理</h3>
+    <p>個人情報への不正アクセス・紛失・漏洩・改ざんを防止するため、適切な安全管理措置を講じます。業務上必要な範囲内の従業員のみがアクセスできる体制を整えています。</p>
+
+    <h3>5. 秘密厳守</h3>
+    <p>探偵業法第10条に基づき、業務上知り得た秘密は厳守します。ご相談内容・調査内容が外部に漏れることは一切ありません。</p>
+
+    <h3>6. 個人情報の開示・訂正・削除</h3>
+    <p>ご本人から個人情報の開示・訂正・削除のご要望があった場合は、合理的な範囲で対応いたします。下記お問い合わせ先までご連絡ください。</p>
+
+    <h3>7. お問い合わせ先</h3>
+    <p>合同会社EXE RESEARCH（屋号：ラクーン探偵社）<br>
+    〒341-0026 埼玉県三郷市幸房476-33<br>
+    TEL：048-933-9980　EMAIL：racoontantei@gmail.com</p>
+  </div>
+</section>
+
+<!-- Specified Commercial Transactions -->
+<section class="legal-section" id="commercial-transactions">
+  <div class="legal-content">
+    <h2 class="legal-title">特定商取引法に基づく表記</h2>
+    <table class="legal-table">
+      <tr><th>事業者名</th><td>合同会社EXE RESEARCH</td></tr>
+      <tr><th>屋号</th><td>ラクーン探偵社</td></tr>
+      <tr><th>所在地</th><td>〒341-0026 埼玉県三郷市幸房476-33</td></tr>
+      <tr><th>電話番号</th><td>048-933-9980（24時間受付）</td></tr>
+      <tr><th>メールアドレス</th><td>racoontantei@gmail.com</td></tr>
+      <tr><th>探偵業届出番号</th><td>埼玉県公安委員会第43230060号</td></tr>
+      <tr><th>役務の名称</th><td>探偵調査サービス（浮気・不貞調査、行動調査 等）</td></tr>
+      <tr><th>役務の対価</th><td>
+        【リモート調査プラン】77,000円／24時間（税込）＋交通費・経費実費<br>
+        【通常調査プラン】19,800円／時間（税込）・最低稼働3時間＋車両機材費22,000円（税込）＋交通費・経費実費<br>
+        ※詳細はご相談時にお見積もりいたします。
+      </td></tr>
+      <tr><th>支払方法</th><td>銀行振込（ご契約時にご案内いたします）</td></tr>
+      <tr><th>役務の提供時期</th><td>ご契約締結後、調査日程を確定の上、速やかにサービスを開始いたします。書面でのご契約が確認できた方は即日調査も可能です。</td></tr>
+      <tr><th>キャンセルポリシー</th><td>調査開始前のキャンセルはご相談ください。調査開始後のキャンセルは、実施済み調査分の費用が発生する場合があります。詳細はご契約時にご説明いたします。</td></tr>
+      <tr><th>個人情報の取扱い</th><td>取得した個人情報は、調査サービスの提供目的のみに使用し、第三者への提供は行いません。詳細は<a href="#privacy-policy">プライバシーポリシー</a>をご覧ください。</td></tr>
+    </table>
+  </div>
+</section>
+
 <footer>
   <div class="footer-license">探偵業届出番号：埼玉県公安委員会第43230060号</div>
   <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong>　📞 <a href="tel:0489339980">048-933-9980</a></p>
-  <p style="margin-top:8px;"><a href="#">プライバシーポリシー</a> ／ <a href="#">特定商取引法に基づく表記</a> ／ <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener">お問い合わせ</a> ／ <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a></p>
+  <p style="margin-top:8px;"><a href="#privacy-policy">プライバシーポリシー</a> ／ <a href="#commercial-transactions">特定商取引法に基づく表記</a> ／ <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener">お問い合わせ</a> ／ <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a></p>
   <p style="margin-top:12px;">&copy; 2026 ラクーン探偵社. All rights reserved.</p>
 </footer>
 
