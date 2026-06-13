@@ -197,6 +197,17 @@
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
     .photo-card-label { position:absolute; bottom:14px; left:14px; color:#fff; font-size:.75rem; font-weight:800; background:rgba(232,93,38,.95); padding:4px 12px; border-radius:4px; }
 
+    /* Live Camera */
+    .live-cam-section { background: #030c16; padding: 64px 24px; border-top: 1px solid #0d2a3e; }
+    .live-cam-title { text-align:center; color:#fff; font-size:clamp(1.2rem,2.5vw,1.65rem); font-weight:900; margin-bottom:8px; }
+    .live-cam-note { text-align:center; color:#3a5268; font-size:.82rem; margin-bottom:32px; }
+    .live-cam-wrap { position:relative; max-width:760px; margin:0 auto; border-radius:12px; overflow:hidden; aspect-ratio:16/9; background:#000; box-shadow:0 8px 40px rgba(0,0,0,.8); }
+    .live-cam-badge { position:absolute; top:12px; right:12px; z-index:10; color:#fff; font-size:.65rem; font-weight:900; background:rgba(220,30,30,.9); padding:3px 9px; border-radius:3px; letter-spacing:.1em; animation:blink 1.5s infinite; pointer-events:none; }
+    .live-cam-video { width:100%; height:100%; object-fit:cover; display:block; }
+    .live-cam-offline { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:#3a5268; background:#030c16; }
+    .live-cam-offline svg { width:56px; height:56px; opacity:.4; }
+    .live-cam-offline p { font-size:.88rem; font-weight:700; letter-spacing:.05em; }
+
     /* Case studies */
     .case-bg { background: var(--light-bg); }
     .case-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 24px; }
@@ -575,6 +586,21 @@
   </div>
 </section>
 
+<!-- Live Camera Section -->
+<section class="live-cam-section">
+  <p class="section-label" style="color:#e85d26;">LIVE CAMERA</p>
+  <h2 class="live-cam-title">事務所ライブカメラ</h2>
+  <p class="live-cam-note">事務所内の様子をリアルタイムでご確認いただけます（営業時間内）</p>
+  <div class="live-cam-wrap">
+    <div class="live-cam-badge" id="liveBadge" style="display:none;">● LIVE</div>
+    <video id="liveCam" class="live-cam-video" autoplay muted playsinline controls></video>
+    <div class="live-cam-offline" id="liveCamOffline">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10l4.553-2.277A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><line x1="3" y1="3" x2="21" y2="21" stroke-width="1.5"/></svg>
+      <p>現在オフライン</p>
+    </div>
+  </div>
+</section>
+
 <!-- Bike Section -->
 <section class="bike-section">
   <div class="bike-inner">
@@ -857,6 +883,43 @@
 <div class="float-cta">
   <a href="tel:0489339980">📞 今すぐ無料相談 048-933-9980</a>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+<script>
+  // ★ Cloudflare Tunnelのセットアップ後、下のURLを更新してください ★
+  // 形式: https://xxxxxxxx.trycloudflare.com/カメラ名/index.m3u8
+  var WYZE_STREAM_URL = '';
+
+  (function() {
+    if (!WYZE_STREAM_URL) return;
+    var video = document.getElementById('liveCam');
+    var badge = document.getElementById('liveBadge');
+    var offline = document.getElementById('liveCamOffline');
+
+    function onError() {
+      video.style.display = 'none';
+      badge.style.display = 'none';
+      offline.style.display = 'flex';
+    }
+
+    if (Hls.isSupported()) {
+      var hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+      hls.loadSource(WYZE_STREAM_URL);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        badge.style.display = 'block';
+        video.play().catch(function(){});
+      });
+      hls.on(Hls.Events.ERROR, function(e, d) { if (d.fatal) onError(); });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = WYZE_STREAM_URL;
+      badge.style.display = 'block';
+      video.addEventListener('error', onError);
+    } else {
+      onError();
+    }
+  })();
+</script>
 
 <script>
   if (window.location.hash) {
