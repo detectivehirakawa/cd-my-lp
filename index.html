@@ -483,6 +483,21 @@
   </div>
 </section>
 
+<!-- Live Camera Section -->
+<section class="live-cam-section">
+  <p class="section-label" style="color:#e85d26;">LIVE CAMERA</p>
+  <h2 class="live-cam-title">事務所ライブカメラ</h2>
+  <p class="live-cam-note">事務所前の様子をリアルタイムでご確認いただけます（営業時間内）</p>
+  <div class="live-cam-wrap">
+    <div class="live-cam-badge" id="liveBadge" style="display:none;">● LIVE</div>
+    <video id="liveCam" class="live-cam-video" autoplay muted playsinline controls></video>
+    <div class="live-cam-offline" id="liveCamOffline">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10l4.553-2.277A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><line x1="3" y1="3" x2="21" y2="21" stroke-width="1.5"/></svg>
+      <p>現在オフライン</p>
+    </div>
+  </div>
+</section>
+
 <section class="section features-bg">
   <div class="section-inner">
     <p class="section-label">Features</p>
@@ -583,21 +598,6 @@
     <div class="photo-card"><img src="https://images.unsplash.com/photo-1760799264625-2abcfe55e59c?w=480&h=270&fit=crop&q=80" alt="外出入り記録" loading="lazy"/><div class="photo-card-overlay"></div><div class="photo-card-rec">● REC</div><div class="photo-card-label">外出・帰宅の記録</div></div>
     <div class="photo-card"><img src="https://www.wyze.com/cdn/shop/files/wyze-cam-v4-wyze-labs-inc-5186547.png?v=1762447655&width=480" alt="Wyze Cam v4" loading="lazy" style="object-fit:contain;background:#f5f5f5;"/><div class="photo-card-overlay"></div><div class="photo-card-label">高解像度カメラ機材</div></div>
     <div class="photo-card"><img src="https://images.unsplash.com/photo-1743385779431-45d26d9775b1?w=480&h=270&fit=crop&q=80" alt="調査報告書" loading="lazy"/><div class="photo-card-overlay"></div><div class="photo-card-label">正式調査報告書</div></div>
-  </div>
-</section>
-
-<!-- Live Camera Section -->
-<section class="live-cam-section">
-  <p class="section-label" style="color:#e85d26;">LIVE CAMERA</p>
-  <h2 class="live-cam-title">事務所ライブカメラ</h2>
-  <p class="live-cam-note">事務所内の様子をリアルタイムでご確認いただけます（営業時間内）</p>
-  <div class="live-cam-wrap">
-    <div class="live-cam-badge" id="liveBadge" style="display:none;">● LIVE</div>
-    <video id="liveCam" class="live-cam-video" autoplay muted playsinline controls></video>
-    <div class="live-cam-offline" id="liveCamOffline">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 10l4.553-2.277A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><line x1="3" y1="3" x2="21" y2="21" stroke-width="1.5"/></svg>
-      <p>現在オフライン</p>
-    </div>
   </div>
 </section>
 
@@ -886,8 +886,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
 <script>
-  // ★ Cloudflare Tunnelのセットアップ後、下のURLを更新してください ★
-  // 形式: https://xxxxxxxx.trycloudflare.com/カメラ名/index.m3u8
+  // ★ start-all.bat 実行後、Cloudflare TunnelのURLに変更してください ★
+  // 形式: https://xxxxxxxx.trycloudflare.com/api/stream.m3u8?src=jimusho
   var WYZE_STREAM_URL = '';
 
   (function() {
