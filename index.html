@@ -886,9 +886,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
 <script>
-  // ★ start-all.bat 実行後、Cloudflare TunnelのURLに変更してください ★
-  // 形式: https://xxxxxxxx.trycloudflare.com/api/stream.m3u8?src=jimusho
-  var WYZE_STREAM_URL = '';
+  var WYZE_STREAM_URL = 'https://telling-algorithm-websites-your.trycloudflare.com/api/stream.m3u8?src=jimusho';
+  var STREAM_AUTH = 'Basic ' + btoa('raccoon:cam2025');
 
   (function() {
     if (!WYZE_STREAM_URL) return;
@@ -903,7 +902,11 @@
     }
 
     if (Hls.isSupported()) {
-      var hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+      var hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+        xhrSetup: function(xhr) { xhr.setRequestHeader('Authorization', STREAM_AUTH); }
+      });
       hls.loadSource(WYZE_STREAM_URL);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function() {
