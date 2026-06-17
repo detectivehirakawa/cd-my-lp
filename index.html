@@ -887,7 +887,6 @@
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
 <script>
   var WYZE_STREAM_URL = 'https://telling-algorithm-websites-your.trycloudflare.com/api/stream.m3u8?src=jimusho';
-  var STREAM_AUTH = 'Basic ' + btoa('raccoon:cam2025');
 
   (function() {
     if (!WYZE_STREAM_URL) return;
@@ -902,11 +901,7 @@
     }
 
     if (Hls.isSupported()) {
-      var hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
-        xhrSetup: function(xhr) { xhr.setRequestHeader('Authorization', STREAM_AUTH); }
-      });
+      var hls = new Hls({ enableWorker: true, lowLatencyMode: true });
       hls.loadSource(WYZE_STREAM_URL);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function() {
