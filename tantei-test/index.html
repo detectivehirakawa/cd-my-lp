@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>探偵業法 理解度確認テスト（全50問）</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --panel2:#1c2a3a; --ink:#e8eef5; --sub:#9fb0c3;
+    --line:#2a3a4d; --accent:#3b82f6; --accent2:#2563eb;
+    --ok:#22c55e; --okbg:#0e2a1a; --ng:#ef4444; --ngbg:#2a1113;
+    --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+    line-height:1.7;-webkit-text-size-adjust:100%}
+  a{color:#7db1ff}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px 120px}
+  header.hero{background:linear-gradient(135deg,#16304f,#0f1720);border:1px solid var(--line);
+    border-radius:16px;padding:24px 22px;margin-bottom:18px}
+  header.hero h1{margin:0 0 6px;font-size:1.5rem;letter-spacing:.02em}
+  header.hero p{margin:4px 0;color:var(--sub);font-size:.92rem}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .meta-grid label{display:block;font-size:.8rem;color:var(--sub);margin-bottom:4px}
+  .meta-grid input{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);font-size:.95rem}
+  .rules{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    margin-bottom:18px;font-size:.9rem;color:var(--sub)}
+  .rules b{color:var(--ink)}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;
+    margin-bottom:16px;scroll-margin-top:70px}
+  .q .qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .qnum{font-weight:700;font-size:1.05rem;color:#cfe0f5}
+  .badge{font-size:.72rem;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--sub)}
+  .badge.fmt{background:#12283f;color:#8fb8ea;border-color:#274866}
+  .badge.d-初級{color:#8fe3a8;border-color:#2e5a3d}
+  .badge.d-中級{color:#f0cf7a;border-color:#5a4b2e}
+  .badge.d-上級{color:#f19a9a;border-color:#5a2e2e}
+  .stem{font-size:1rem;margin:2px 0 12px;white-space:pre-wrap}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);
+    border-radius:10px;cursor:pointer;background:var(--panel2);transition:.12s}
+  .opt:hover{border-color:#3a5a7d}
+  .opt input{margin-top:3px;flex:0 0 auto}
+  .opt .k{font-weight:700;color:#9fc2ee;flex:0 0 auto}
+  .opt.sel{border-color:var(--accent);background:#15304e}
+  textarea{width:100%;min-height:96px;padding:11px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--ink);font-size:.95rem;resize:vertical;font-family:inherit}
+  .result{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:none}
+  .result.show{display:block}
+  .verdict{font-weight:700;margin-bottom:6px}
+  .verdict.ok{color:var(--ok)} .verdict.ng{color:var(--ng)}
+  .ansline{font-size:.92rem;margin:2px 0}
+  .ansline .lbl{color:var(--sub)}
+  .explain{font-size:.9rem;color:#d5e2f0;background:#0e1a27;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;margin-top:8px;white-space:pre-wrap}
+  .selfcheck{margin-top:8px;font-size:.9rem}
+  .selfcheck label{margin-right:14px;cursor:pointer;color:var(--sub)}
+  .opt.correct{border-color:var(--ok);background:var(--okbg)}
+  .opt.wrong{border-color:var(--ng);background:var(--ngbg)}
+  .refs{margin-top:6px;font-size:.82rem}
+  .refs a{display:inline-block;margin-right:10px;word-break:break-all}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(13,20,29,.96);
+    border-top:1px solid var(--line);backdrop-filter:blur(6px);z-index:20}
+  .bar-in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+  .prog{flex:1;font-size:.85rem;color:var(--sub)}
+  .prog .pb{height:6px;background:var(--panel);border-radius:999px;margin-top:5px;overflow:hidden}
+  .prog .pb i{display:block;height:100%;background:var(--accent);width:0;transition:.2s}
+  button{font-family:inherit;font-size:.95rem;font-weight:700;border:none;border-radius:10px;
+    padding:11px 18px;cursor:pointer}
+  .btn-primary{background:var(--accent2);color:#fff}
+  .btn-primary:hover{background:var(--accent)}
+  .btn-ghost{background:transparent;color:var(--sub);border:1px solid var(--line)}
+  .scorecard{background:linear-gradient(135deg,#16304f,#0f1720);border:1px solid var(--line);
+    border-radius:16px;padding:22px;margin-bottom:18px;display:none}
+  .scorecard.show{display:block}
+  .scorecard h2{margin:0 0 8px}
+  .score-big{font-size:2.4rem;font-weight:800}
+  .pass{color:var(--ok)} .fail{color:var(--ng)}
+  .score-sub{color:var(--sub);font-size:.9rem;margin-top:6px}
+  .print-note{color:var(--sub);font-size:.8rem;margin-top:10px}
+  @media(max-width:560px){ .meta-grid{grid-template-columns:1fr} header.hero h1{font-size:1.25rem} }
+  @media print{ .bar,.btn-ghost,.rules,.meta-grid,#startNote{display:none!important}
+    body{background:#fff;color:#000} .q,.scorecard,header.hero{border-color:#ccc;background:#fff;color:#000}
+    .explain{background:#f5f5f5;color:#000} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>探偵業法 理解度確認テスト</h1>
+    <p>社団法人会員向け／全50問（四肢択一・正誤・記述・短答）</p>
+    <p>目安時間 90分・合格ライン 40/50問（80%）以上</p>
+    <div class="meta-grid">
+      <div><label>受験者名</label><input id="examName" type="text" placeholder="氏名"></div>
+      <div><label>受験日</label><input id="examDate" type="date"></div>
+    </div>
+  </header>
+
+  <div class="rules" id="startNote">
+    <b>回答方法：</b>各問に回答し、最下部の「採点する」を押すと自動採点されます。
+    四肢択一・正誤は自動判定、記述・短答は模範解答を表示するので<b>自己採点</b>（正解/不正解）を選んでください。
+    入力内容はこの端末に自動保存されます。
+  </div>
+
+  <div class="scorecard" id="scorecard"></div>
+
+  <form id="quiz"></form>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="prog">
+      <span id="progText">0 / 50 問 回答済み</span>
+      <div class="pb"><i id="progFill"></i></div>
+    </div>
+    <button type="button" class="btn-ghost" id="resetBtn">リセット</button>
+    <button type="button" class="btn-primary" id="gradeBtn">採点する</button>
+  </div>
+</div>
+
+<script src="questions.js"></script>
+<script>
+(function(){
+  var DATA = window.QUIZ_DATA || [];
+  var LS = "tantei-test-v1";
+  var form = document.getElementById('quiz');
+  var state = loadState();
+
+  var OBJECTIVE = {'四肢択一':1,'正誤':1};
+  function isObjective(f){ return !!OBJECTIVE[f]; }
+
+  // ---- render ----
+  DATA.forEach(function(q){
+    var el = document.createElement('div');
+    el.className = 'q';
+    el.id = 'q'+q.num;
+    var badges = '<span class="badge fmt">'+q.fmt+'</span>'+
+                 '<span class="badge d-'+q.diff+'">'+q.diff+'</span>';
+    var html = '<div class="qhead"><span class="qnum">問 '+q.num+'</span>'+badges+'</div>'+
+               '<div class="stem">'+escapeHtml(q.stem)+'</div>';
+    if(q.fmt==='四肢択一'){
+      html += '<div class="opts">'+q.options.map(function(o){
+        return optHtml(q.num,o.key,o.key,o.text);
+      }).join('')+'</div>';
+    } else if(q.fmt==='正誤'){
+      html += '<div class="opts">'+
+        optHtml(q.num,'正','正','正しい')+
+        optHtml(q.num,'誤','誤','誤り')+'</div>';
+    } else {
+      html += '<textarea data-num="'+q.num+'" placeholder="解答を入力"></textarea>';
+    }
+    html += '<div class="result" id="r'+q.num+'"></div>';
+    el.innerHTML = html;
+    form.appendChild(el);
+  });
+
+  function optHtml(num,val,key,text){
+    return '<label class="opt" data-num="'+num+'" data-val="'+val+'">'+
+      '<input type="radio" name="q'+num+'" value="'+val+'">'+
+      '<span class="k">'+key+'</span><span>'+escapeHtml(text)+'</span></label>';
+  }
+
+  // ---- restore ----
+  DATA.forEach(function(q){
+    var v = state.ans[q.num];
+    if(v==null) return;
+    if(q.fmt==='四肢択一'||q.fmt==='正誤'){
+      var r = form.querySelector('input[name="q'+q.num+'"][value="'+cssEsc(v)+'"]');
+      if(r){ r.checked=true; markSel(q.num); }
+    } else {
+      var ta = form.querySelector('textarea[data-num="'+q.num+'"]');
+      if(ta) ta.value = v;
+    }
+  });
+  document.getElementById('examName').value = state.name||'';
+  document.getElementById('examDate').value = state.date||'';
+
+  // ---- events ----
+  form.addEventListener('change', function(e){
+    var t=e.target;
+    if(t.type==='radio'){
+      var num=t.name.slice(1);
+      state.ans[num]=t.value; markSel(num); saveState(); updateProg();
+    }
+  });
+  form.addEventListener('input', function(e){
+    if(e.target.tagName==='TEXTAREA'){
+      state.ans[e.target.dataset.num]=e.target.value; saveState(); updateProg();
+    }
+  });
+  document.getElementById('examName').addEventListener('input',function(e){state.name=e.target.value;saveState();});
+  document.getElementById('examDate').addEventListener('input',function(e){state.date=e.target.value;saveState();});
+  document.getElementById('gradeBtn').addEventListener('click', grade);
+  document.getElementById('resetBtn').addEventListener('click', reset);
+
+  function markSel(num){
+    form.querySelectorAll('.opt[data-num="'+num+'"]').forEach(function(l){
+      var r=l.querySelector('input'); l.classList.toggle('sel', r.checked);
+    });
+  }
+
+  function updateProg(){
+    var n=0;
+    DATA.forEach(function(q){ var v=state.ans[q.num]; if(v!=null && String(v).trim()!=='') n++; });
+    document.getElementById('progText').textContent = n+' / '+DATA.length+' 問 回答済み';
+    document.getElementById('progFill').style.width = (n/DATA.length*100)+'%';
+  }
+  updateProg();
+
+  // ---- grading ----
+  function grade(){
+    var autoCorrect=0, autoTotal=0, freeCount=0;
+    DATA.forEach(function(q){
+      var box=document.getElementById('r'+q.num);
+      var given=state.ans[q.num];
+      box.classList.add('show');
+      if(isObjective(q.fmt)){
+        autoTotal++;
+        var ok = given!=null && normalize(given)===normalize(q.answer);
+        if(ok) autoCorrect++;
+        // color options
+        form.querySelectorAll('.opt[data-num="'+q.num+'"]').forEach(function(l){
+          var val=l.dataset.val;
+          if(normalize(val)===normalize(q.answer)) l.classList.add('correct');
+          else if(val===given) l.classList.add('wrong');
+        });
+        box.innerHTML =
+          '<div class="verdict '+(ok?'ok':'ng')+'">'+(ok?'✓ 正解':'✗ 不正解')+'</div>'+
+          '<div class="ansline"><span class="lbl">あなたの回答：</span>'+(given?escapeHtml(given):'（未回答）')+'</div>'+
+          '<div class="ansline"><span class="lbl">正答：</span>'+escapeHtml(q.answer)+'</div>'+
+          explainHtml(q);
+      } else {
+        freeCount++;
+        box.innerHTML =
+          '<div class="verdict">模範解答（自己採点してください）</div>'+
+          '<div class="ansline"><span class="lbl">あなたの回答：</span>'+(given?escapeHtml(given):'（未回答）')+'</div>'+
+          '<div class="explain"><b>模範解答：</b>'+escapeHtml(q.answer)+'</div>'+
+          '<div class="selfcheck">自己採点：'+
+            '<label><input type="radio" name="sc'+q.num+'" value="1"> 正解</label>'+
+            '<label><input type="radio" name="sc'+q.num+'" value="0"> 不正解</label>'+
+          '</div>'+
+          explainHtml(q);
+        var sc=state.self[q.num];
+        if(sc!=null){ var r=box.querySelector('input[name="sc'+q.num+'"][value="'+sc+'"]'); if(r)r.checked=true; }
+      }
+    });
+    // self-check listeners
+    form.querySelectorAll('input[name^="sc"]').forEach(function(inp){
+      inp.addEventListener('change',function(){
+        state.self[this.name.slice(2)]=this.value; saveState(); renderScore(autoCorrect,autoTotal);
+      });
+    });
+    renderScore(autoCorrect,autoTotal);
+    document.getElementById('scorecard').scrollIntoView({behavior:'smooth'});
+  }
+
+  function renderScore(autoCorrect,autoTotal){
+    var selfCorrect=0;
+    DATA.forEach(function(q){ if(!isObjective(q.fmt) && state.self[q.num]==='1') selfCorrect++; });
+    var total=autoCorrect+selfCorrect;
+    var pass = total>=40;
+    var pct=Math.round(total/DATA.length*100);
+    var sc=document.getElementById('scorecard');
+    sc.className='scorecard show';
+    sc.innerHTML =
+      '<h2>採点結果</h2>'+
+      '<div class="score-big '+(pass?'pass':'fail')+'">'+total+' / '+DATA.length+
+        ' <span style="font-size:1.1rem">（'+pct+'%）</span></div>'+
+      '<div class="score-big '+(pass?'pass':'fail')+'" style="font-size:1.3rem">'+
+        (pass?'合格':'不合格')+'</div>'+
+      '<div class="score-sub">自動採点（四肢択一・正誤）：'+autoCorrect+' / '+autoTotal+' 問正解<br>'+
+        '記述・短答（自己採点）：'+selfCorrect+' 問を正解として計上<br>'+
+        '合格ライン：40 / 50 問（80%）以上</div>'+
+      '<div class="print-note">この画面は Ctrl+P で結果を印刷・PDF保存できます。</div>';
+  }
+
+  function explainHtml(q){
+    var refs = (q.refUrls&&q.refUrls.length)
+      ? '<div class="refs">'+q.refUrls.map(function(u){return '<a href="'+u+'" target="_blank" rel="noopener">参考条文・出典</a>';}).join('')+'</div>'
+      : '';
+    return '<div class="explain"><b>解説：</b>'+escapeHtml(q.explain)+'</div>'+refs;
+  }
+
+  function reset(){
+    if(!confirm('回答をすべて消去してやり直しますか？')) return;
+    localStorage.removeItem(LS);
+    location.reload();
+  }
+
+  // ---- helpers ----
+  function normalize(s){ return String(s).trim().replace(/\s/g,''); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function cssEsc(s){ return String(s).replace(/"/g,'\\"'); }
+  function loadState(){
+    try{ var s=JSON.parse(localStorage.getItem(LS)); if(s&&s.ans) { s.self=s.self||{}; return s; } }catch(e){}
+    return {ans:{},self:{},name:'',date:''};
+  }
+  function saveState(){ localStorage.setItem(LS, JSON.stringify(state)); }
+})();
+</script>
+</body>
+</html>
