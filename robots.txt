@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tantei-test/
+
+Sitemap: https://lp.exeresearch.jp/sitemap.xml
