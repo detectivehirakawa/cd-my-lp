@@ -103,22 +103,26 @@ section{position:relative}
 /* ============================================================
    HEADER
    ============================================================ */
+/* ヘッダーは常に白（不透明）。
+   元案は「ヒーローの上では透過、60px スクロールで白」だったが、その切り替えには
+   JavaScript が必要で、このサーバーでは script タグを含む更新がWAFに拒否される。
+   スクロール連動CSS（animation-timeline）はまだ全ブラウザで安定しないため、
+   常時白の固定ヘッダーに寄せた。透過状態に戻すのは子テーマ導入後。 */
 .hdr{
   position:fixed;inset:0 0 auto 0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(16px,3vw,40px);height:96px;
-  transition:background .4s ease,height .4s ease,box-shadow .4s ease;
+  padding:0 clamp(16px,3vw,40px);height:76px;
+  box-shadow:0 1px 0 var(--line);
+  transition:height .4s ease;
 }
 .hdr::before{
-  content:"";position:absolute;inset:0;background:#fff;opacity:0;
-  transition:opacity .4s ease;z-index:-1;
+  content:"";position:absolute;inset:0;background:#fff;
+  z-index:-1;
 }
-.hdr.is-solid{height:76px;box-shadow:0 1px 0 var(--line)}
-.hdr.is-solid::before{opacity:1}
 
 .brand{display:flex;align-items:center;gap:13px;flex:none}
 .brand img{width:46px;height:46px;border-radius:50%;transition:width .4s,height .4s}
-.hdr.is-solid .brand img{width:40px;height:40px}
+.hdr .brand img{width:40px;height:40px}
 .brand-tx{line-height:1.25}
 .brand-tx b{
   display:block;font-family:var(--serif);font-size:19px;font-weight:700;
@@ -128,8 +132,8 @@ section{position:relative}
   display:block;font-family:var(--en2);font-size:9.5px;letter-spacing:.24em;
   color:rgba(255,255,255,.72);transition:color .4s;white-space:nowrap;
 }
-.hdr.is-solid .brand-tx b{color:var(--ink)}
-.hdr.is-solid .brand-tx span{color:var(--accent)}
+.hdr .brand-tx b{color:var(--ink)}
+.hdr .brand-tx span{color:var(--accent)}
 
 .gnav{display:flex;align-items:center;gap:clamp(14px,2vw,30px)}
 .gnav > li > a{
@@ -142,7 +146,7 @@ section{position:relative}
   transition:transform .35s cubic-bezier(.2,.8,.2,1);
 }
 .gnav > li > a:hover::after{transform:scaleX(1)}
-.hdr.is-solid .gnav > li > a{color:var(--ink)}
+.hdr .gnav > li > a{color:var(--ink)}
 
 .hdr-cta{display:flex;align-items:center;gap:16px;flex:none}
 .hdr-tel{text-align:right;line-height:1.15}
@@ -154,8 +158,8 @@ section{position:relative}
   display:block;font-family:var(--en);font-size:26px;font-weight:600;
   letter-spacing:.02em;color:#fff;transition:color .4s;
 }
-.hdr.is-solid .hdr-tel span{color:var(--accent)}
-.hdr.is-solid .hdr-tel b{color:var(--ink)}
+.hdr .hdr-tel span{color:var(--accent)}
+.hdr .hdr-tel b{color:var(--ink)}
 .hdr-btn{
   display:inline-flex;flex-direction:column;justify-content:center;align-items:center;
   background:var(--accent);color:#fff;height:76px;padding:0 30px;
@@ -168,20 +172,21 @@ section{position:relative}
 .burger i{
   position:absolute;left:13px;width:26px;height:1.5px;background:#fff;transition:.35s;
 }
-.hdr.is-solid .burger i,.is-menu .burger i{background:var(--ink)}
+.hdr .burger i{background:var(--ink)}
 .burger i:nth-child(1){top:19px}
 .burger i:nth-child(2){top:26px}
 .burger i:nth-child(3){top:33px}
-.is-menu .burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.is-menu .burger i:nth-child(2){opacity:0}
-.is-menu .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* 閉じるボタンは開いた状態しか表示しないので X を静的に組む */
+.burger--close i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger--close i:nth-child(2){opacity:0}
+.burger--close i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 .drawer{
   position:fixed;inset:0;z-index:99;background:#fff;
   padding:110px var(--gut) 40px;overflow-y:auto;
   opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;
 }
-.is-menu .drawer{opacity:1;visibility:visible}
+.drawer:target{opacity:1;visibility:visible}
 .drawer a{
   display:flex;align-items:baseline;gap:14px;padding:20px 0;border-bottom:1px solid var(--line);
   font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--ink);
@@ -202,12 +207,23 @@ section{position:relative}
 }
 .hero-bg{position:absolute;inset:0}
 .hero-bg li{
-  position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;
+  position:absolute;inset:0;opacity:0;
   background-size:cover;background-position:center;
   transform:scale(1.06);
 }
-.hero-bg li.on{opacity:1;animation:kb 9s linear forwards}
-@keyframes kb{from{transform:scale(1.06)}to{transform:scale(1.16)}}
+/* スライダーはCSSのみ。3枚 × 6秒 = 18秒で1周させ、animation-delay をずらして
+   クロスフェードする。kb（Ken Burns）の拡大も同じキーフレームに含めてある。
+   opacity の基準値が 0 なので delay 中の先読み表示は起きない。 */
+.hero-bg li{animation:heroCycle 18s linear infinite}
+.hero-bg li:nth-child(2){animation-delay:6s}
+.hero-bg li:nth-child(3){animation-delay:12s}
+@keyframes heroCycle{
+  0%  {opacity:0;transform:scale(1.06)}
+  3%  {opacity:1}
+  30% {opacity:1}
+  36% {opacity:0;transform:scale(1.16)}
+  100%{opacity:0;transform:scale(1.06)}
+}
 .hero-bg::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(100deg,rgba(13,27,42,.86) 0%,rgba(13,27,42,.62) 45%,rgba(13,27,42,.34) 100%);
@@ -579,12 +595,16 @@ section{position:relative}
 .sp-bar a:nth-child(2){background:var(--accent)}
 .sp-bar b{font-family:var(--en);font-size:19px;letter-spacing:.02em}
 
-/* スクロール演出 */
-.rv{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-.rv.on{opacity:1;transform:none}
-.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
-.rv-d4{transition-delay:.4s}.rv-d5{transition-delay:.5s}
-@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.hero-bg li.on{animation:none}}
+/* スクロール演出（.rv / .rv-dN）は IntersectionObserver が前提だったため無効化した。
+   JavaScript が使えない状況で opacity:0 を初期値に残すと、条件次第で本文が
+   一切表示されないという最悪の壊れ方をする。クラスはHTMLに残してあるので、
+   子テーマでJSを読み込めるようになったらこの1行を戻すだけで復活する。 */
+.rv{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .hero-bg li{animation:none;opacity:0}
+  .hero-bg li:first-child{opacity:1}
+  .hero-scroll i::after{animation:none}
+}
 
 /* ============================================================
    RESPONSIVE
@@ -592,6 +612,10 @@ section{position:relative}
 @media (max-width:1180px){
   .gnav,.hdr-tel{display:none}
   .burger{display:block}
+  .burger--close{display:none}
+  /* 開いている間はハンバーガーを閉じるボタンに差し替える */
+  .drawer:target ~ .hdr .burger{display:none}
+  .drawer:target ~ .hdr .burger--close{display:block}
   .hdr-btn{height:64px;padding:0 22px}
 }
 @media (max-width:900px){
@@ -606,7 +630,7 @@ section{position:relative}
 @media (max-width:760px){
   body{font-size:15px}
   .hdr{height:68px}
-  .hdr.is-solid{height:62px}
+  .hdr{height:62px}
   .hdr-btn{display:none}
   .brand img{width:38px;height:38px}
   .brand-tx b{font-size:16px}
@@ -627,6 +651,29 @@ section{position:relative}
 </style>
 </head>
 <body>
+
+<!-- ============================ DRAWER ============================ -->
+<!-- JavaScript は使えない（サーバーのWAFが script タグを含む更新を403で拒否する）ため、
+     開閉は :target で行う。ドロワーがヘッダーより前にあるのは、開いている状態を
+     `.drawer:target ~ .hdr` でヘッダー側に伝えるため（CSSは後方にしか効かない）。
+     ドロワー内のリンクを押すと :target が別のIDに移るので自動的に閉じる。 -->
+<div class="drawer" id="drawer">
+  <div class="wrap">
+    <a href="#about">当社について<small>ABOUT</small></a>
+    <a href="#greeting">代表挨拶<small>MESSAGE</small></a>
+    <a href="#service">対応可能調査一覧<small>SERVICE</small></a>
+    <a href="#price">調査料金<small>PRICE</small></a>
+    <a href="#tech">独自のIPカメラ<small>TECHNOLOGY</small></a>
+    <a href="#flow">ご利用の流れ<small>FLOW</small></a>
+    <a href="#company">会社概要<small>COMPANY</small></a>
+    <a href="#news">コラム・お知らせ<small>NEWS</small></a>
+    <a href="#contact">お問い合わせ<small>CONTACT</small></a>
+    <a class="drawer-tel" href="tel:0489339980">
+      <span>365日24時間・匿名相談OK</span>
+      <b>048-933-9980</b>
+    </a>
+  </div>
+</div>
 
 <!-- ============================ HEADER ============================ -->
 <header class="hdr" id="hdr">
@@ -658,35 +705,15 @@ section{position:relative}
       無料相談
       <small>CONTACT</small>
     </a>
-    <button class="burger" id="burger" aria-label="メニュー" aria-expanded="false">
-      <i></i><i></i><i></i>
-    </button>
+    <a class="burger" href="#drawer" aria-label="メニューを開く"><i></i><i></i><i></i></a>
+    <a class="burger burger--close" href="#top" aria-label="メニューを閉じる"><i></i><i></i><i></i></a>
   </div>
 </header>
-
-<!-- ============================ DRAWER ============================ -->
-<div class="drawer" id="drawer">
-  <div class="wrap">
-    <a href="#about">当社について<small>ABOUT</small></a>
-    <a href="#greeting">代表挨拶<small>MESSAGE</small></a>
-    <a href="#service">対応可能調査一覧<small>SERVICE</small></a>
-    <a href="#price">調査料金<small>PRICE</small></a>
-    <a href="#tech">独自のIPカメラ<small>TECHNOLOGY</small></a>
-    <a href="#flow">ご利用の流れ<small>FLOW</small></a>
-    <a href="#company">会社概要<small>COMPANY</small></a>
-    <a href="#news">コラム・お知らせ<small>NEWS</small></a>
-    <a href="#contact">お問い合わせ<small>CONTACT</small></a>
-    <a class="drawer-tel" href="tel:0489339980">
-      <span>365日24時間・匿名相談OK</span>
-      <b>048-933-9980</b>
-    </a>
-  </div>
-</div>
 
 <!-- ============================ HERO ============================ -->
 <section class="hero" id="top">
   <ul class="hero-bg" id="heroBg">
-    <li class="on" style="background-image:url(https://exeresearch.jp/wp-content/uploads/2023/11/27807476_m-1536x1024.jpg)"></li>
+    <li style="background-image:url(https://exeresearch.jp/wp-content/uploads/2023/11/27807476_m-1536x1024.jpg)"></li>
     <li style="background-image:url(https://exeresearch.jp/wp-content/uploads/2026/08/1973824_m-1024x710-1.webp)"></li>
     <li style="background-image:url(https://exeresearch.jp/wp-content/uploads/2026/08/27911084_m-1024x768-1.webp)"></li>
   </ul>
@@ -1235,55 +1262,16 @@ section{position:relative}
   <a href="#contact">無料相談フォーム<span style="font-size:9px;letter-spacing:.2em;opacity:.85">CONTACT</span></a>
 </div>
 
-<script>
-(function(){
-  /* ヘッダーの背景切り替え */
-  var hdr=document.getElementById('hdr');
-  function onScroll(){
-    if(window.scrollY>60){hdr.classList.add('is-solid')}else{hdr.classList.remove('is-solid')}
-  }
-  onScroll();
-  window.addEventListener('scroll',onScroll,{passive:true});
-
-  /* ハンバーガー */
-  var burger=document.getElementById('burger');
-  burger.addEventListener('click',function(){
-    var open=document.body.classList.toggle('is-menu');
-    burger.setAttribute('aria-expanded',open?'true':'false');
-    document.body.style.overflow=open?'hidden':'';
-  });
-  document.querySelectorAll('#drawer a').forEach(function(a){
-    a.addEventListener('click',function(){
-      document.body.classList.remove('is-menu');
-      document.body.style.overflow='';
-      burger.setAttribute('aria-expanded','false');
-    });
-  });
-
-  /* ヒーロー スライダー */
-  var slides=document.querySelectorAll('#heroBg li'),i=0;
-  if(slides.length>1){
-    setInterval(function(){
-      slides[i].classList.remove('on');
-      i=(i+1)%slides.length;
-      slides[i].classList.add('on');
-    },6000);
-  }
-
-  /* スクロール演出 */
-  var targets=document.querySelectorAll('.rv:not(.on)');
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}
-      });
-    },{rootMargin:'0px 0px -12% 0px',threshold:.08});
-    targets.forEach(function(t){io.observe(t)});
-  }else{
-    targets.forEach(function(t){t.classList.add('on')});
-  }
-
-})();
-</script>
+<!-- ============================================================
+     JavaScript は意図的に持たせていない。
+     exeresearch.jp のサーバー（お名前.com RS / SiteGuard Lite）は
+     script タグを含む更新リクエストを 403 で拒否するため、REST API
+     経由では JS を本番へ入れられない（JSON / form-urlencoded / 外部
+     src のいずれも 403 を実測）。
+     そのためヒーローのスライダーはCSSアニメーション、ドロワーは
+     :target、ヘッダーは常時白の固定表示で実装している。
+     子テーマを導入して JS を enqueue できるようになったら、
+     ヘッダーの透過→白の切り替えとスクロール演出を復活させる。
+     ============================================================ -->
 </body>
 </html>
