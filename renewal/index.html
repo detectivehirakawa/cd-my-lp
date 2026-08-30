@@ -323,7 +323,7 @@ section{position:relative}
 }
 /* 顔写真 */
 .grt-photo{position:relative}
-.grt-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center 20%}
+.grt-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center}
 .grt-photo::after{
   content:"";position:absolute;left:-16px;bottom:-16px;width:58%;height:36%;
   border:1px solid var(--accent);pointer-events:none;
@@ -806,20 +806,13 @@ section{position:relative}
   <div class="wrap">
     <div class="grt-grid">
 
-      <!-- 顔写真（★ここに代表の写真を入れます／縦3:4推奨） -->
+      <!-- 顔写真 -->
       <div class="grt-photo rv">
-        <div style="width:100%;aspect-ratio:3/4;background:linear-gradient(150deg,#1d3854,#0d1b2a);
-                    display:grid;place-items:center;text-align:center;padding:24px;
-                    border:1px dashed rgba(207,174,99,.45)">
-          <span style="font-size:12px;letter-spacing:.14em;line-height:2.1;color:rgba(255,255,255,.6)">
-            <span style="font-family:var(--en2);font-size:10px;letter-spacing:.24em;color:var(--accent-2);display:block;margin-bottom:10px">PHOTO</span>
-            代表者の写真<br>（縦3:4／推奨 900×1200px）
-          </span>
-        </div>
+        <img src="daihyo.webp" width="765" height="1020" alt="ラクーン探偵社 代表 佐藤良太" loading="lazy">
 
         <div class="grt-name">
           <span class="role">合同会社EXE RESEARCH 代表　／　ラクーン探偵社 代表</span>
-          <span class="nm">〇〇　〇〇<small>NAME</small></span>
+          <span class="nm">佐藤　良太<small>RYOTA SATO</small></span>
         </div>
       </div>
 
@@ -827,42 +820,49 @@ section{position:relative}
       <div class="grt-body">
         <p class="en-label rv">Message</p>
         <h2 class="rv rv-d1">
-          調査は、<span class="ac">依頼者の生活を壊さない</span>方法で<br>行われるべきだと考えています。
+          一人を見つけるのに、<br><span class="ac">7年</span>かかりました。
         </h2>
 
         <div class="grt-txt">
           <p class="rv rv-d2">
-            探偵にご相談される方の多くは、答えを知りたいと思う一方で、
-            知ってしまうことを恐れています。実際にこの仕事を続けるなかで痛感してきたのは、
-            調査そのものよりも<span class="em">「相談に踏み切れないまま過ぎていく時間」</span>が
-            ご依頼者を消耗させるのだということでした。
+            私がこの業界に入ったのは、探偵になりたかったからではありません。
+            前職で夜逃げをした債務者を追わなければならず、
+            そのために調査の技術を学び始めたのが最初でした。
           </p>
           <p class="rv rv-d3">
-            その時間を短くするために私たちが選んだのは、
-            調査員が現場に張り付き続ける従来のやり方を根本から見直すことでした。
-            機材を自社で設計し、特許庁に登録し、リモート調査を主軸に据えたのは、
-            費用と発覚リスクの両方を下げなければ、本当に必要としている方に手が届かないと
-            考えたからです。
+            その人物を見つけるまでに、7年かかりました。
+            手がかりが途切れるたびに、もう無理かもしれないと思いました。
+            7年後にようやく居場所を突き止めて分かったのは、調査の結果を分けるのは
+            才能や勘ではなく、<span class="em">「追い続けられる方法を持っているかどうか」</span>
+            だということです。人が現場に張り付き続ける前提をやめ、
+            機材を自社で設計してリモート調査を主軸に据えたのは、この経験があったからです。
           </p>
           <p class="rv rv-d4">
-            料金の内訳を明確にすること。できないことをできないと伝えること。
-            調査が不要だと判断したら、そう申し上げること。
-            派手さはありませんが、この3つを守り続けることが探偵事務所の信頼だと思っています。
+            正直なところ、一度は探偵を引退することも考えました。
+            それでも続けているのは、ご依頼者様と一緒に
+            「この相手にはどう対応するか」を考える時間が、
+            この仕事で一番おもしろいと思っているからです。
+            調査は私たちが勝手に進めるものではなく、
+            依頼者と一緒に組み立てていくものだと考えています。
           </p>
           <p class="rv rv-d5">
-            依頼するかどうかを決めていない段階のご相談で構いません。
-            まずは声を聞かせてください。
+            だから、料金の内訳は必ず明確にお伝えします。できないことはできないと申し上げます。
+            調査が不要だと判断したら、そうお伝えします。
+            依頼するかどうかを決めていない段階のご相談で構いません。まずは声を聞かせてください。
           </p>
         </div>
 
-        <!-- 略歴（★内容はヒアリングで確定） -->
+        <!-- 略歴 -->
         <div class="grt-prof rv rv-d5">
           <h3>PROFILE</h3>
           <dl>
-            <dt>役職</dt><dd>合同会社EXE RESEARCH 代表</dd>
-            <dt>保有資格</dt><dd>探偵業届出（埼玉県公安委員会 第43230060号）</dd>
-            <dt>実績</dt><dd>調査用IPカメラの独自開発・特許庁登録</dd>
-            <dt>対応方針</dt><dd>365日24時間の相談受付、初回相談は匿名可・無料</dd>
+            <dt>氏名</dt><dd>佐藤 良太（さとう りょうた）</dd>
+            <dt>役職</dt><dd>合同会社EXE RESEARCH 代表／ラクーン探偵社 代表</dd>
+            <dt>この道へ</dt><dd>前職で夜逃げした債務者の追跡を担当したことをきっかけに、調査の技術を習得</dd>
+            <dt>転機</dt><dd>7年をかけて対象者を発見。「追い続けられる方法」の重要性を確信する</dd>
+            <dt>開業</dt><dd>依頼者と方針を組み立てていく仕事に手応えを感じ、ラクーン探偵社を設立</dd>
+            <dt>開発</dt><dd>調査用IPカメラを独自開発し、特許庁に登録</dd>
+            <dt>届出</dt><dd>探偵業届出 埼玉県公安委員会 第43230060号</dd>
           </dl>
         </div>
       </div>
@@ -1107,6 +1107,7 @@ section{position:relative}
         <dl>
           <dt>屋号</dt><dd>ラクーン探偵社</dd>
           <dt>法人名</dt><dd>合同会社EXE RESEARCH</dd>
+          <dt>代表者</dt><dd>佐藤 良太</dd>
           <dt>所在地</dt><dd>〒341-0026<br>埼玉県三郷市幸房476-33</dd>
           <dt>電話番号</dt><dd>048-933-9980（365日24時間受付）</dd>
           <dt>探偵業届出</dt><dd>埼玉県公安委員会 第43230060号</dd>
