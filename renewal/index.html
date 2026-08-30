@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>【デザイン案】ラクーン探偵社｜埼玉県三郷市の探偵事務所</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500;700;900&family=Barlow+Condensed:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ラクーン探偵社 リニューアル デザイン案
+   参考: nukata-works.com / fieldprotect.co.jp
+   - 英字＋日本語の2段見出し
+   - フルスクリーンヒーロー（クロスフェード＋Ken Burns）
+   - 余白を大きく取った白基調＋濃色の締め
+   - 固定ヘッダー＋追従CTA
+   ============================================================ */
+
+/* --- カラーテーマ: ネイビー × ゴールド（A案・確定） --- */
+:root{
+  --navy:#0d1b2a;
+  --navy-2:#152b40;
+  --ink:#1a2430;
+  --body:#4a5665;
+  --line:#e3e7ec;
+  --bg:#ffffff;
+  --bg-soft:#f5f7f9;
+  --accent:#b08d3f;
+  --accent-2:#cfae63;
+  --accent-ink:#8a6d28;
+  --shadow:0 18px 50px -22px rgba(13,27,42,.38);
+  --serif:"Zen Old Mincho",serif;
+  --sans:"Noto Sans JP",sans-serif;
+  --en:"Barlow Condensed","Jost",sans-serif;
+  --en2:"Jost",sans-serif;
+  --gut:clamp(20px,5vw,80px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;font-family:var(--sans);color:var(--body);background:var(--bg);
+  font-size:16px;line-height:1.95;letter-spacing:.02em;overflow-x:hidden;
+  font-feature-settings:"palt" 1;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+ul{margin:0;padding:0;list-style:none}
+h1,h2,h3,h4{margin:0;color:var(--ink);line-height:1.5;font-weight:500}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gut)}
+.wrap-narrow{max-width:960px;margin:0 auto;padding:0 var(--gut)}
+section{position:relative}
+
+/* ===== 見出し（英字＋日本語の2段） ===== */
+.sec-head{margin-bottom:clamp(36px,5vw,68px)}
+.sec-head .en{
+  display:block;font-family:var(--en);font-size:clamp(52px,8.5vw,110px);
+  line-height:.92;letter-spacing:.01em;color:var(--ink);font-weight:500;
+  text-transform:uppercase;
+}
+.sec-head .en em{font-style:normal;color:var(--accent)}
+.sec-head .ja{
+  display:flex;align-items:center;gap:14px;margin-top:14px;
+  font-family:var(--serif);font-size:clamp(15px,1.7vw,19px);font-weight:700;
+  letter-spacing:.16em;color:var(--ink);
+}
+.sec-head .ja::before{
+  content:"";width:34px;height:1px;background:var(--accent);flex:none;
+}
+.sec-head.center{text-align:center}
+.sec-head.center .ja{justify-content:center}
+.sec-head.light .en,.sec-head.light .ja{color:#fff}
+.lead{max-width:44em;font-size:clamp(14.5px,1.1vw,16px);line-height:2.15}
+
+/* ===== ボタン ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:19px 34px;border:1px solid var(--ink);color:var(--ink);
+  font-size:14px;letter-spacing:.14em;font-weight:500;
+  background:transparent;position:relative;overflow:hidden;
+  transition:color .45s ease,border-color .45s ease;
+}
+.btn::after{
+  content:"";position:absolute;inset:0;background:var(--ink);
+  transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.2,.8,.2,1);z-index:0;
+}
+.btn > *{position:relative;z-index:1}
+.btn .arw{width:26px;height:1px;background:currentColor;position:relative;flex:none;transition:background .45s}
+.btn .arw::after{
+  content:"";position:absolute;right:0;top:-3px;width:7px;height:7px;
+  border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg);
+}
+.btn:hover{color:#fff}
+.btn:hover::after{transform:scaleX(1)}
+.btn--accent{border-color:var(--accent);color:var(--accent-ink)}
+.btn--accent::after{background:var(--accent)}
+.btn--light{border-color:rgba(255,255,255,.55);color:#fff}
+.btn--light::after{background:#fff}
+.btn--light:hover{color:var(--navy)}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.hdr{
+  position:fixed;inset:0 0 auto 0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,3vw,40px);height:96px;
+  transition:background .4s ease,height .4s ease,box-shadow .4s ease;
+}
+.hdr::before{
+  content:"";position:absolute;inset:0;background:#fff;opacity:0;
+  transition:opacity .4s ease;z-index:-1;
+}
+.hdr.is-solid{height:76px;box-shadow:0 1px 0 var(--line)}
+.hdr.is-solid::before{opacity:1}
+
+.brand{display:flex;align-items:center;gap:13px;flex:none}
+.brand img{width:46px;height:46px;border-radius:50%;transition:width .4s,height .4s}
+.hdr.is-solid .brand img{width:40px;height:40px}
+.brand-tx{line-height:1.25}
+.brand-tx b{
+  display:block;font-family:var(--serif);font-size:19px;font-weight:700;
+  letter-spacing:.1em;color:#fff;transition:color .4s;white-space:nowrap;
+}
+.brand-tx span{
+  display:block;font-family:var(--en2);font-size:9.5px;letter-spacing:.24em;
+  color:rgba(255,255,255,.72);transition:color .4s;white-space:nowrap;
+}
+.hdr.is-solid .brand-tx b{color:var(--ink)}
+.hdr.is-solid .brand-tx span{color:var(--accent)}
+
+.gnav{display:flex;align-items:center;gap:clamp(14px,2vw,30px)}
+.gnav > li > a{
+  position:relative;font-size:13.5px;letter-spacing:.06em;color:#fff;
+  transition:color .4s;padding:6px 0;display:block;white-space:nowrap;
+}
+.gnav > li > a::after{
+  content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:var(--accent-2);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.gnav > li > a:hover::after{transform:scaleX(1)}
+.hdr.is-solid .gnav > li > a{color:var(--ink)}
+
+.hdr-cta{display:flex;align-items:center;gap:16px;flex:none}
+.hdr-tel{text-align:right;line-height:1.15}
+.hdr-tel span{
+  display:block;font-size:9.5px;letter-spacing:.18em;color:rgba(255,255,255,.7);
+  transition:color .4s;
+}
+.hdr-tel b{
+  display:block;font-family:var(--en);font-size:26px;font-weight:600;
+  letter-spacing:.02em;color:#fff;transition:color .4s;
+}
+.hdr.is-solid .hdr-tel span{color:var(--accent)}
+.hdr.is-solid .hdr-tel b{color:var(--ink)}
+.hdr-btn{
+  display:inline-flex;flex-direction:column;justify-content:center;align-items:center;
+  background:var(--accent);color:#fff;height:76px;padding:0 30px;
+  font-size:13px;letter-spacing:.1em;transition:background .35s;
+}
+.hdr-btn small{font-family:var(--en2);font-size:9px;letter-spacing:.2em;opacity:.8;margin-top:3px}
+.hdr-btn:hover{background:var(--accent-ink)}
+
+.burger{display:none;width:52px;height:52px;border:0;background:transparent;cursor:pointer;padding:0;position:relative}
+.burger i{
+  position:absolute;left:13px;width:26px;height:1.5px;background:#fff;transition:.35s;
+}
+.hdr.is-solid .burger i,.is-menu .burger i{background:var(--ink)}
+.burger i:nth-child(1){top:19px}
+.burger i:nth-child(2){top:26px}
+.burger i:nth-child(3){top:33px}
+.is-menu .burger i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.is-menu .burger i:nth-child(2){opacity:0}
+.is-menu .burger i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.drawer{
+  position:fixed;inset:0;z-index:99;background:#fff;
+  padding:110px var(--gut) 40px;overflow-y:auto;
+  opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;
+}
+.is-menu .drawer{opacity:1;visibility:visible}
+.drawer a{
+  display:flex;align-items:baseline;gap:14px;padding:20px 0;border-bottom:1px solid var(--line);
+  font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--ink);
+}
+.drawer a small{font-family:var(--en2);font-size:10px;letter-spacing:.2em;color:var(--accent)}
+.drawer-tel{
+  display:block;margin-top:32px;background:var(--navy);color:#fff;text-align:center;padding:22px;
+}
+.drawer-tel b{font-family:var(--en);font-size:30px;letter-spacing:.02em;display:block;color:#fff}
+.drawer-tel span{font-size:11px;letter-spacing:.16em;opacity:.75}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;height:100svh;min-height:600px;overflow:hidden;
+  background:var(--navy);display:flex;align-items:center;
+}
+.hero-bg{position:absolute;inset:0}
+.hero-bg li{
+  position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;
+  background-size:cover;background-position:center;
+  transform:scale(1.06);
+}
+.hero-bg li.on{opacity:1;animation:kb 9s linear forwards}
+@keyframes kb{from{transform:scale(1.06)}to{transform:scale(1.16)}}
+.hero-bg::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(13,27,42,.86) 0%,rgba(13,27,42,.62) 45%,rgba(13,27,42,.34) 100%);
+}
+.hero-in{position:relative;z-index:2;width:100%;padding-top:60px}
+.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.hero-badges li{
+  font-size:11.5px;letter-spacing:.12em;color:#fff;
+  border:1px solid rgba(255,255,255,.4);padding:7px 14px;backdrop-filter:blur(2px);
+}
+.hero-en{
+  font-family:var(--en);font-size:clamp(13px,1.2vw,15px);letter-spacing:.4em;
+  color:var(--accent-2);text-transform:uppercase;margin-bottom:20px;
+}
+.hero h1{
+  font-family:var(--serif);color:#fff;font-weight:900;
+  font-size:clamp(34px,6.4vw,80px);line-height:1.28;letter-spacing:.04em;
+  text-shadow:0 2px 30px rgba(0,0,0,.3);
+}
+.hero h1 .ac{color:var(--accent-2)}
+.hero h1 .sm{display:block;font-size:.46em;font-weight:500;letter-spacing:.12em;margin-top:22px;opacity:.92}
+.hero-sub{
+  margin-top:28px;color:rgba(255,255,255,.86);font-size:clamp(13.5px,1.1vw,15.5px);
+  line-height:2.1;max-width:34em;
+}
+.hero-act{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+.hero-tel{
+  display:inline-flex;align-items:center;gap:16px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.28);padding:14px 26px;backdrop-filter:blur(6px);
+  transition:background .35s;
+}
+.hero-tel:hover{background:rgba(255,255,255,.16)}
+.hero-tel b{font-family:var(--en);font-size:32px;color:#fff;letter-spacing:.02em;line-height:1}
+.hero-tel span{font-size:10.5px;letter-spacing:.14em;color:var(--accent-2);display:block;line-height:1.6}
+
+.hero-scroll{
+  position:absolute;left:50%;bottom:0;z-index:3;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-family:var(--en2);font-size:9.5px;letter-spacing:.28em;color:rgba(255,255,255,.75);
+}
+.hero-scroll i{display:block;width:1px;height:76px;background:rgba(255,255,255,.3);position:relative;overflow:hidden}
+.hero-scroll i::after{
+  content:"";position:absolute;inset:0;background:var(--accent-2);
+  animation:scr 2.2s cubic-bezier(.7,0,.3,1) infinite;
+}
+@keyframes scr{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
+.hero-vert{
+  position:absolute;right:clamp(14px,2.4vw,34px);top:50%;transform:translateY(-50%);z-index:3;
+  writing-mode:vertical-rl;font-family:var(--en2);font-size:10.5px;letter-spacing:.34em;
+  color:rgba(255,255,255,.5);
+}
+
+/* ============================================================
+   MESSAGE
+   ============================================================ */
+.msg{padding:clamp(90px,11vw,160px) 0;overflow:hidden}
+.msg-grid{display:grid;grid-template-columns:1fr .82fr;gap:clamp(36px,6vw,90px);align-items:center}
+.msg h2{
+  font-family:var(--serif);font-weight:900;letter-spacing:.05em;
+  font-size:clamp(26px,3.9vw,50px);line-height:1.55;
+}
+.msg h2 .ac{color:var(--accent)}
+.msg .en-label{
+  font-family:var(--en);font-size:clamp(40px,5.4vw,74px);line-height:1;
+  color:var(--line);letter-spacing:.02em;margin-bottom:18px;text-transform:uppercase;
+}
+.msg p{margin:28px 0 0;font-size:15px;line-height:2.2}
+.msg-img{position:relative}
+.msg-img img{aspect-ratio:4/5;object-fit:cover;width:100%}
+.msg-img::after{
+  content:"";position:absolute;right:-18px;bottom:-18px;width:56%;height:34%;
+  border:1px solid var(--accent);z-index:-1;
+}
+
+/* ============================================================
+   STRENGTH
+   ============================================================ */
+.str{background:var(--bg-soft);padding:clamp(90px,11vw,160px) 0}
+.str-list{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.6vw,34px)}
+.str-card{background:#fff;padding:clamp(28px,3vw,44px);position:relative;transition:transform .5s,box-shadow .5s}
+.str-card:hover{transform:translateY(-8px);box-shadow:var(--shadow)}
+.str-card .no{
+  font-family:var(--en);font-size:64px;line-height:1;color:var(--accent);opacity:.28;
+  letter-spacing:.02em;
+}
+.str-card .ico{
+  width:52px;height:52px;margin:-22px 0 22px auto;
+  display:grid;place-items:center;border:1px solid var(--accent);border-radius:50%;
+  color:var(--accent);font-size:20px;
+}
+.str-card h3{
+  font-family:var(--serif);font-size:clamp(18px,1.6vw,22px);font-weight:700;
+  letter-spacing:.06em;line-height:1.7;margin-bottom:14px;
+}
+.str-card p{margin:0;font-size:14px;line-height:2.05}
+.str-card .tag{
+  display:inline-block;margin-top:20px;font-size:11px;letter-spacing:.12em;
+  color:var(--accent-ink);border-bottom:1px solid var(--accent);padding-bottom:3px;
+}
+
+/* ============================================================
+   GREETING（代表挨拶）
+   ============================================================ */
+.grt{background:var(--navy-2);color:#fff;padding:clamp(90px,11vw,160px) 0;overflow:hidden}
+.grt::before{
+  content:"MESSAGE";position:absolute;right:-.06em;top:clamp(30px,5vw,70px);
+  font-family:var(--en);font-size:clamp(90px,17vw,240px);line-height:.8;
+  color:rgba(255,255,255,.045);letter-spacing:.02em;pointer-events:none;user-select:none;
+}
+.grt-grid{
+  position:relative;display:grid;grid-template-columns:.72fr 1fr;
+  gap:clamp(34px,5.5vw,80px);align-items:start;
+}
+/* 顔写真 */
+.grt-photo{position:relative}
+.grt-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center 20%}
+.grt-photo::after{
+  content:"";position:absolute;left:-16px;bottom:-16px;width:58%;height:36%;
+  border:1px solid var(--accent);pointer-events:none;
+}
+.grt-name{
+  margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.18);
+}
+.grt-name .role{
+  display:block;font-size:11.5px;letter-spacing:.16em;color:var(--accent-2);margin-bottom:9px;
+}
+.grt-name .nm{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  font-family:var(--serif);font-size:clamp(22px,2.4vw,30px);font-weight:700;
+  letter-spacing:.14em;color:#fff;
+}
+.grt-name .nm small{
+  font-family:var(--en2);font-size:10.5px;letter-spacing:.22em;font-weight:400;
+  color:rgba(255,255,255,.55);
+}
+/* 本文 */
+.grt-body{position:relative}
+.grt-body .en-label{
+  font-family:var(--en);font-size:clamp(13px,1.2vw,15px);letter-spacing:.4em;
+  color:var(--accent-2);text-transform:uppercase;margin:0 0 16px;
+}
+.grt-body h2{
+  font-family:var(--serif);color:#fff;font-weight:900;
+  font-size:clamp(23px,3.2vw,42px);line-height:1.62;letter-spacing:.05em;
+  padding-left:clamp(26px,3vw,46px);position:relative;
+}
+.grt-body h2::before{
+  content:"“";position:absolute;left:-.06em;top:-.34em;
+  font-family:var(--serif);font-size:clamp(56px,7vw,104px);line-height:1;
+  color:var(--accent);opacity:.55;
+}
+.grt-body h2 .ac{color:var(--accent-2)}
+.grt-txt{margin-top:clamp(28px,3.4vw,44px);display:grid;gap:1.6em}
+.grt-txt p{
+  margin:0;color:rgba(255,255,255,.86);font-size:clamp(14px,1.05vw,15.5px);line-height:2.25;
+}
+.grt-txt p .em{color:#fff;border-bottom:1px solid var(--accent);padding-bottom:2px}
+/* 略歴 */
+.grt-prof{
+  margin-top:clamp(30px,3.6vw,46px);border:1px solid rgba(255,255,255,.16);
+  padding:clamp(20px,2.4vw,30px);
+}
+.grt-prof h3{
+  font-family:var(--en2);font-size:10.5px;letter-spacing:.22em;color:var(--accent-2);
+  font-weight:400;margin-bottom:14px;
+}
+.grt-prof dl{margin:0;display:grid;grid-template-columns:7.5em 1fr;gap:0}
+.grt-prof dt,.grt-prof dd{margin:0;padding:9px 0;font-size:13.5px;line-height:1.9}
+.grt-prof dt{color:rgba(255,255,255,.55);letter-spacing:.08em}
+.grt-prof dd{color:rgba(255,255,255,.9)}
+
+/* ============================================================
+   SERVICE
+   ============================================================ */
+.svc{padding:clamp(90px,11vw,160px) 0}
+.svc-cat{
+  display:flex;align-items:center;gap:16px;margin:52px 0 26px;
+  font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:.14em;color:var(--ink);
+}
+.svc-cat::after{content:"";height:1px;background:var(--line);flex:1}
+.svc-cat small{font-family:var(--en2);font-size:10px;letter-spacing:.2em;color:var(--accent)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,32px)}
+.svc-card{display:block;position:relative;background:#fff}
+.svc-thumb{position:relative;overflow:hidden;aspect-ratio:16/11}
+.svc-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.svc-card:hover .svc-thumb img{transform:scale(1.08)}
+.svc-thumb .num{
+  position:absolute;left:0;top:0;background:var(--navy);color:#fff;
+  font-family:var(--en);font-size:15px;letter-spacing:.1em;padding:7px 14px;z-index:2;
+}
+.svc-body{padding:24px 4px 0}
+.svc-body .en{font-family:var(--en2);font-size:10px;letter-spacing:.2em;color:var(--accent);display:block}
+.svc-body h3{
+  font-family:var(--serif);font-size:clamp(18px,1.55vw,21px);font-weight:700;
+  letter-spacing:.08em;margin:9px 0 12px;
+}
+.svc-body p{margin:0;font-size:13.5px;line-height:1.95}
+.svc-more{
+  display:inline-flex;align-items:center;gap:10px;margin-top:16px;
+  font-size:11.5px;letter-spacing:.14em;color:var(--accent-ink);
+}
+.svc-more i{width:22px;height:1px;background:var(--accent);transition:width .4s}
+.svc-card:hover .svc-more i{width:36px}
+
+/* ============================================================
+   TECH（独自開発カメラ）
+   ============================================================ */
+.tech{position:relative;color:#fff;overflow:hidden;padding:clamp(90px,11vw,170px) 0}
+.tech-bg{position:absolute;inset:0;z-index:-2}
+.tech-bg img{width:100%;height:100%;object-fit:cover}
+.tech::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(90deg,var(--navy) 0%,rgba(13,27,42,.9) 48%,rgba(13,27,42,.5) 100%);
+}
+.tech-in{max-width:640px}
+.tech p{color:rgba(255,255,255,.85);font-size:15px;line-height:2.2}
+.tech-pt{margin:34px 0 40px;display:grid;gap:2px}
+.tech-pt li{
+  display:flex;gap:16px;align-items:flex-start;padding:16px 0;
+  border-top:1px solid rgba(255,255,255,.16);font-size:14px;color:rgba(255,255,255,.9);
+}
+.tech-pt li:last-child{border-bottom:1px solid rgba(255,255,255,.16)}
+.tech-pt b{
+  font-family:var(--en);color:var(--accent-2);font-size:15px;flex:none;
+  letter-spacing:.08em;padding-top:2px;
+}
+
+/* ============================================================
+   PRICE
+   ============================================================ */
+.price{background:var(--bg-soft);padding:clamp(90px,11vw,160px) 0}
+.price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,2.6vw,32px)}
+.plan{background:#fff;padding:clamp(30px,3.4vw,50px);position:relative;border-top:3px solid var(--line)}
+.plan.reco{border-top-color:var(--accent)}
+.plan .flag{
+  position:absolute;right:0;top:0;background:var(--accent);color:#fff;
+  font-size:10.5px;letter-spacing:.14em;padding:7px 14px;
+}
+.plan .en{font-family:var(--en2);font-size:10px;letter-spacing:.22em;color:var(--accent)}
+.plan h3{font-family:var(--serif);font-size:clamp(20px,2vw,27px);font-weight:700;letter-spacing:.08em;margin:10px 0 6px}
+.plan .desc{font-size:13.5px;margin:0 0 26px;line-height:1.95}
+.plan .fig{display:flex;align-items:baseline;gap:6px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.plan .fig b{font-family:var(--en);font-size:clamp(44px,5vw,64px);line-height:.9;color:var(--ink);letter-spacing:.01em}
+.plan .fig .yen{font-family:var(--serif);font-size:19px;font-weight:700;color:var(--ink)}
+.plan .fig .unit{font-size:12.5px;letter-spacing:.08em;margin-left:4px}
+.plan ul{margin:22px 0 0;display:grid;gap:11px}
+.plan ul li{position:relative;padding-left:20px;font-size:13.5px;line-height:1.9}
+.plan ul li::before{
+  content:"";position:absolute;left:0;top:.72em;width:9px;height:1px;background:var(--accent);
+}
+.price-note{
+  margin-top:26px;font-size:12.5px;line-height:2;color:var(--body);
+  background:#fff;border-left:2px solid var(--accent);padding:18px 22px;
+}
+.price-note b{color:var(--ink)}
+
+/* ============================================================
+   FLOW
+   ============================================================ */
+.flow{padding:clamp(90px,11vw,160px) 0}
+.flow-list{counter-reset:f;display:grid;gap:0}
+.flow-list li{
+  counter-increment:f;display:grid;grid-template-columns:120px 1fr;gap:clamp(18px,3vw,44px);
+  padding:clamp(24px,3vw,38px) 0;border-top:1px solid var(--line);align-items:start;
+}
+.flow-list li:last-child{border-bottom:1px solid var(--line)}
+.flow-list li::before{
+  content:"STEP " counter(f,decimal-leading-zero);
+  font-family:var(--en);font-size:clamp(20px,2.2vw,28px);letter-spacing:.1em;color:var(--accent);
+}
+.flow-list h3{font-family:var(--serif);font-size:clamp(17px,1.6vw,21px);font-weight:700;letter-spacing:.08em;margin-bottom:10px}
+.flow-list p{margin:0;font-size:14px;line-height:2.05}
+
+/* ============================================================
+   COMPANY
+   ============================================================ */
+.cmp{background:var(--navy);color:#fff;padding:clamp(90px,11vw,160px) 0}
+.cmp-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(36px,6vw,80px);align-items:start}
+.cmp dl{margin:0;display:grid;grid-template-columns:9em 1fr}
+.cmp dt,.cmp dd{
+  padding:18px 0;border-top:1px solid rgba(255,255,255,.14);margin:0;font-size:14px;
+}
+.cmp dt{color:var(--accent-2);letter-spacing:.1em;font-weight:500}
+.cmp dd{color:rgba(255,255,255,.9)}
+.cmp dl > *:nth-last-child(-n+2){border-bottom:1px solid rgba(255,255,255,.14)}
+.cmp-note{
+  margin-top:30px;font-size:12.5px;color:rgba(255,255,255,.62);line-height:2;
+}
+.cmp-map{position:relative}
+.cmp-map img{aspect-ratio:1/1;object-fit:cover;width:100%;opacity:.9}
+
+/* ============================================================
+   NEWS
+   ============================================================ */
+.news{padding:clamp(90px,11vw,160px) 0}
+.news-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.news-list{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.6vw,34px);margin-top:20px}
+.news-item{display:block}
+.news-item .th{overflow:hidden;aspect-ratio:16/10;background:var(--bg-soft)}
+.news-item .th img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.news-item:hover .th img{transform:scale(1.07)}
+.news-meta{display:flex;align-items:center;gap:14px;margin:18px 0 10px}
+.news-meta time{font-family:var(--en);font-size:14px;letter-spacing:.1em;color:var(--body)}
+.news-meta .cat{font-size:10.5px;letter-spacing:.12em;color:#fff;background:var(--accent);padding:4px 10px}
+.news-item h3{
+  font-family:var(--sans);font-size:15px;font-weight:500;line-height:1.85;letter-spacing:.02em;
+  transition:color .3s;
+}
+.news-item:hover h3{color:var(--accent-ink)}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.cta{position:relative;overflow:hidden;color:#fff;text-align:center;padding:clamp(80px,10vw,140px) 0}
+.cta-bg{position:absolute;inset:0;z-index:-2}
+.cta-bg img{width:100%;height:100%;object-fit:cover}
+.cta::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(13,27,42,.82)}
+.cta h2{font-family:var(--serif);color:#fff;font-weight:900;font-size:clamp(24px,3.4vw,42px);letter-spacing:.06em;line-height:1.6}
+.cta .en{font-family:var(--en);font-size:clamp(44px,6vw,86px);line-height:1;color:rgba(255,255,255,.16);letter-spacing:.04em;margin-bottom:-.3em}
+.cta p{color:rgba(255,255,255,.85);font-size:14.5px;margin:24px auto 0;max-width:40em;line-height:2.1}
+.cta-act{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:42px}
+.cta-tel{
+  display:inline-flex;flex-direction:column;align-items:center;background:#fff;color:var(--ink);
+  padding:18px 40px;min-width:280px;
+}
+.cta-tel b{font-family:var(--en);font-size:38px;line-height:1.05;letter-spacing:.02em;color:var(--ink)}
+.cta-tel span{font-size:11px;letter-spacing:.14em;color:var(--accent-ink)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.ftr{background:#0a141f;color:rgba(255,255,255,.7);padding:clamp(56px,7vw,84px) 0 0;font-size:13px}
+.ftr-top{display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(32px,5vw,70px);padding-bottom:52px}
+.ftr-brand{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.ftr-brand img{width:52px;height:52px;border-radius:50%}
+.ftr-brand b{font-family:var(--serif);font-size:20px;letter-spacing:.1em;color:#fff;display:block;line-height:1.3}
+.ftr-brand span{font-family:var(--en2);font-size:9.5px;letter-spacing:.22em;color:var(--accent-2)}
+.ftr address{font-style:normal;line-height:2.1;font-size:13px}
+.ftr-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 24px}
+.ftr-nav a{
+  display:block;padding:8px 0 8px 14px;position:relative;font-size:13px;
+  transition:color .3s;
+}
+.ftr-nav a::before{content:"";position:absolute;left:0;top:1.15em;width:6px;height:1px;background:var(--accent)}
+.ftr-nav a:hover{color:#fff}
+.ftr-sns{display:flex;gap:10px;margin-top:24px}
+.ftr-sns a{
+  width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.24);
+  font-family:var(--en2);font-size:11px;letter-spacing:.06em;transition:.3s;
+}
+.ftr-sns a:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.ftr-btm{
+  border-top:1px solid rgba(255,255,255,.12);padding:22px 0;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:11.5px;letter-spacing:.06em;
+}
+.ftr-lic{color:var(--accent-2)}
+
+/* 追従CTA（SP） */
+.sp-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:90;display:none;
+  grid-template-columns:1fr 1fr;box-shadow:0 -6px 24px -12px rgba(0,0,0,.4);
+}
+.sp-bar a{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:12px 4px;font-size:11px;letter-spacing:.1em;color:#fff;line-height:1.5;
+}
+.sp-bar a:nth-child(1){background:var(--navy)}
+.sp-bar a:nth-child(2){background:var(--accent)}
+.sp-bar b{font-family:var(--en);font-size:19px;letter-spacing:.02em}
+
+/* スクロール演出 */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+.rv.on{opacity:1;transform:none}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}
+.rv-d4{transition-delay:.4s}.rv-d5{transition-delay:.5s}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.hero-bg li.on{animation:none}}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1180px){
+  .gnav,.hdr-tel{display:none}
+  .burger{display:block}
+  .hdr-btn{height:64px;padding:0 22px}
+}
+@media (max-width:900px){
+  .msg-grid,.cmp-grid,.grt-grid{grid-template-columns:1fr}
+  .grt-photo{max-width:380px}
+  .msg-img{order:-1}
+  .msg-img::after{display:none}
+  .str-list,.svc-grid,.news-list,.price-grid{grid-template-columns:1fr}
+  .ftr-top{grid-template-columns:1fr}
+  .ftr-nav{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  body{font-size:15px}
+  .hdr{height:68px}
+  .hdr.is-solid{height:62px}
+  .hdr-btn{display:none}
+  .brand img{width:38px;height:38px}
+  .brand-tx b{font-size:16px}
+  .sp-bar{display:grid}
+  .ftr{padding-bottom:70px}
+  .hero{height:100svh}
+  .hero-vert{display:none}
+  .flow-list li{grid-template-columns:1fr;gap:8px}
+  .cmp dl,.grt-prof dl{grid-template-columns:1fr}
+  .grt-prof dt{padding-bottom:0}
+  .grt-prof dd{padding-top:2px;padding-bottom:14px}
+  .cmp dt{padding-bottom:0;border-top:1px solid rgba(255,255,255,.14)}
+  .cmp dd{padding-top:6px;border-top:0}
+  .cmp dl > *:nth-last-child(-n+2){border-bottom:0}
+  .cmp dl > *:last-child{border-bottom:1px solid rgba(255,255,255,.14)}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="hdr" id="hdr">
+  <a class="brand" href="#">
+    <img src="https://exeresearch.jp/wp-content/uploads/2023/11/cropped-%e3%83%a9%e3%82%af%e3%83%bc%e3%83%b3%e3%83%ad%e3%82%b4-300x300.jpg" alt="ラクーン探偵社">
+    <span class="brand-tx">
+      <b>ラクーン探偵社</b>
+      <span>RACCOON DETECTIVE AGENCY</span>
+    </span>
+  </a>
+
+  <nav>
+    <ul class="gnav">
+      <li><a href="#about">当社について</a></li>
+      <li><a href="#service">対応可能調査</a></li>
+      <li><a href="#price">調査料金</a></li>
+      <li><a href="#tech">独自のIPカメラ</a></li>
+      <li><a href="#flow">ご利用の流れ</a></li>
+      <li><a href="#news">コラム・お知らせ</a></li>
+    </ul>
+  </nav>
+
+  <div class="hdr-cta">
+    <a class="hdr-tel" href="tel:0489339980">
+      <span>365日24時間受付</span>
+      <b>048-933-9980</b>
+    </a>
+    <a class="hdr-btn" href="#contact">
+      無料相談
+      <small>CONTACT</small>
+    </a>
+    <button class="burger" id="burger" aria-label="メニュー" aria-expanded="false">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<!-- ============================ DRAWER ============================ -->
+<div class="drawer" id="drawer">
+  <div class="wrap">
+    <a href="#about">当社について<small>ABOUT</small></a>
+    <a href="#greeting">代表挨拶<small>MESSAGE</small></a>
+    <a href="#service">対応可能調査一覧<small>SERVICE</small></a>
+    <a href="#price">調査料金<small>PRICE</small></a>
+    <a href="#tech">独自のIPカメラ<small>TECHNOLOGY</small></a>
+    <a href="#flow">ご利用の流れ<small>FLOW</small></a>
+    <a href="#company">会社概要<small>COMPANY</small></a>
+    <a href="#news">コラム・お知らせ<small>NEWS</small></a>
+    <a href="#contact">お問い合わせ<small>CONTACT</small></a>
+    <a class="drawer-tel" href="tel:0489339980">
+      <span>365日24時間・匿名相談OK</span>
+      <b>048-933-9980</b>
+    </a>
+  </div>
+</div>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <ul class="hero-bg" id="heroBg">
+    <li class="on" style="background-image:url(https://exeresearch.jp/wp-content/uploads/2023/11/27807476_m-1536x1024.jpg)"></li>
+    <li style="background-image:url(https://exeresearch.jp/wp-content/uploads/2026/08/1973824_m-1024x710-1.webp)"></li>
+    <li style="background-image:url(https://exeresearch.jp/wp-content/uploads/2026/08/27911084_m-1024x768-1.webp)"></li>
+  </ul>
+
+  <div class="hero-in wrap">
+    <ul class="hero-badges rv on">
+      <li>埼玉県三郷市／全国対応</li>
+      <li>365日24時間受付</li>
+      <li>埼玉県公安委員会 第43230060号</li>
+    </ul>
+    <p class="hero-en rv rv-d1 on">Find the Truth</p>
+    <h1 class="rv rv-d2 on">
+      決定的な証拠を、<br><span class="ac">確実に</span>掴む。
+      <span class="sm">自社開発カメラ × リモート調査という、新しい探偵のかたち。</span>
+    </h1>
+    <p class="hero-sub rv rv-d3 on">
+      長時間の張り込みを機材に置き換えることで、調査コストと発覚リスクを同時に下げる。
+      特許庁に登録された独自機材と、三郷市を拠点とした即日対応で、
+      「動きたいのに動けない」時間をなくします。
+    </p>
+    <div class="hero-act rv rv-d4 on">
+      <a class="hero-tel" href="tel:0489339980">
+        <b>048-933-9980</b>
+        <span>365日24時間<br>匿名相談OK</span>
+      </a>
+      <a class="btn btn--light" href="#contact"><span>メールで無料相談</span><span class="arw"></span></a>
+    </div>
+  </div>
+
+  <p class="hero-vert">RACCOON DETECTIVE AGENCY / MISATO SAITAMA</p>
+  <div class="hero-scroll"><span>SCROLL</span><i></i></div>
+</section>
+
+<!-- ============================ MESSAGE ============================ -->
+<section class="msg" id="about">
+  <div class="wrap">
+    <div class="msg-grid">
+      <div>
+        <p class="en-label rv">About us</p>
+        <h2 class="rv rv-d1">
+          事実だけが、<br><span class="ac">次の一歩</span>をつくる。
+        </h2>
+        <p class="rv rv-d2">
+          疑いを抱えたまま過ごす時間は、想像以上に人を消耗させます。
+          私たちの仕事は「白黒をつけること」そのものではなく、
+          その後にご依頼者が選択できる状態をつくることだと考えています。
+        </p>
+        <p class="rv rv-d3">
+          ラクーン探偵社は、自社で開発・特許登録した監視機材を用いた
+          リモート調査を主軸に据えた探偵事務所です。
+          調査員が現場に長時間滞在しないため、費用を抑えられるだけでなく、
+          対象者に気づかれるリスクそのものを小さくできます。
+          必要な場面では従来の尾行調査も組み合わせ、
+          調査後は提携弁護士事務所と連携して、離婚協議や法的手続きまで見通したご提案を行います。
+        </p>
+        <p class="rv rv-d4" style="margin-top:34px">
+          <a class="btn" href="#company"><span>当社について</span><span class="arw"></span></a>
+        </p>
+      </div>
+      <div class="msg-img rv rv-d2">
+        <img src="https://exeresearch.jp/wp-content/uploads/2026/08/S__11845753_0-1024x683-1.webp" alt="調査の様子">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STRENGTH ============================ -->
+<section class="str">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="en">Str<em>e</em>ngth</span>
+      <span class="ja">ラクーン探偵社が選ばれる3つの理由</span>
+    </div>
+
+    <div class="str-list">
+      <div class="str-card rv rv-d1">
+        <p class="no">01</p>
+        <div class="ico">¥</div>
+        <h3>張り込み費用を、<br>機材に置き換える</h3>
+        <p>
+          人が現場に居続ける前提をやめました。独自のリモート調査なら、
+          24時間パック77,000円から。長時間の張り込みが必要な案件ほど、
+          従来型との差が大きくなります。
+        </p>
+        <span class="tag">調査料金を見る</span>
+      </div>
+
+      <div class="str-card rv rv-d2">
+        <p class="no">02</p>
+        <div class="ico">◎</div>
+        <h3>特許庁登録の<br>自社開発機材</h3>
+        <p>
+          市販品ではなく、自社で設計・開発した機材を使用。
+          調査員の滞在時間が短く済むため、対象者に不審に思われる可能性を
+          構造的に低く抑えられます。
+        </p>
+        <span class="tag">IPカメラについて</span>
+      </div>
+
+      <div class="str-card rv rv-d3">
+        <p class="no">03</p>
+        <div class="ico">24</div>
+        <h3>即日対応・<br>追加費用なし</h3>
+        <p>
+          365日24時間の受付体制で、ご依頼当日からの着手にも対応。
+          出張料金という名目の費用はいただかず、
+          かかるのは交通費などの実費のみです。
+        </p>
+        <span class="tag">ご利用の流れ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GREETING（代表挨拶） ============================ -->
+<section class="grt" id="greeting">
+  <div class="wrap">
+    <div class="grt-grid">
+
+      <!-- 顔写真（★ここに代表の写真を入れます／縦3:4推奨） -->
+      <div class="grt-photo rv">
+        <div style="width:100%;aspect-ratio:3/4;background:linear-gradient(150deg,#1d3854,#0d1b2a);
+                    display:grid;place-items:center;text-align:center;padding:24px;
+                    border:1px dashed rgba(207,174,99,.45)">
+          <span style="font-size:12px;letter-spacing:.14em;line-height:2.1;color:rgba(255,255,255,.6)">
+            <span style="font-family:var(--en2);font-size:10px;letter-spacing:.24em;color:var(--accent-2);display:block;margin-bottom:10px">PHOTO</span>
+            代表者の写真<br>（縦3:4／推奨 900×1200px）
+          </span>
+        </div>
+
+        <div class="grt-name">
+          <span class="role">合同会社EXE RESEARCH 代表　／　ラクーン探偵社 代表</span>
+          <span class="nm">〇〇　〇〇<small>NAME</small></span>
+        </div>
+      </div>
+
+      <!-- 挨拶文 -->
+      <div class="grt-body">
+        <p class="en-label rv">Message</p>
+        <h2 class="rv rv-d1">
+          調査は、<span class="ac">依頼者の生活を壊さない</span>方法で<br>行われるべきだと考えています。
+        </h2>
+
+        <div class="grt-txt">
+          <p class="rv rv-d2">
+            探偵にご相談される方の多くは、答えを知りたいと思う一方で、
+            知ってしまうことを恐れています。実際にこの仕事を続けるなかで痛感してきたのは、
+            調査そのものよりも<span class="em">「相談に踏み切れないまま過ぎていく時間」</span>が
+            ご依頼者を消耗させるのだということでした。
+          </p>
+          <p class="rv rv-d3">
+            その時間を短くするために私たちが選んだのは、
+            調査員が現場に張り付き続ける従来のやり方を根本から見直すことでした。
+            機材を自社で設計し、特許庁に登録し、リモート調査を主軸に据えたのは、
+            費用と発覚リスクの両方を下げなければ、本当に必要としている方に手が届かないと
+            考えたからです。
+          </p>
+          <p class="rv rv-d4">
+            料金の内訳を明確にすること。できないことをできないと伝えること。
+            調査が不要だと判断したら、そう申し上げること。
+            派手さはありませんが、この3つを守り続けることが探偵事務所の信頼だと思っています。
+          </p>
+          <p class="rv rv-d5">
+            依頼するかどうかを決めていない段階のご相談で構いません。
+            まずは声を聞かせてください。
+          </p>
+        </div>
+
+        <!-- 略歴（★内容はヒアリングで確定） -->
+        <div class="grt-prof rv rv-d5">
+          <h3>PROFILE</h3>
+          <dl>
+            <dt>役職</dt><dd>合同会社EXE RESEARCH 代表</dd>
+            <dt>保有資格</dt><dd>探偵業届出（埼玉県公安委員会 第43230060号）</dd>
+            <dt>実績</dt><dd>調査用IPカメラの独自開発・特許庁登録</dd>
+            <dt>対応方針</dt><dd>365日24時間の相談受付、初回相談は匿名可・無料</dd>
+          </dl>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SERVICE ============================ -->
+<section class="svc" id="service">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="en">S<em>e</em>rvice</span>
+      <span class="ja">対応可能調査一覧</span>
+    </div>
+    <p class="lead rv rv-d1">
+      個人のお客様から法人のお客様まで、目的と予算に応じて調査手法を組み立てます。
+      どの調査も、まずは無料のご相談で「本当に調査が必要か」から一緒に整理します。
+    </p>
+
+    <h3 class="svc-cat rv"><small>FOR INDIVIDUALS</small>個人のお客様へ</h3>
+    <div class="svc-grid">
+      <a class="svc-card rv rv-d1" href="#">
+        <div class="svc-thumb">
+          <span class="num">01</span>
+          <img src="https://exeresearch.jp/wp-content/uploads/2026/08/28093577_m-1024x683-1.webp" alt="浮気・不倫調査">
+        </div>
+        <div class="svc-body">
+          <span class="en">INFIDELITY</span>
+          <h3>浮気・不倫調査</h3>
+          <p>パートナーの浮気・不倫の証拠から、相手の身元情報までを調査します。協議や裁判を見据えた記録の残し方までご相談ください。</p>
+          <span class="svc-more"><i></i>詳しく見る</span>
+        </div>
+      </a>
+
+      <a class="svc-card rv rv-d2" href="#">
+        <div class="svc-thumb">
+          <span class="num">02</span>
+          <img src="https://exeresearch.jp/wp-content/uploads/2023/11/3436132_m-1024x683.jpg" alt="嫌がらせ・ストーカー対策">
+        </div>
+        <div class="svc-body">
+          <span class="en">STALKER</span>
+          <h3>嫌がらせ・ストーカー対策</h3>
+          <p>つきまとい、無言電話、器物損壊といった迷惑行為の実行者と実態を特定。警察への相談に使える形で記録を整えます。</p>
+          <span class="svc-more"><i></i>詳しく見る</span>
+        </div>
+      </a>
+
+      <a class="svc-card rv rv-d3" href="#">
+        <div class="svc-thumb">
+          <span class="num">03</span>
+          <img src="https://exeresearch.jp/wp-content/uploads/2023/11/28203457_m-1024x683.jpg" alt="人探し・ペット探し">
+        </div>
+        <div class="svc-body">
+          <span class="en">MISSING PERSON</span>
+          <h3>人探し・ペット探し</h3>
+          <p>昔の友人や恩人、連絡が取れなくなった親族の所在調査。迷子になったペットの捜索にも対応しています。</p>
+          <span class="svc-more"><i></i>詳しく見る</span>
+        </div>
+      </a>
+    </div>
+
+    <h3 class="svc-cat rv"><small>FOR CORPORATIONS</small>法人のお客様へ</h3>
+    <div class="svc-grid">
+      <a class="svc-card rv rv-d1" href="#">
+        <div class="svc-thumb">
+          <span class="num">04</span>
+          <img src="https://exeresearch.jp/wp-content/uploads/2026/08/27911084_m-1024x768-1.webp" alt="素行調査">
+        </div>
+        <div class="svc-body">
+          <span class="en">CONDUCT</span>
+          <h3>素行調査</h3>
+          <p>従業員の勤務態度、社内情報の持ち出し、在職中の転職活動など、社内では確認が難しい行動の実態を調査します。</p>
+          <span class="svc-more"><i></i>詳しく見る</span>
+        </div>
+      </a>
+
+      <a class="svc-card rv rv-d2" href="#">
+        <div class="svc-thumb">
+          <span class="num">05</span>
+          <img src="https://exeresearch.jp/wp-content/uploads/2026/08/1973824_m-1024x710-1.webp" alt="企業調査">
+        </div>
+        <div class="svc-body">
+          <span class="en">CORPORATE</span>
+          <h3>企業調査</h3>
+          <p>取引先企業の役員、出資先の人物、反社会的勢力との関わりの有無など、与信・提携判断の前に確認すべき事項を調査します。</p>
+          <span class="svc-more"><i></i>詳しく見る</span>
+        </div>
+      </a>
+
+      <a class="svc-card rv rv-d3" href="#" style="display:flex;align-items:center;justify-content:center;background:var(--bg-soft);min-height:220px;text-align:center;padding:40px 24px">
+        <span>
+          <span class="en" style="font-family:var(--en2);font-size:10px;letter-spacing:.2em;color:var(--accent);display:block;margin-bottom:12px">OTHERS</span>
+          <span style="font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.08em;color:var(--ink);display:block;line-height:1.7">上記以外の<br>ご相談もお受けします</span>
+          <span class="svc-more"><i></i>一覧を見る</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TECH ============================ -->
+<section class="tech" id="tech">
+  <div class="tech-bg">
+    <img src="https://exeresearch.jp/wp-content/uploads/2024/05/IMG_0060-1-1024x683.jpg" alt="独自開発IPカメラ">
+  </div>
+  <div class="wrap">
+    <div class="tech-in">
+      <div class="sec-head light rv">
+        <span class="en">T<em>e</em>chnology</span>
+        <span class="ja">独自開発のIPカメラという武器</span>
+      </div>
+      <p class="rv rv-d1">
+        ラクーン探偵社の調査を支えているのは、市販品ではなく自社で開発し
+        特許庁に登録した監視機材です。「人が現場に張り付く」以外の選択肢を持てることが、
+        費用とリスクの両方を変えます。
+      </p>
+      <ul class="tech-pt">
+        <li class="rv rv-d2"><b>01</b><span>調査員の現場滞在時間を最小化し、対象者に察知される可能性を下げる</span></li>
+        <li class="rv rv-d3"><b>02</b><span>24時間の連続記録により、動きが読めない対象でも機会を逃さない</span></li>
+        <li class="rv rv-d4"><b>03</b><span>人件費に依存しないため、長時間案件ほど費用を抑えられる</span></li>
+        <li class="rv rv-d5"><b>04</b><span>必要な局面では従来の尾行調査と組み合わせ、証拠の質を担保する</span></li>
+      </ul>
+      <p class="rv rv-d5">
+        <a class="btn btn--light" href="#"><span>IPカメラについて詳しく</span><span class="arw"></span></a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="price" id="price">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="en">Pric<em>e</em></span>
+      <span class="ja">調査料金</span>
+    </div>
+    <p class="lead rv rv-d1">
+      料金は「単価 × 人数 × 時間 ＋ 諸経費」で決まります。
+      下記は代表的な2プランです。案件の内容によって最適な組み合わせは変わるため、
+      正式なご依頼の前に必ずお見積りをご提示します。
+    </p>
+
+    <div class="price-grid" style="margin-top:44px">
+      <div class="plan reco rv rv-d1">
+        <span class="flag">当社の主力プラン</span>
+        <span class="en">REMOTE INVESTIGATION</span>
+        <h3>リモート調査</h3>
+        <p class="desc">自社開発のIPカメラを設置し、24時間連続で記録する調査。長時間の張り込みが必要な案件に向いています。</p>
+        <p class="fig"><span class="yen">¥</span><b>77,000</b><span class="unit">/ 24時間パック（税込）</span></p>
+        <ul>
+          <li>調査員の長時間拘束がないため費用を抑えられる</li>
+          <li>機材費・設置作業込み</li>
+          <li>対象者に察知されるリスクが低い</li>
+          <li>交通費などの実費は別途（出張料金の名目はなし）</li>
+        </ul>
+      </div>
+
+      <div class="plan rv rv-d2">
+        <span class="en">SURVEILLANCE</span>
+        <h3>尾行調査</h3>
+        <p class="desc">調査員が対象者に接近して行う従来型の調査。移動を伴う行動や、接触相手の特定が必要な場面で有効です。</p>
+        <p class="fig"><span class="yen">¥</span><b>19,800</b><span class="unit">/ 1時間（税込）</span></p>
+        <ul>
+          <li>＋ 車両費・機材費</li>
+          <li>＋ 実経費（交通費・駐車料金等）</li>
+          <li>リモート調査との併用も可能</li>
+          <li>事前見積りで総額の目安をご提示</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="price-note rv rv-d3">
+      <b>お見積りで必ずご確認ください。</b>
+      当社では、追加料金が発生する条件・実費の範囲・成功報酬の有無を契約前に書面でご説明します。
+      料金体系が不明瞭な見積りは、業者を選ぶ段階で避けるべき最大のポイントです。
+    </p>
+    <p class="rv rv-d4" style="margin-top:30px">
+      <a class="btn btn--accent" href="#"><span>料金の詳細を見る</span><span class="arw"></span></a>
+    </p>
+  </div>
+</section>
+
+<!-- ============================ FLOW ============================ -->
+<section class="flow" id="flow">
+  <div class="wrap-narrow">
+    <div class="sec-head center rv">
+      <span class="en">Flo<em>w</em></span>
+      <span class="ja">ご相談から報告まで</span>
+    </div>
+
+    <ol class="flow-list">
+      <li class="rv rv-d1">
+        <div>
+          <h3>無料相談・お問い合わせ</h3>
+          <p>お電話またはフォームからご連絡ください。365日24時間受付、匿名でのご相談も可能です。この段階で費用は一切かかりません。</p>
+        </div>
+      </li>
+      <li class="rv rv-d2">
+        <div>
+          <h3>ヒアリングとお見積り</h3>
+          <p>目的・状況・ご希望の期間をお伺いし、必要な調査手法と概算費用をご提示します。調査が不要と判断した場合は、そのようにお伝えします。</p>
+        </div>
+      </li>
+      <li class="rv rv-d3">
+        <div>
+          <h3>ご契約（重要事項説明）</h3>
+          <p>探偵業法に基づき、契約前に重要事項を書面でご説明します。料金の内訳・実費の範囲・中止時の扱いをご確認いただいたうえでご契約となります。</p>
+        </div>
+      </li>
+      <li class="rv rv-d4">
+        <div>
+          <h3>調査の実施</h3>
+          <p>リモート調査／尾行調査を単独または組み合わせて実施。進捗は随時ご報告し、状況の変化に応じて手法を調整します。</p>
+        </div>
+      </li>
+      <li class="rv rv-d5">
+        <div>
+          <h3>調査報告書のお渡し</h3>
+          <p>写真・映像と時系列の記録をまとめた報告書をお渡しします。必要に応じて提携弁護士事務所をご紹介し、その後の手続きまでご相談いただけます。</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ COMPANY ============================ -->
+<section class="cmp" id="company">
+  <div class="wrap">
+    <div class="cmp-grid">
+      <div>
+        <div class="sec-head light rv">
+          <span class="en">Compan<em>y</em></span>
+          <span class="ja">会社概要</span>
+        </div>
+        <div class="cmp-map rv rv-d2">
+          <img src="https://exeresearch.jp/wp-content/uploads/2023/11/27807476_m-1536x1024.jpg" alt="所在地イメージ">
+        </div>
+      </div>
+
+      <div class="rv rv-d1">
+        <dl>
+          <dt>屋号</dt><dd>ラクーン探偵社</dd>
+          <dt>法人名</dt><dd>合同会社EXE RESEARCH</dd>
+          <dt>所在地</dt><dd>〒341-0026<br>埼玉県三郷市幸房476-33</dd>
+          <dt>電話番号</dt><dd>048-933-9980（365日24時間受付）</dd>
+          <dt>探偵業届出</dt><dd>埼玉県公安委員会 第43230060号</dd>
+          <dt>事業内容</dt><dd>探偵業／各種調査業務<br>調査用機材の開発</dd>
+          <dt>対応エリア</dt><dd>埼玉県全域・東京都・千葉県を中心に全国対応</dd>
+        </dl>
+        <p class="cmp-note">
+          探偵業の業務の適正化に関する法律（探偵業法）に基づき、埼玉県公安委員会に届出を行っています。
+          ご契約前には重要事項の書面による説明を実施します。
+        </p>
+        <p class="rv rv-d3" style="margin-top:30px">
+          <a class="btn btn--light" href="#"><span>アクセス・詳細</span><span class="arw"></span></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ NEWS ============================ -->
+<section class="news" id="news">
+  <div class="wrap">
+    <div class="news-head">
+      <div class="sec-head rv" style="margin-bottom:0">
+        <span class="en">Colum<em>n</em></span>
+        <span class="ja">コラム・お知らせ</span>
+      </div>
+      <p class="rv rv-d1" style="margin:0">
+        <a class="btn" href="#"><span>記事一覧</span><span class="arw"></span></a>
+      </p>
+    </div>
+
+    <div class="news-list">
+      <a class="news-item rv rv-d1" href="https://exeresearch.jp/uwaki-chosa-hiyou-soba/">
+        <div class="th"><img src="https://exeresearch.jp/wp-content/uploads/2026/08/28093577_m-1024x683-1.webp" alt=""></div>
+        <div class="news-meta"><time datetime="2026-08-28">2026.08.28</time><span class="cat">コラム</span></div>
+        <h3>浮気調査の費用相場と料金体系3タイプ｜見積もりで確認すべき5項目</h3>
+      </a>
+
+      <a class="news-item rv rv-d2" href="#">
+        <div class="th"><img src="https://exeresearch.jp/wp-content/uploads/2023/11/3436132_m-1024x683.jpg" alt=""></div>
+        <div class="news-meta"><time datetime="2026-08-30">2026.08.30</time><span class="cat">コラム</span></div>
+        <h3>配偶者のスマホを見るのは違法？GPSは？浮気調査の前にやってはいけないこと</h3>
+      </a>
+
+      <a class="news-item rv rv-d3" href="#">
+        <div class="th"><img src="https://exeresearch.jp/wp-content/uploads/2024/05/IMG_0060-1-1024x683.jpg" alt=""></div>
+        <div class="news-meta"><time datetime="2026-08-15">2026.08.15</time><span class="cat">お知らせ</span></div>
+        <h3>探偵業届出番号の確認方法と、悪質業者を見分ける5つのチェックポイント</h3>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="cta" id="contact">
+  <div class="cta-bg">
+    <img src="https://exeresearch.jp/wp-content/uploads/2026/08/27911084_m-1024x768-1.webp" alt="">
+  </div>
+  <div class="wrap-narrow">
+    <p class="en rv">Contact</p>
+    <h2 class="rv rv-d1">まだ「依頼するかどうか」を<br>決めていなくて構いません。</h2>
+    <p class="rv rv-d2">
+      匿名でのご相談も可能です。ご相談の段階では費用は一切かかりません。
+      365日24時間、お電話でもフォームでもお受けしています。
+    </p>
+    <div class="cta-act rv rv-d3">
+      <a class="cta-tel" href="tel:0489339980">
+        <b>048-933-9980</b>
+        <span>365日24時間受付・匿名OK</span>
+      </a>
+      <a class="btn btn--light" href="#" style="padding:26px 40px"><span>お問い合わせフォーム</span><span class="arw"></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-top">
+      <div>
+        <div class="ftr-brand">
+          <img src="https://exeresearch.jp/wp-content/uploads/2023/11/cropped-%e3%83%a9%e3%82%af%e3%83%bc%e3%83%b3%e3%83%ad%e3%82%b4-300x300.jpg" alt="ラクーン探偵社">
+          <span>
+            <b>ラクーン探偵社</b>
+            <span>RACCOON DETECTIVE AGENCY</span>
+          </span>
+        </div>
+        <address>
+          合同会社EXE RESEARCH<br>
+          〒341-0026 埼玉県三郷市幸房476-33<br>
+          TEL <a href="tel:0489339980">048-933-9980</a>（365日24時間）
+        </address>
+        <p class="ftr-sns">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="TikTok">TT</a>
+          <a href="#" aria-label="YouTube">YT</a>
+        </p>
+      </div>
+
+      <nav class="ftr-nav">
+        <a href="#about">当社について</a>
+        <a href="#greeting">代表挨拶</a>
+        <a href="#service">対応可能調査一覧</a>
+        <a href="#price">調査料金</a>
+        <a href="#tech">独自のIPカメラについて</a>
+        <a href="#flow">ご利用の流れ</a>
+        <a href="#company">会社概要</a>
+        <a href="#news">コラム・お知らせ</a>
+        <a href="#contact">お問い合わせ</a>
+        <a href="#">プライバシーポリシー</a>
+      </nav>
+    </div>
+
+    <div class="ftr-btm">
+      <span class="ftr-lic">探偵業届出番号：埼玉県公安委員会 第43230060号</span>
+      <span>&copy; 2026 合同会社EXE RESEARCH All Rights Reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- 追従CTA（スマホ） -->
+<div class="sp-bar">
+  <a href="tel:0489339980"><b>048-933-9980</b>365日24時間受付</a>
+  <a href="#contact">無料相談フォーム<span style="font-size:9px;letter-spacing:.2em;opacity:.85">CONTACT</span></a>
+</div>
+
+<script>
+(function(){
+  /* ヘッダーの背景切り替え */
+  var hdr=document.getElementById('hdr');
+  function onScroll(){
+    if(window.scrollY>60){hdr.classList.add('is-solid')}else{hdr.classList.remove('is-solid')}
+  }
+  onScroll();
+  window.addEventListener('scroll',onScroll,{passive:true});
+
+  /* ハンバーガー */
+  var burger=document.getElementById('burger');
+  burger.addEventListener('click',function(){
+    var open=document.body.classList.toggle('is-menu');
+    burger.setAttribute('aria-expanded',open?'true':'false');
+    document.body.style.overflow=open?'hidden':'';
+  });
+  document.querySelectorAll('#drawer a').forEach(function(a){
+    a.addEventListener('click',function(){
+      document.body.classList.remove('is-menu');
+      document.body.style.overflow='';
+      burger.setAttribute('aria-expanded','false');
+    });
+  });
+
+  /* ヒーロー スライダー */
+  var slides=document.querySelectorAll('#heroBg li'),i=0;
+  if(slides.length>1){
+    setInterval(function(){
+      slides[i].classList.remove('on');
+      i=(i+1)%slides.length;
+      slides[i].classList.add('on');
+    },6000);
+  }
+
+  /* スクロール演出 */
+  var targets=document.querySelectorAll('.rv:not(.on)');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}
+      });
+    },{rootMargin:'0px 0px -12% 0px',threshold:.08});
+    targets.forEach(function(t){io.observe(t)});
+  }else{
+    targets.forEach(function(t){t.classList.add('on')});
+  }
+
+})();
+</script>
+</body>
+</html>
