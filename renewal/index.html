@@ -328,15 +328,10 @@ section{position:relative}
 /* ============================================================
    GREETING（代表挨拶）
    ============================================================ */
-.grt{background:var(--navy-2);color:#fff;padding:clamp(90px,11vw,160px) 0;overflow:hidden}
-.grt::before{
-  content:"MESSAGE";position:absolute;right:-.06em;top:clamp(30px,5vw,70px);
-  font-family:var(--en);font-size:clamp(90px,17vw,240px);line-height:.8;
-  color:rgba(255,255,255,.045);letter-spacing:.02em;pointer-events:none;user-select:none;
-}
+.grt{background:var(--navy-2);color:#fff;padding:clamp(74px,8.5vw,120px) 0;overflow:hidden}
 .grt-grid{
-  position:relative;display:grid;grid-template-columns:.72fr 1fr;
-  gap:clamp(34px,5.5vw,80px);align-items:start;
+  position:relative;display:grid;grid-template-columns:.4fr 1fr;
+  gap:clamp(30px,4.5vw,64px);align-items:start;
 }
 /* 顔写真 */
 .grt-photo{position:relative}
@@ -663,11 +658,11 @@ section{position:relative}
 <div class="drawer" id="drawer">
   <div class="wrap">
     <a href="#about">当社について<small>ABOUT</small></a>
-    <a href="#greeting">代表挨拶<small>MESSAGE</small></a>
     <a href="#service">対応可能調査一覧<small>SERVICE</small></a>
     <a href="#price">調査料金<small>PRICE</small></a>
     <a href="#tech">独自のIPカメラ<small>TECHNOLOGY</small></a>
     <a href="#flow">ご利用の流れ<small>FLOW</small></a>
+    <a href="#greeting">代表挨拶<small>MESSAGE</small></a>
     <a href="#company">会社概要<small>COMPANY</small></a>
     <a href="#news">コラム・お知らせ<small>NEWS</small></a>
     <a href="#contact">お問い合わせ<small>CONTACT</small></a>
@@ -783,124 +778,6 @@ section{position:relative}
   </div>
 </section>
 
-<!-- ============================ STRENGTH ============================ -->
-<section class="str">
-  <div class="wrap">
-    <h2 class="sec-head rv">
-      <span class="en">Str<em>e</em>ngth</span>
-      <span class="ja">ラクーン探偵社が選ばれる3つの理由</span>
-    </h2>
-
-    <div class="str-list">
-      <div class="str-card rv rv-d1">
-        <p class="no">01</p>
-        <div class="ico">¥</div>
-        <h3>張り込み費用を、<br>機材に置き換える</h3>
-        <p>
-          人が現場に居続ける前提をやめました。独自のリモート調査なら、
-          24時間パック77,000円から。長時間の張り込みが必要な案件ほど、
-          従来型との差が大きくなります。
-        </p>
-        <span class="tag">調査料金を見る</span>
-      </div>
-
-      <div class="str-card rv rv-d2">
-        <p class="no">02</p>
-        <div class="ico">◎</div>
-        <h3>特許庁登録の<br>自社開発機材</h3>
-        <p>
-          市販品ではなく、自社で設計・開発した機材を使用。
-          調査員の滞在時間が短く済むため、対象者に不審に思われる可能性を
-          構造的に低く抑えられます。
-        </p>
-        <span class="tag">IPカメラについて</span>
-      </div>
-
-      <div class="str-card rv rv-d3">
-        <p class="no">03</p>
-        <div class="ico">24</div>
-        <h3>即日対応・<br>追加費用なし</h3>
-        <p>
-          365日24時間の受付体制で、ご依頼当日からの着手にも対応。
-          出張料金という名目の費用はいただかず、
-          かかるのは交通費などの実費のみです。
-        </p>
-        <span class="tag">ご利用の流れ</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ GREETING（代表挨拶） ============================ -->
-<section class="grt" id="greeting">
-  <div class="wrap">
-    <div class="grt-grid">
-
-      <!-- 顔写真 -->
-      <div class="grt-photo rv">
-        <img src="https://exeresearch.jp/wp-content/uploads/2026/09/daihyo-sato-ryota.webp" width="765" height="1020" alt="ラクーン探偵社 代表 佐藤良太" loading="lazy">
-
-        <div class="grt-name">
-          <span class="role">合同会社EXE RESEARCH 代表　／　ラクーン探偵社 代表</span>
-          <span class="nm">佐藤　良太<small>RYOTA SATO</small></span>
-        </div>
-      </div>
-
-      <!-- 挨拶文 -->
-      <div class="grt-body">
-        <p class="en-label rv">Message</p>
-        <h2 class="rv rv-d1">
-          一人を見つけるのに、<br><span class="ac">7年</span>かかりました。
-        </h2>
-
-        <div class="grt-txt">
-          <p class="rv rv-d2">
-            私がこの業界に入ったのは、探偵になりたかったからではありません。
-            前職で夜逃げをした債務者を追わなければならず、
-            そのために調査の技術を学び始めたのが最初でした。
-          </p>
-          <p class="rv rv-d3">
-            その人物を見つけるまでに、7年かかりました。
-            手がかりが途切れるたびに、もう無理かもしれないと思いました。
-            7年後にようやく居場所を突き止めて分かったのは、調査の結果を分けるのは
-            才能や勘ではなく、<span class="em">「追い続けられる方法を持っているかどうか」</span>
-            だということです。人が現場に張り付き続ける前提をやめ、
-            機材を自社で設計してリモート調査を主軸に据えたのは、この経験があったからです。
-          </p>
-          <p class="rv rv-d4">
-            正直なところ、一度は探偵を引退することも考えました。
-            それでも続けているのは、ご依頼者様と一緒に
-            「この相手にはどう対応するか」を考える時間が、
-            この仕事で一番おもしろいと思っているからです。
-            調査は私たちが勝手に進めるものではなく、
-            依頼者と一緒に組み立てていくものだと考えています。
-          </p>
-          <p class="rv rv-d5">
-            だから、料金の内訳は必ず明確にお伝えします。できないことはできないと申し上げます。
-            調査が不要だと判断したら、そうお伝えします。
-            依頼するかどうかを決めていない段階のご相談で構いません。まずは声を聞かせてください。
-          </p>
-        </div>
-
-        <!-- 略歴 -->
-        <div class="grt-prof rv rv-d5">
-          <h3>PROFILE</h3>
-          <dl>
-            <dt>氏名</dt><dd>佐藤 良太（さとう りょうた）</dd>
-            <dt>役職</dt><dd>合同会社EXE RESEARCH 代表／ラクーン探偵社 代表</dd>
-            <dt>この道へ</dt><dd>前職で夜逃げした債務者の追跡を担当したことをきっかけに、調査の技術を習得</dd>
-            <dt>転機</dt><dd>7年をかけて対象者を発見。「追い続けられる方法」の重要性を確信する</dd>
-            <dt>開業</dt><dd>依頼者と方針を組み立てていく仕事に手応えを感じ、ラクーン探偵社を設立</dd>
-            <dt>開発</dt><dd>調査用IPカメラを独自開発し、特許庁に登録</dd>
-            <dt>届出</dt><dd>探偵業届出 埼玉県公安委員会 第43230060号</dd>
-          </dl>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 <!-- ============================ SERVICE ============================ -->
 <section class="svc" id="service">
   <div class="wrap">
@@ -994,35 +871,6 @@ section{position:relative}
   </div>
 </section>
 
-<!-- ============================ TECH ============================ -->
-<section class="tech" id="tech">
-  <div class="tech-bg">
-    <img src="https://exeresearch.jp/wp-content/uploads/2024/05/IMG_0060-1-1024x683.jpg" alt="独自開発IPカメラ">
-  </div>
-  <div class="wrap">
-    <div class="tech-in">
-      <h2 class="sec-head light rv">
-        <span class="en">T<em>e</em>chnology</span>
-        <span class="ja">独自開発のIPカメラという武器</span>
-      </h2>
-      <p class="rv rv-d1">
-        ラクーン探偵社の調査を支えているのは、市販品ではなく自社で開発し
-        特許庁に登録した監視機材です。「人が現場に張り付く」以外の選択肢を持てることが、
-        費用とリスクの両方を変えます。同業の探偵事務所への機材提供や講習という形でも提供しています。
-      </p>
-      <ul class="tech-pt">
-        <li class="rv rv-d2"><b>01</b><span>調査員の現場滞在時間を最小化し、対象者に察知される可能性を下げる</span></li>
-        <li class="rv rv-d3"><b>02</b><span>24時間の連続記録により、動きが読めない対象でも機会を逃さない</span></li>
-        <li class="rv rv-d4"><b>03</b><span>人件費に依存しないため、長時間案件ほど費用を抑えられる</span></li>
-        <li class="rv rv-d5"><b>04</b><span>必要な局面では従来の尾行調査と組み合わせ、証拠の質を担保する</span></li>
-      </ul>
-      <p class="rv rv-d5">
-        <a class="btn btn--light" href="https://exeresearch.jp/originalcamera/"><span>IPカメラについて詳しく</span><span class="arw"></span></a>
-      </p>
-    </div>
-  </div>
-</section>
-
 <!-- ============================ PRICE ============================ -->
 <section class="price" id="price">
   <div class="wrap">
@@ -1076,6 +924,83 @@ section{position:relative}
   </div>
 </section>
 
+<!-- ============================ STRENGTH ============================ -->
+<section class="str">
+  <div class="wrap">
+    <h2 class="sec-head rv">
+      <span class="en">Str<em>e</em>ngth</span>
+      <span class="ja">ラクーン探偵社が選ばれる3つの理由</span>
+    </h2>
+
+    <div class="str-list">
+      <div class="str-card rv rv-d1">
+        <p class="no">01</p>
+        <div class="ico">¥</div>
+        <h3>張り込み費用を、<br>機材に置き換える</h3>
+        <p>
+          人が現場に居続ける前提をやめました。独自のリモート調査なら、
+          24時間パック77,000円から。長時間の張り込みが必要な案件ほど、
+          従来型との差が大きくなります。
+        </p>
+        <span class="tag">調査料金を見る</span>
+      </div>
+
+      <div class="str-card rv rv-d2">
+        <p class="no">02</p>
+        <div class="ico">◎</div>
+        <h3>特許庁登録の<br>自社開発機材</h3>
+        <p>
+          市販品ではなく、自社で設計・開発した機材を使用。
+          調査員の滞在時間が短く済むため、対象者に不審に思われる可能性を
+          構造的に低く抑えられます。
+        </p>
+        <span class="tag">IPカメラについて</span>
+      </div>
+
+      <div class="str-card rv rv-d3">
+        <p class="no">03</p>
+        <div class="ico">24</div>
+        <h3>即日対応・<br>追加費用なし</h3>
+        <p>
+          365日24時間の受付体制で、ご依頼当日からの着手にも対応。
+          出張料金という名目の費用はいただかず、
+          かかるのは交通費などの実費のみです。
+        </p>
+        <span class="tag">ご利用の流れ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TECH ============================ -->
+<section class="tech" id="tech">
+  <div class="tech-bg">
+    <img src="https://exeresearch.jp/wp-content/uploads/2024/05/IMG_0060-1-1024x683.jpg" alt="独自開発IPカメラ">
+  </div>
+  <div class="wrap">
+    <div class="tech-in">
+      <h2 class="sec-head light rv">
+        <span class="en">T<em>e</em>chnology</span>
+        <span class="ja">独自開発のIPカメラという武器</span>
+      </h2>
+      <p class="rv rv-d1">
+        ラクーン探偵社の調査を支えているのは、市販品ではなく自社で開発し
+        特許庁に登録した監視機材です。「人が現場に張り付く」以外の選択肢を持てることが、
+        費用とリスクの両方を変えます。同業の探偵事務所への機材提供や講習という形でも提供しています。
+      </p>
+      <ul class="tech-pt">
+        <li class="rv rv-d2"><b>01</b><span>調査員の現場滞在時間を最小化し、対象者に察知される可能性を下げる</span></li>
+        <li class="rv rv-d3"><b>02</b><span>24時間の連続記録により、動きが読めない対象でも機会を逃さない</span></li>
+        <li class="rv rv-d4"><b>03</b><span>人件費に依存しないため、長時間案件ほど費用を抑えられる</span></li>
+        <li class="rv rv-d5"><b>04</b><span>必要な局面では従来の尾行調査と組み合わせ、証拠の質を担保する</span></li>
+      </ul>
+      <p class="rv rv-d5">
+        <a class="btn btn--light" href="https://exeresearch.jp/originalcamera/"><span>IPカメラについて詳しく</span><span class="arw"></span></a>
+      </p>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ FLOW ============================ -->
 <section class="flow" id="flow">
   <div class="wrap-narrow">
@@ -1116,6 +1041,60 @@ section{position:relative}
         </div>
       </li>
     </ol>
+  </div>
+</section>
+
+<!-- ============================ GREETING（代表挨拶） ============================ -->
+<section class="grt" id="greeting">
+  <div class="wrap">
+    <div class="grt-grid">
+
+      <!-- 顔写真 -->
+      <div class="grt-photo rv">
+        <img src="https://exeresearch.jp/wp-content/uploads/2026/09/daihyo-sato-ryota.webp" width="765" height="1020" alt="ラクーン探偵社 代表 佐藤良太" loading="lazy">
+
+        <div class="grt-name">
+          <span class="role">合同会社EXE RESEARCH 代表　／　ラクーン探偵社 代表</span>
+          <span class="nm">佐藤　良太<small>RYOTA SATO</small></span>
+        </div>
+      </div>
+
+      <!-- 挨拶文 -->
+      <div class="grt-body">
+        <p class="en-label rv">Message</p>
+        <h2 class="rv rv-d1">
+          一人を見つけるのに、<br><span class="ac">7年</span>かかりました。
+        </h2>
+
+        <div class="grt-txt">
+          <p class="rv rv-d2">
+            私がこの業界に入ったのは、探偵になりたかったからではありません。
+            前職で夜逃げをした債務者を追わなければならず、そのために調査の技術を学び始めました。
+            その人物を見つけるまでに7年。分かったのは、調査の結果を分けるのは才能や勘ではなく、
+            <span class="em">「追い続けられる方法を持っているかどうか」</span>だということです。
+            人が現場に張り付き続ける前提をやめ、機材を自社で設計してリモート調査を主軸に据えたのは、
+            この経験があったからです。
+          </p>
+          <p class="rv rv-d3">
+            だから、料金の内訳は必ず明確にお伝えします。できないことはできないと申し上げます。
+            調査が不要だと判断したら、そうお伝えします。
+            依頼するかどうかを決めていない段階のご相談で構いません。
+          </p>
+        </div>
+
+        <!-- 略歴 -->
+        <div class="grt-prof rv rv-d5">
+          <h3>PROFILE</h3>
+          <dl>
+            <dt>氏名</dt><dd>佐藤 良太（さとう りょうた）</dd>
+            <dt>役職</dt><dd>合同会社EXE RESEARCH 代表／ラクーン探偵社 代表</dd>
+            <dt>経歴</dt><dd>前職で夜逃げした債務者の追跡をきっかけに調査の技術を習得。7年をかけて対象者を発見した経験からラクーン探偵社を設立し、調査用IPカメラを独自開発・特許庁に登録</dd>
+            <dt>届出</dt><dd>探偵業届出 埼玉県公安委員会 第43230060号</dd>
+          </dl>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -1213,6 +1192,7 @@ section{position:relative}
   </div>
 </section>
 
+
 <!-- ============================ FOOTER ============================ -->
 <footer class="ftr">
   <div class="wrap">
@@ -1239,11 +1219,11 @@ section{position:relative}
 
       <nav class="ftr-nav">
         <a href="#about">当社について</a>
-        <a href="#greeting">代表挨拶</a>
         <a href="#service">対応可能調査一覧</a>
         <a href="#price">調査料金</a>
         <a href="#tech">独自のIPカメラについて</a>
         <a href="#flow">ご利用の流れ</a>
+        <a href="#greeting">代表挨拶</a>
         <a href="#company">会社概要</a>
         <a href="#news">コラム・お知らせ</a>
         <a href="#contact">お問い合わせ</a>
