@@ -292,7 +292,7 @@ section{position:relative}
   color:var(--line);letter-spacing:.02em;margin-bottom:18px;text-transform:uppercase;
 }
 .msg p{margin:28px 0 0;font-size:15px;line-height:2.2}
-.msg-img{position:relative}
+.msg-img{position:relative;isolation:isolate}
 .msg-img img{aspect-ratio:4/5;object-fit:cover;width:100%}
 .msg-img::after{
   content:"";position:absolute;right:-18px;bottom:-18px;width:56%;height:34%;
@@ -432,7 +432,7 @@ section{position:relative}
 /* ============================================================
    TECH（独自開発カメラ）
    ============================================================ */
-.tech{position:relative;color:#fff;overflow:hidden;padding:clamp(90px,11vw,170px) 0}
+.tech{position:relative;isolation:isolate;color:#fff;overflow:hidden;padding:clamp(90px,11vw,170px) 0}
 .tech-bg{position:absolute;inset:0;z-index:-2}
 .tech-bg img{width:100%;height:100%;object-fit:cover}
 .tech::before{
@@ -538,7 +538,7 @@ section{position:relative}
 /* ============================================================
    CONTACT
    ============================================================ */
-.cta{position:relative;overflow:hidden;color:#fff;text-align:center;padding:clamp(80px,10vw,140px) 0}
+.cta{position:relative;isolation:isolate;overflow:hidden;color:#fff;text-align:center;padding:clamp(80px,10vw,140px) 0}
 .cta-bg{position:absolute;inset:0;z-index:-2}
 .cta-bg img{width:100%;height:100%;object-fit:cover}
 .cta::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(13,27,42,.82)}
