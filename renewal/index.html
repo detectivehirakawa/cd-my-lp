@@ -54,7 +54,8 @@ h1,h2,h3,h4{margin:0;color:var(--ink);line-height:1.5;font-weight:500}
 section{position:relative}
 
 /* ===== 見出し（英字＋日本語の2段） ===== */
-.sec-head{margin-bottom:clamp(36px,5vw,68px)}
+.sec-head{margin:0 0 clamp(36px,5vw,68px);padding:0;border:0;background:none;font-size:inherit;font-weight:400;line-height:inherit;color:inherit}
+.sec-head::before,.sec-head::after{content:none;display:none}
 .sec-head .en{
   display:block;font-family:var(--en);font-size:clamp(52px,8.5vw,110px);
   line-height:.92;letter-spacing:.01em;color:var(--ink);font-weight:500;
@@ -783,10 +784,10 @@ section{position:relative}
 <!-- ============================ STRENGTH ============================ -->
 <section class="str">
   <div class="wrap">
-    <div class="sec-head rv">
+    <h2 class="sec-head rv">
       <span class="en">Str<em>e</em>ngth</span>
       <span class="ja">ラクーン探偵社が選ばれる3つの理由</span>
-    </div>
+    </h2>
 
     <div class="str-list">
       <div class="str-card rv rv-d1">
@@ -901,10 +902,10 @@ section{position:relative}
 <!-- ============================ SERVICE ============================ -->
 <section class="svc" id="service">
   <div class="wrap">
-    <div class="sec-head rv">
+    <h2 class="sec-head rv">
       <span class="en">S<em>e</em>rvice</span>
       <span class="ja">対応可能調査一覧</span>
-    </div>
+    </h2>
     <p class="lead rv rv-d1">
       個人のお客様から法人のお客様まで、目的と予算に応じて調査手法を組み立てます。
       どの調査も、まずは無料のご相談で「本当に調査が必要か」から一緒に整理します。
@@ -998,10 +999,10 @@ section{position:relative}
   </div>
   <div class="wrap">
     <div class="tech-in">
-      <div class="sec-head light rv">
+      <h2 class="sec-head light rv">
         <span class="en">T<em>e</em>chnology</span>
         <span class="ja">独自開発のIPカメラという武器</span>
-      </div>
+      </h2>
       <p class="rv rv-d1">
         ラクーン探偵社の調査を支えているのは、市販品ではなく自社で開発し
         特許庁に登録した監視機材です。「人が現場に張り付く」以外の選択肢を持てることが、
@@ -1023,10 +1024,10 @@ section{position:relative}
 <!-- ============================ PRICE ============================ -->
 <section class="price" id="price">
   <div class="wrap">
-    <div class="sec-head rv">
+    <h2 class="sec-head rv">
       <span class="en">Pric<em>e</em></span>
       <span class="ja">調査料金</span>
-    </div>
+    </h2>
     <p class="lead rv rv-d1">
       料金は「単価 × 人数 × 時間 ＋ 諸経費」で決まります。
       下記は代表的な2プランです。案件の内容によって最適な組み合わせは変わるため、
@@ -1076,10 +1077,10 @@ section{position:relative}
 <!-- ============================ FLOW ============================ -->
 <section class="flow" id="flow">
   <div class="wrap-narrow">
-    <div class="sec-head center rv">
+    <h2 class="sec-head center rv">
       <span class="en">Flo<em>w</em></span>
       <span class="ja">ご相談から報告まで</span>
-    </div>
+    </h2>
 
     <ol class="flow-list">
       <li class="rv rv-d1">
@@ -1121,10 +1122,10 @@ section{position:relative}
   <div class="wrap">
     <div class="cmp-grid">
       <div>
-        <div class="sec-head light rv">
+        <h2 class="sec-head light rv">
           <span class="en">Compan<em>y</em></span>
           <span class="ja">会社概要</span>
-        </div>
+        </h2>
         <div class="cmp-map rv rv-d2">
           <img src="https://exeresearch.jp/wp-content/uploads/2023/11/27807476_m-1536x1024.jpg" alt="所在地イメージ">
         </div>
@@ -1157,10 +1158,10 @@ section{position:relative}
 <section class="news" id="news">
   <div class="wrap">
     <div class="news-head">
-      <div class="sec-head rv" style="margin-bottom:0">
+      <h2 class="sec-head rv" style="margin-bottom:0">
         <span class="en">Colum<em>n</em></span>
         <span class="ja">コラム・お知らせ</span>
-      </div>
+      </h2>
       <p class="rv rv-d1" style="margin:0">
         <a class="btn" href="https://exeresearch.jp/category/column-news/"><span>記事一覧</span><span class="arw"></span></a>
       </p>
