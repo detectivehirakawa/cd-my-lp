@@ -60,9 +60,20 @@ function handleLineWebhook_(body) {
       }
     }
 
-    // 2) Googleマップのリンク → 「名称／所在地：〜」に変換して返信
-    //    グループ・トークルーム・1:1 のいずれでも動く
-    if (!text) return;
+    // 2) 地図の共有 → 「名称／所在地：〜」に変換して返信
+    //    グループの誰の投稿でも反応する（送信者による絞り込みはしない）。
+    //    トークルーム・1:1 でも同じように動く。
+    if (ev.type !== 'message' || !ev.message) return;
+
+    // 2-a) LINEの「位置情報」メッセージ（URLではなくピンで共有された場合）
+    if (ev.message.type === 'location') {
+      const block = locationReply_(ev.message);
+      if (block) reply_(ev.replyToken, block);
+      return;
+    }
+
+    // 2-b) 本文に貼られた Googleマップのリンク
+    if (ev.message.type !== 'text' || !text) return;
     const urls = findMapUrls_(text);
     if (!urls.length) return;
     const blocks = [];
@@ -112,14 +123,35 @@ function mapLinkReply_(url, skipCache) {
   if (name && isAddressLike_(name)) name = '';           // 住所そのものが名称欄に入っている場合
   if (!name && info.qtext) name = nameFromQText_(info.qtext);
   const addr = lookupAddress_(info);
-  if (!name && !addr) return '';
+  const out = formatPlace_(name, addr);
+  if (out && addr) cache.put(key, out, 21600);           // 成功時のみ6時間キャッシュ
+  return out;
+}
 
+/**
+ * LINEの「位置情報」メッセージ → 名称＋所在地。
+ * ピンで共有された場合はURLが無いので、メッセージに入っている title / address / 緯度経度を使う。
+ * title・address は付かないことがある（地図を長押しした素のピンなど）。
+ */
+function locationReply_(msg) {
+  let name = String(msg.title || '').trim();
+  if (isAddressLike_(name) || /^(現在地|位置情報|マイロケーション|my location|location)$/i.test(name)) name = '';
+  let addr = cleanAddress_(msg.address || '');
+  const lat = typeof msg.latitude === 'number' ? msg.latitude : null;
+  const lng = typeof msg.longitude === 'number' ? msg.longitude : null;
+  if (!addr && lat !== null && lng !== null) {
+    addr = lookupAddress_({ name: name, lat: lat, lng: lng, qtext: '' });
+  }
+  return formatPlace_(name, addr);
+}
+
+/** 「名称＼n所在地：〜」の形に整える。どちらも無ければ '' で無反応にする */
+function formatPlace_(name, addr) {
+  if (!name && !addr) return '';
   const lines = [];
   if (name) lines.push(name);
   lines.push('所在地：' + (addr || '取得できませんでした'));
-  const out = lines.join('\n');
-  if (addr) cache.put(key, out, 21600);                  // 成功時のみ6時間キャッシュ
-  return out;
+  return lines.join('\n');
 }
 
 /** 短縮URLを展開する（Location ヘッダを最大6回たどる。本文は読まない） */
