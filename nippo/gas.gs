@@ -19,7 +19,18 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08a';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08b';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+
+/* ---- AI応答（Claude API）の設定 ----
+ * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
+ * 未設定なら AI応答だけが無効になり、日報送信と地図変換はそのまま動く。
+ */
+const AI_MODEL = 'claude-opus-5';
+const AI_EFFORT = 'medium';      // LINEは待たされるので chat 向けに抑えている（high にすると熟考するが遅い）
+const AI_MAX_TOKENS = 8000;      // 思考トークンも含む上限。見える返信の長さは指示文で抑える
+const AI_DAILY_LIMIT = 50;       // 1日の呼び出し上限（暴走と課金事故の防止）
+const AI_HISTORY_TURNS = 6;      // グループごとに覚えておく往復数（発言6件＝3往復）
+const AI_TRIGGER_WORDS = ['探偵AI', '探偵ai'];   // メンションが取れない端末向けの予備トリガー
 
 // グループに招待されたときのあいさつ文
 const GREETING = 'こんにちは、探偵AIが調査のサポートをいたします、よろしくお願いいたします';
@@ -54,6 +65,21 @@ function doGet(e) {
     });
   }
 
+  // 動作確認用: <exec URL>?key=nippo&aitest=<質問>
+  // LINEを経由せずにAIの返答だけを確認できる（1回分の呼び出しを消費する）
+  if (q.aitest) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    if (!p.getProperty('ANTHROPIC_API_KEY')) return json_({ ok: false, error: 'ANTHROPIC_API_KEY が未設定です' });
+    if (!bumpAiCount_()) return json_({ ok: false, error: '本日の上限に達しました' });
+    const t0 = Date.now();
+    const answer = askClaude_(String(q.aitest), []);
+    return json_({
+      ok: !!answer, version: VERSION, model: AI_MODEL, effort: AI_EFFORT,
+      seconds: Math.round((Date.now() - t0) / 100) / 10,
+      answer: answer
+    });
+  }
+
   // 動作確認用: <exec URL>?key=nippo&groupinfo=1
   // 現在の送信先グループの名前をLINEに問い合わせる（グループ名で制限をかけるための下調べ）
   if (q.groupinfo) {
@@ -82,6 +108,10 @@ function doGet(e) {
     groupName: dest.name,           // 現在の送信先グループの名前
     allowedGroupName: ALLOWED_GROUP_NAME,
     canSend: dest.ok,               // 日報を送れる状態か（送信先の名前が一致しているか）
+    aiKeySet: !!p.getProperty('ANTHROPIC_API_KEY'),
+    aiModel: AI_MODEL,
+    aiCallsToday: aiCountToday_(),
+    aiDailyLimit: AI_DAILY_LIMIT,
     sheetUrl: p.getProperty('SHEET_ID') ? 'https://docs.google.com/spreadsheets/d/' + p.getProperty('SHEET_ID') : null
   });
 }
@@ -127,15 +157,230 @@ function handleLineWebhook_(body) {
     // 2-b) 本文に貼られた Googleマップのリンク
     if (ev.message.type !== 'text' || !text) return;
     const urls = findMapUrls_(text);
-    if (!urls.length) return;
-    const blocks = [];
-    urls.forEach(function (u) {
-      const b = mapLinkReply_(u);
-      if (b) blocks.push(b);
-    });
-    if (blocks.length) reply_(ev.replyToken, blocks.join('\n\n'));
+    if (urls.length) {
+      const blocks = [];
+      urls.forEach(function (u) {
+        const b = mapLinkReply_(u);
+        if (b) blocks.push(b);
+      });
+      if (blocks.length) {
+        reply_(ev.replyToken, blocks.join('\n\n'));
+        return;
+      }
+    }
+
+    // 3) 公式アカウントが名指しされたらAIが答える
+    //    グループ/トークルーム: メンション（または「探偵AI」で始まる発言）のとき
+    //    1:1トーク: すべての発言
+    const oneToOne = src.type === 'user';
+    if (!oneToOne && !addressedToBot_(ev.message)) return;
+    aiReply_(ev, text, src);
   });
   return json_({ ok: true });
+}
+
+/* ================= AI応答（Claude API） =================
+ * 名指しされたときだけ Claude に投げて、その答えを返信する。
+ * 呼び出しは UrlFetchApp からの直接HTTP（GASには Anthropic SDK が入れられない）。
+ */
+
+/** この発言は公式アカウント宛てか（メンション、または予備トリガー） */
+function addressedToBot_(msg) {
+  const mentionees = (msg.mention && msg.mention.mentionees) || [];
+  const selfId = botUserId_();
+  for (let i = 0; i < mentionees.length; i++) {
+    const m = mentionees[i];
+    if (m.isSelf === true) return true;                       // 公式アカウント自身へのメンション
+    if (selfId && m.type === 'user' && m.userId === selfId) return true;
+    // type === 'all'（@all）は名指しとみなさない
+  }
+  const head = String(msg.text || '').replace(/^[\s　]+/, '');
+  return AI_TRIGGER_WORDS.some(function (w) { return head.indexOf(w) === 0; });
+}
+
+/** 公式アカウント自身の userId（1日キャッシュ） */
+function botUserId_() {
+  const p = PropertiesService.getScriptProperties();
+  const saved = p.getProperty('BOT_USER_ID');
+  if (saved) return saved;
+  const token = p.getProperty('CHANNEL_ACCESS_TOKEN');
+  if (!token) return '';
+  try {
+    const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/info', {
+      method: 'get', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true
+    });
+    if (res.getResponseCode() !== 200) return '';
+    const id = JSON.parse(res.getContentText()).userId || '';
+    if (id) p.setProperty('BOT_USER_ID', id);
+    return id;
+  } catch (err) {
+    return '';
+  }
+}
+
+/** AIに答えさせて返信する */
+function aiReply_(ev, text, src) {
+  const cache = CacheService.getScriptCache();
+  const msgId = (ev.message && ev.message.id) || '';
+
+  // LINEは応答が遅いと同じイベントを再送してくるので、二重返信を防ぐ
+  if (msgId) {
+    if (cache.get('ai:done:' + msgId)) return;
+    cache.put('ai:done:' + msgId, '1', 300);
+  }
+
+  const p = PropertiesService.getScriptProperties();
+  if (!p.getProperty('ANTHROPIC_API_KEY')) {
+    reply_(ev.replyToken, 'AI応答はまだ設定されていません。'
+      + '（管理者向け: GASのスクリプトプロパティに ANTHROPIC_API_KEY を追加してください）');
+    return;
+  }
+  if (!bumpAiCount_()) {
+    reply_(ev.replyToken, '本日のAI応答の上限（' + AI_DAILY_LIMIT + '回）に達しました。日をまたぐと再開します。');
+    return;
+  }
+
+  // メンション部分（@探偵AI など）は質問文から外す
+  const question = stripMentions_(ev.message).trim() || text;
+  const convKey = 'ai:hist:' + (src.groupId || src.roomId || src.userId || 'unknown');
+  const history = readHistory_(cache, convKey);
+
+  const answer = askClaude_(question, history);
+  if (!answer) {
+    reply_(ev.replyToken, 'うまく応答できませんでした。少し時間をおいてもう一度お試しください。');
+    return;
+  }
+  reply_(ev.replyToken, answer.slice(0, 4900));
+  writeHistory_(cache, convKey, history.concat([
+    { role: 'user', content: question },
+    { role: 'assistant', content: answer }
+  ]));
+}
+
+/** Claude に問い合わせて本文を返す。失敗したら '' */
+function askClaude_(question, history) {
+  const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  const messages = history.concat([{ role: 'user', content: question }]);
+  const payload = {
+    model: AI_MODEL,
+    max_tokens: AI_MAX_TOKENS,
+    system: AI_SYSTEM_PROMPT_(),
+    output_config: { effort: AI_EFFORT },
+    fallbacks: 'default',            // 安全側の判断で断られたときは代替モデルで自動的にやり直す
+    messages: messages
+  };
+  let res;
+  try {
+    res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta': 'server-side-fallback-2026-07-01'
+      },
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+  } catch (err) {
+    return '';
+  }
+  if (res.getResponseCode() !== 200) {
+    console.log('Claude API エラー ' + res.getResponseCode() + ': ' + res.getContentText().slice(0, 300));
+    return '';
+  }
+
+  let body;
+  try { body = JSON.parse(res.getContentText()); } catch (err) { return ''; }
+
+  // content を読む前に stop_reason を見る（安全側の判断で断られた場合がある）
+  if (body.stop_reason === 'refusal') {
+    return 'この内容にはお答えできませんでした。別の聞き方でお試しください。';
+  }
+  const text = (body.content || [])
+    .filter(function (b) { return b.type === 'text'; })
+    .map(function (b) { return b.text; })
+    .join('\n')
+    .trim();
+  if (!text) return '';
+  return body.stop_reason === 'max_tokens' ? text + '\n（長くなったため省略しました）' : text;
+}
+
+/** AIへの指示文 */
+function AI_SYSTEM_PROMPT_() {
+  return [
+    'あなたは探偵事務所（合同会社EXE RESEARCH／ラクーン探偵社）の調査員を支援するアシスタントで、',
+    'LINEグループから呼ばれて答えます。名前は「探偵AI」です。',
+    '',
+    '答え方',
+    '- 日本語の敬体で、結論から先に書く。目安は200〜400字。長い前置きや復唱はしない。',
+    '- LINEでは装飾が効かないので、Markdownの見出しや太字（#、**）は使わない。箇条書きは「・」で最小限。',
+    '- Latency-sensitive; begin your visible answer immediately.',
+    '- 事実が確認できないことは推測で埋めず、「確認が必要」と伝えて確認方法を示す。',
+    '- 相手は現場の調査員。実務で使える具体的な手順や判断材料を出す。',
+    '',
+    '扱う内容',
+    '- 調査日報の書き方、経費（ガソリン代・高速代・電車代）の計算、時間の締め方の相談。',
+    '- 尾行・張り込み・車両移動などの一般的な段取り、装備、天候や交通の判断。',
+    '- 報告書の表現、依頼者への説明の言い回し。',
+    '- 探偵業法や個人情報の取り扱いなど、一般的な注意点（法律の最終判断は弁護士の確認が必要と伝える）。',
+    '',
+    '守ること',
+    '- 違法・不正な手段（無断のGPS取り付け、住居侵入、なりすまし、通信やアカウントへの不正アクセス、',
+    '  戸籍や住民票の不正取得、盗聴など）の具体的な手順は案内しない。',
+    '  代わりに合法的な代替手段や、必要な手続き・許可の取り方を示す。',
+    '- 依頼者や対象者の個人情報を、聞かれていないのに書き出したり推測したりしない。',
+    '',
+    '社内の道具',
+    '- 調査日報フォーム: https://lp.exeresearch.jp/nippo/ （入力すると日報の文面ができ、',
+    '  「LINEグループに送信」で「ラクーン　経費報告」のグループに投稿される）',
+    '- このグループにGoogleマップのリンクや位置情報を貼ると、名称と所在地に変換して返す。'
+  ].join('\n');
+}
+
+/** メンション（@探偵AI など）を本文から取り除く */
+function stripMentions_(msg) {
+  let text = String((msg && msg.text) || '');
+  const mentionees = (msg && msg.mention && msg.mention.mentionees) || [];
+  // 後ろから消さないと index がずれる
+  mentionees.slice().sort(function (a, b) { return (b.index || 0) - (a.index || 0); })
+    .forEach(function (m) {
+      if (typeof m.index !== 'number' || typeof m.length !== 'number') return;
+      text = text.slice(0, m.index) + text.slice(m.index + m.length);
+    });
+  AI_TRIGGER_WORDS.forEach(function (w) {
+    text = text.replace(new RegExp('^[\\s　]*' + w + '[\\s　、,:：]*'), '');
+  });
+  return text;
+}
+
+function readHistory_(cache, key) {
+  try {
+    const raw = cache.get(key);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.slice(-AI_HISTORY_TURNS) : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function writeHistory_(cache, key, arr) {
+  try { cache.put(key, JSON.stringify(arr.slice(-AI_HISTORY_TURNS)), 1800); } catch (err) { /* 履歴は無くても動く */ }
+}
+
+/** 1日の呼び出し回数を数える。上限内なら true */
+function bumpAiCount_() {
+  const p = PropertiesService.getScriptProperties();
+  const key = 'AI_COUNT_' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+  const n = Number(p.getProperty(key) || '0') + 1;
+  if (n > AI_DAILY_LIMIT) return false;
+  p.setProperty(key, String(n));
+  return true;
+}
+
+function aiCountToday_() {
+  const key = 'AI_COUNT_' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+  return Number(PropertiesService.getScriptProperties().getProperty(key) || '0');
 }
 
 /* ================= 送信先グループの制限 =================
