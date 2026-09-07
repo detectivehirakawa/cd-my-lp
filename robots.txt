@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /tantei-test/
 Disallow: /renewal/
+Disallow: /nippo/
 
 Sitemap: https://lp.exeresearch.jp/sitemap.xml

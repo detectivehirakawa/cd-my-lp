@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>調査日報作成</title>
+<style>
+  :root{
+    --bg:#0f1720; --panel:#16212e; --panel2:#1c2a3a; --ink:#e8eef5; --sub:#9fb0c3;
+    --line:#2a3a4d; --accent:#3b82f6; --accent2:#2563eb; --ok:#22c55e; --ng:#ef4444; --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;
+    line-height:1.6;-webkit-text-size-adjust:100%}
+  .wrap{max-width:820px;margin:0 auto;padding:16px 12px 140px}
+  header.hero{background:linear-gradient(135deg,#16304f,#0f1720);border:1px solid var(--line);
+    border-radius:14px;padding:18px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  header.hero h1{margin:0;font-size:1.3rem}
+  header.hero p{margin:2px 0 0;color:var(--sub);font-size:.85rem}
+  section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+  section h2{margin:0 0 10px;font-size:1.02rem;color:#bcd3f2;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  section h2 small{font-weight:normal;color:var(--sub);font-size:.8rem}
+  label.f{display:block;font-size:.78rem;color:var(--sub);margin:8px 0 3px}
+  input,select,textarea{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--ink);font-size:1rem;font-family:inherit}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  textarea{resize:vertical;min-height:44px;line-height:1.5}
+  .row{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+  .row>*{min-width:0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  button{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;
+    padding:8px 12px;font-size:.9rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  button:hover{border-color:var(--accent)}
+  button.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  button.pri:hover{background:var(--accent2)}
+  button.mini{padding:6px 9px;font-size:.82rem}
+  button.icon{padding:8px 10px;flex:0 0 auto}
+  button.danger{color:#ffb4b4}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .person{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px;background:#131d29}
+  .person h3{margin:0 0 6px;font-size:.95rem;color:#dbe7f5}
+  .sum{text-align:right;color:var(--sub);font-size:.9rem;margin-top:6px}
+  .sum b{color:var(--ink);font-size:1.05rem}
+  .tl-row{display:grid;grid-template-columns:78px 1fr auto;gap:6px;margin-bottom:6px;align-items:start}
+  .tl-row input.time{text-align:center;padding-left:6px;padding-right:6px;font-variant-numeric:tabular-nums}
+  .tl-row .ops{display:flex;flex-direction:column;gap:4px}
+  .tl-row .ops button{padding:4px 7px;font-size:.78rem}
+  .hint{font-size:.78rem;color:var(--sub);margin:4px 0 0}
+  pre#out{background:#0b1219;border:1px solid var(--line);border-radius:10px;padding:14px;white-space:pre-wrap;
+    word-break:break-all;font-size:.92rem;line-height:1.55;font-family:"Segoe UI",Meiryo,sans-serif;min-height:120px;margin:0}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(15,23,32,.96);border-top:1px solid var(--line);
+    padding:10px 12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;backdrop-filter:blur(6px)}
+  .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#1f3b2a;color:#c9f7d6;
+    border:1px solid #2f6b44;padding:10px 16px;border-radius:10px;font-size:.9rem;opacity:0;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1}
+  details.settings summary{cursor:pointer;color:var(--sub);font-size:.85rem}
+  .saved-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+  .saved-item:last-child{border-bottom:0}
+  .saved-item span{color:var(--sub);font-size:.8rem}
+  .err{color:#ffb4b4;font-size:.8rem}
+  @media (max-width:560px){
+    .grid3{grid-template-columns:1fr 1fr}
+    .tl-row{grid-template-columns:70px 1fr auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <h1>調査日報作成</h1>
+    <p>入力するだけで統一フォーマットの日報テキストができます。入力内容はこの端末に自動保存されます。</p>
+  </div>
+  <div class="btns" style="margin:0">
+    <button class="mini" id="btnNew">新規作成</button>
+    <button class="mini" id="btnSavedList">保存一覧</button>
+  </div>
+</header>
+
+<section>
+  <h2>基本情報</h2>
+  <div class="grid2">
+    <div><label class="f">調査日</label><input type="date" id="date"></div>
+    <div><label class="f">案件名</label><input id="case" placeholder="例：福島様調査"></div>
+  </div>
+  <div class="grid3">
+    <div><label class="f">開始時刻</label><input id="tStart" class="time" inputmode="numeric" placeholder="17:30"></div>
+    <div><label class="f">終了時刻 <small style="color:var(--sub)">深夜は25:00等</small></label><input id="tEnd" class="time" inputmode="numeric" placeholder="25:00"></div>
+    <div><label class="f">調査時間</label><input id="hours" readonly tabindex="-1" style="background:#0b1219"></div>
+  </div>
+</section>
+
+<section>
+  <h2>調査員 <small>名前と移動手段</small></h2>
+  <div id="people"></div>
+  <div class="btns"><button class="mini" id="addPerson">＋ 調査員を追加</button></div>
+</section>
+
+<section>
+  <h2>使用経費 <small>調査員ごとに入力。空欄の項目は出力されません</small></h2>
+  <div id="expenses"></div>
+  <div class="sum">合計 <b id="grandTotal">0円</b></div>
+  <details class="settings">
+    <summary>単価の設定（ガソリン・アイドリング）</summary>
+    <div class="grid2">
+      <div><label class="f">ガソリン代 単価（円/km）</label><input type="number" id="rateGas" inputmode="decimal" step="0.1"></div>
+      <div><label class="f">アイドリング 単価（円/時間）</label><input type="number" id="rateIdle" inputmode="decimal" step="1"></div>
+    </div>
+    <p class="hint">単価はこの端末に保存され、次回以降も使われます。元受けの規定に合わせてください。</p>
+  </details>
+</section>
+
+<section>
+  <h2>調査詳細 <small>時刻を空欄にすると、直前の行の補足（所在地・車両情報など）として出力されます</small></h2>
+  <div id="timeline"></div>
+  <div class="btns">
+    <button class="mini" id="addTl">＋ 行を追加</button>
+    <button class="mini" id="addStart">開始行を入れる</button>
+    <button class="mini" id="fillWatch">空き時間を「監視継続」で埋める</button>
+    <button class="mini" id="addEnd">終了行を入れる</button>
+    <button class="mini" id="sortTl">時刻順に並べ替え</button>
+  </div>
+  <p class="hint">「監視継続」は開始時刻から1時間ごとに、まだ記録のない時間帯だけ「監視態勢を継続するも動き認められない」を追加します。</p>
+</section>
+
+<section>
+  <h2>出力プレビュー</h2>
+  <pre id="out"></pre>
+  <p class="err" id="errs"></p>
+</section>
+
+<section id="savedSec" style="display:none">
+  <h2>保存一覧 <small>この端末に保存した日報</small></h2>
+  <div id="savedList"></div>
+  <div class="btns">
+    <button class="mini" id="exportJson">現在の内容をファイルに書き出す(JSON)</button>
+    <label class="mini" style="display:inline-block"><button class="mini" type="button" onclick="document.getElementById('importJson').click()">JSONファイルを読み込む</button><input type="file" id="importJson" accept=".json,application/json" style="display:none"></label>
+  </div>
+  <p class="hint">別の端末や別の人に渡すときはJSONで書き出して共有してください。</p>
+</section>
+
+</div>
+
+<div class="bar">
+  <button class="pri" id="btnCopy">日報テキストをコピー</button>
+  <button id="btnTxt">.txt保存</button>
+  <button id="btnSave">この日報を保存</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const LS_CUR = 'nippo:current', LS_LIST = 'nippo:list', LS_RATE = 'nippo:rates';
+const WATCH = '監視態勢を継続するも動き認められない';
+const MEANS = ['車','電車','バイク','徒歩','その他'];
+const WD = ['日','月','火','水','木','金','土'];
+
+let state = blank();
+let rates = loadRates();
+
+function blank(){
+  return {
+    date: todayISO(), caseName: '', tStart: '', tEnd: '',
+    people: [ {name:'', means:'車', gasKm:'', idleH:'', tolls:[], others:[]} ],
+    timeline: []
+  };
+}
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
+function p2(n){ return String(n).padStart(2,'0'); }
+function loadRates(){
+  try{ const r=JSON.parse(localStorage.getItem(LS_RATE)||'{}'); return {gas: r.gas ?? 15, idle: r.idle ?? 150}; }
+  catch(e){ return {gas:15, idle:150}; }
+}
+function saveRates(){ localStorage.setItem(LS_RATE, JSON.stringify(rates)); }
+
+/* ---------- time helpers ---------- */
+function normTime(s){
+  s = (s||'').trim().replace(/[：]/g,':').replace(/[０-９]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
+  let m = s.match(/^(\d{1,2}):?(\d{2})$/);
+  if(!m) return null;
+  const h=+m[1], mi=+m[2];
+  if(h>47 || mi>59) return null;
+  return p2(h)+':'+p2(mi);
+}
+function toMin(t){ const n=normTime(t); if(!n) return null; const [h,m]=n.split(':').map(Number); return h*60+m; }
+function fromMin(m){ return p2(Math.floor(m/60))+':'+p2(m%60); }
+function hoursText(){
+  const a=toMin(state.tStart), b=toMin(state.tEnd);
+  if(a==null||b==null) return '';
+  let d=b-a; if(d<0) d+=24*60;
+  const h=d/60;
+  return (Math.round(h*100)/100).toString().replace(/\.0+$/,'')+'h';
+}
+function fmtDateFull(iso){ // 令和8年9月5日(土)
+  if(!iso) return '';
+  const [y,m,d]=iso.split('-').map(Number);
+  const dt=new Date(y,m-1,d);
+  const r=y-2018;
+  return `令和${r}年${m}月${d}日(${WD[dt.getDay()]})`;
+}
+function fmtDateShort(iso){ // 9月5日(土)
+  if(!iso) return '';
+  const [y,m,d]=iso.split('-').map(Number);
+  const dt=new Date(y,m-1,d);
+  return `${m}月${d}日(${WD[dt.getDay()]})`;
+}
+function yen(n){ return Math.round(n).toLocaleString('ja-JP')+'円'; }
+function num(v){ const n=parseFloat(String(v).replace(/,/g,'')); return isFinite(n)?n:0; }
+
+/* ---------- calc ---------- */
+function personLines(p){
+  const lines=[]; let total=0;
+  const label = p.name + (p.means?`(${p.means})`:'');
+  lines.push(label);
+  if(num(p.gasKm)>0){ const a=num(p.gasKm)*rates.gas; total+=a; lines.push(`ガソリン代 ${num(p.gasKm)}km　${yen(a)}`); }
+  if(num(p.idleH)>0){ const a=num(p.idleH)*rates.idle; total+=a; lines.push(`アイドリング ${num(p.idleH)}h　${yen(a)}`); }
+  const tolls=p.tolls.filter(t=>t.from||t.to||num(t.amt)>0);
+  if(tolls.length){
+    lines.push('高速代');
+    tolls.forEach(t=>{ total+=num(t.amt); lines.push(`${t.from}〜${t.to}　${yen(num(t.amt))}`); });
+  }
+  p.others.filter(o=>o.label||num(o.amt)>0).forEach(o=>{ total+=num(o.amt); lines.push(`${o.label}　${yen(num(o.amt))}`); });
+  lines.push(`計　${yen(total)}`);
+  return {lines,total};
+}
+
+function build(){
+  const errs=[];
+  const out=[];
+  const dateFull=fmtDateFull(state.date), dateShort=fmtDateShort(state.date);
+  if(!state.date) errs.push('調査日が未入力です');
+  const s=normTime(state.tStart), e=normTime(state.tEnd);
+  if(state.tStart && !s) errs.push('開始時刻の形式が正しくありません（例 17:30）');
+  if(state.tEnd && !e) errs.push('終了時刻の形式が正しくありません（例 25:00）');
+  if(!state.caseName) errs.push('案件名が未入力です');
+
+  out.push('【調査日】','',dateFull,'');
+  out.push('【調査時間】','',`${s||''}-${e||''}(${hoursText()})`,'');
+  out.push('【案件名】','',state.caseName,'');
+  out.push('【調査員】','');
+  state.people.filter(p=>p.name).forEach(p=>out.push(p.name+(p.means?`(${p.means})`:'')));
+  if(!state.people.some(p=>p.name)) errs.push('調査員が未入力です');
+  out.push('');
+  out.push('【使用経費】','');
+  let grand=0;
+  state.people.filter(p=>p.name).forEach(p=>{
+    const {lines,total}=personLines(p);
+    grand+=total;
+    out.push(`${dateShort}使用経費`);
+    out.push(...lines,'');
+  });
+  out.push(`合計　${yen(grand)}`,'');
+  out.push('【調査詳細】','',dateFull,'');
+  state.timeline.forEach((r,i)=>{
+    const t=normTime(r.time);
+    const txt=(r.text||'').replace(/\r/g,'').trim();
+    if(r.time && !t) errs.push(`調査詳細 ${i+1}行目の時刻の形式が正しくありません`);
+    if(!r.time && !txt) return;
+    if(t){ out.push(`${t} ${txt}`,''); }
+    else { out.push(txt,''); }
+  });
+  while(out.length && out[out.length-1]==='') out.pop();
+  $('#grandTotal').textContent=yen(grand);
+  $('#errs').textContent=errs.join(' ／ ');
+  return out.join('\n');
+}
+
+/* ---------- render ---------- */
+function render(){
+  $('#date').value=state.date||'';
+  $('#case').value=state.caseName||'';
+  $('#tStart').value=state.tStart||'';
+  $('#tEnd').value=state.tEnd||'';
+  $('#hours').value=hoursText();
+  $('#rateGas').value=rates.gas; $('#rateIdle').value=rates.idle;
+  renderPeople(); renderExpenses(); renderTimeline(); refreshOut();
+}
+function refreshOut(){
+  $('#hours').value=hoursText();
+  $('#out').textContent=build();
+  localStorage.setItem(LS_CUR, JSON.stringify(state));
+}
+function el(tag,attrs={},...kids){
+  const e=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs)){
+    if(k==='class') e.className=v; else if(k.startsWith('on')) e.addEventListener(k.slice(2),v);
+    else if(k==='value') e.value=v; else e.setAttribute(k,v);
+  }
+  kids.forEach(k=>e.append(k));
+  return e;
+}
+function renderPeople(){
+  const box=$('#people'); box.innerHTML='';
+  state.people.forEach((p,i)=>{
+    const sel=el('select',{oninput:ev=>{p.means=ev.target.value; renderExpenses(); refreshOut();}});
+    MEANS.forEach(m=>sel.append(el('option',{value:m},m)));
+    sel.value=p.means||'車';
+    const name=el('input',{placeholder:'名前（例：佐藤）',value:p.name,oninput:ev=>{p.name=ev.target.value; renderExpensesHeaders(); refreshOut();}});
+    const del=el('button',{class:'icon danger',title:'削除',onclick:()=>{ if(state.people.length>1){ state.people.splice(i,1); render(); } }},'✕');
+    const row=el('div',{class:'row'},name,el('div',{style:'flex:0 0 110px'},sel),del);
+    box.append(row);
+  });
+}
+function renderExpensesHeaders(){
+  document.querySelectorAll('#expenses .person h3').forEach((h,i)=>{
+    const p=state.people[i]; if(p) h.textContent=(p.name||'（名前未入力）')+(p.means?`(${p.means})`:'');
+  });
+}
+function renderExpenses(){
+  const box=$('#expenses'); box.innerHTML='';
+  state.people.forEach((p,i)=>{
+    const card=el('div',{class:'person'});
+    card.append(el('h3',{},(p.name||'（名前未入力）')+(p.means?`(${p.means})`:'')));
+    const g=el('div',{class:'grid2'});
+    g.append(el('div',{},el('label',{class:'f'},'ガソリン代 走行距離（km）'),
+      el('input',{type:'number',inputmode:'decimal',placeholder:'165',value:p.gasKm,oninput:ev=>{p.gasKm=ev.target.value; refreshOut(); updSum();}})));
+    g.append(el('div',{},el('label',{class:'f'},'アイドリング（時間）'),
+      el('input',{type:'number',inputmode:'decimal',step:'0.5',placeholder:'4',value:p.idleH,oninput:ev=>{p.idleH=ev.target.value; refreshOut(); updSum();}})));
+    card.append(g);
+
+    card.append(el('label',{class:'f'},'高速代（区間と金額）'));
+    const tollBox=el('div');
+    p.tolls.forEach((t,j)=>{
+      tollBox.append(el('div',{class:'row'},
+        el('input',{placeholder:'三郷スマート',value:t.from,oninput:ev=>{t.from=ev.target.value; refreshOut();}}),
+        el('span',{style:'align-self:center;color:var(--sub)'},'〜'),
+        el('input',{placeholder:'羽生',value:t.to,oninput:ev=>{t.to=ev.target.value; refreshOut();}}),
+        el('input',{type:'number',inputmode:'numeric',placeholder:'2,230',value:t.amt,style:'flex:0 0 96px',oninput:ev=>{t.amt=ev.target.value; refreshOut(); updSum();}}),
+        el('button',{class:'icon danger',onclick:()=>{p.tolls.splice(j,1); renderExpenses(); refreshOut();}},'✕')
+      ));
+    });
+    card.append(tollBox);
+    card.append(el('div',{class:'btns'},
+      el('button',{class:'mini',onclick:()=>{p.tolls.push({from:'',to:'',amt:''}); renderExpenses(); refreshOut();}},'＋ 区間'),
+      el('button',{class:'mini',onclick:()=>{
+        const last=p.tolls[p.tolls.length-1];
+        if(!last){ toast('先に片道の区間を入れてください'); return; }
+        p.tolls.push({from:last.to,to:last.from,amt:last.amt}); renderExpenses(); refreshOut();
+      }},'復路を追加（逆区間・同額）')
+    ));
+
+    card.append(el('label',{class:'f'},'その他（駐車場代・電車代など）'));
+    const oBox=el('div');
+    p.others.forEach((o,j)=>{
+      oBox.append(el('div',{class:'row'},
+        el('input',{placeholder:'駐車場代',value:o.label,oninput:ev=>{o.label=ev.target.value; refreshOut();}}),
+        el('input',{type:'number',inputmode:'numeric',placeholder:'800',value:o.amt,style:'flex:0 0 96px',oninput:ev=>{o.amt=ev.target.value; refreshOut(); updSum();}}),
+        el('button',{class:'icon danger',onclick:()=>{p.others.splice(j,1); renderExpenses(); refreshOut();}},'✕')
+      ));
+    });
+    card.append(oBox);
+    card.append(el('div',{class:'btns'},el('button',{class:'mini',onclick:()=>{p.others.push({label:'',amt:''}); renderExpenses(); refreshOut();}},'＋ 項目')));
+    const sum=el('div',{class:'sum'},'計 ',el('b',{class:'ptotal'},yen(personLines(p).total)));
+    card.append(sum);
+    box.append(card);
+  });
+}
+function updSum(){
+  document.querySelectorAll('#expenses .ptotal').forEach((b,i)=>{ const p=state.people[i]; if(p) b.textContent=yen(personLines(p).total); });
+}
+function renderTimeline(){
+  const box=$('#timeline'); box.innerHTML='';
+  if(!state.timeline.length){ box.append(el('p',{class:'hint'},'まだ行がありません。「開始行を入れる」から始めると早いです。')); }
+  state.timeline.forEach((r,i)=>{
+    const time=el('input',{class:'time',inputmode:'numeric',placeholder:'--:--',value:r.time,
+      oninput:ev=>{r.time=ev.target.value; refreshOut();},
+      onblur:ev=>{const n=normTime(ev.target.value); if(n){ r.time=n; ev.target.value=n; refreshOut(); }}});
+    const text=el('textarea',{rows:'2',placeholder:i===0?'第二対象者自宅より本日の調査を開始する、…':'内容',value:r.text,
+      oninput:ev=>{r.text=ev.target.value; autoGrow(ev.target); refreshOut();}});
+    const ops=el('div',{class:'ops'},
+      el('button',{title:'上へ',onclick:()=>{ if(i>0){ [state.timeline[i-1],state.timeline[i]]=[state.timeline[i],state.timeline[i-1]]; renderTimeline(); refreshOut(); } }},'▲'),
+      el('button',{title:'下へ',onclick:()=>{ if(i<state.timeline.length-1){ [state.timeline[i+1],state.timeline[i]]=[state.timeline[i],state.timeline[i+1]]; renderTimeline(); refreshOut(); } }},'▼'),
+      el('button',{title:'この下に補足行',onclick:()=>{ state.timeline.splice(i+1,0,{time:'',text:''}); renderTimeline(); refreshOut(); focusRow(i+1); }},'＋補足'),
+      el('button',{class:'danger',title:'削除',onclick:()=>{ state.timeline.splice(i,1); renderTimeline(); refreshOut(); }},'✕')
+    );
+    box.append(el('div',{class:'tl-row'},time,text,ops));
+    autoGrow(text);
+  });
+}
+function autoGrow(t){ t.style.height='auto'; t.style.height=Math.max(44,t.scrollHeight)+'px'; }
+function focusRow(i){ const rows=document.querySelectorAll('#timeline .tl-row'); const r=rows[i]; if(r){ r.querySelector('textarea').focus(); } }
+
+/* ---------- timeline actions ---------- */
+function timedRows(){ return state.timeline.map((r,i)=>({i,m:toMin(r.time)})).filter(x=>x.m!=null); }
+function sortTimeline(){
+  // keep untimed rows attached to the preceding timed row
+  const groups=[]; let cur=null;
+  state.timeline.forEach(r=>{
+    if(toMin(r.time)!=null){ cur={m:toMin(r.time),rows:[r]}; groups.push(cur); }
+    else if(cur){ cur.rows.push(r); } else { groups.push({m:-1,rows:[r]}); }
+  });
+  groups.sort((a,b)=>a.m-b.m);
+  state.timeline=groups.flatMap(g=>g.rows);
+}
+$('#addTl').onclick=()=>{
+  const last=timedRows().pop();
+  const t=last? fromMin(last.m+60) : (normTime(state.tStart)||'');
+  state.timeline.push({time:t,text:''}); renderTimeline(); refreshOut(); focusRow(state.timeline.length-1);
+};
+$('#addStart').onclick=()=>{
+  const s=normTime(state.tStart); if(!s){ toast('先に開始時刻を入れてください'); return; }
+  if(state.timeline.some(r=>/調査を開始/.test(r.text))){ toast('開始行はすでにあります'); return; }
+  state.timeline.unshift({time:s,text:'対象者自宅より本日の調査を開始する、同刻同宅敷地内にて対象車両は確認できない'});
+  renderTimeline(); refreshOut(); focusRow(0);
+};
+$('#addEnd').onclick=()=>{
+  const e=normTime(state.tEnd); if(!e){ toast('先に終了時刻を入れてください'); return; }
+  if(state.timeline.some(r=>/調査を終了/.test(r.text))){ toast('終了行はすでにあります'); return; }
+  state.timeline.push({time:e,text:WATCH+'、同刻本日の調査を終了する'});
+  sortTimeline(); renderTimeline(); refreshOut();
+};
+$('#fillWatch').onclick=()=>{
+  const s=toMin(state.tStart), e0=toMin(state.tEnd);
+  if(s==null||e0==null){ toast('開始・終了時刻を先に入れてください'); return; }
+  let e=e0; if(e<s) e+=24*60;
+  const have=timedRows().map(x=>x.m);
+  let added=0;
+  for(let t=s+60;t<e;t+=60){
+    // skip if a record already exists within 30 minutes of this hour mark
+    if(have.some(m=>Math.abs(m-t)<30)) continue;
+    state.timeline.push({time:fromMin(t),text:WATCH}); have.push(t); added++;
+  }
+  sortTimeline(); renderTimeline(); refreshOut();
+  toast(added?`${added}行追加しました`:'追加する空き時間はありません');
+};
+$('#sortTl').onclick=()=>{ sortTimeline(); renderTimeline(); refreshOut(); };
+
+/* ---------- basic inputs ---------- */
+$('#date').oninput=ev=>{state.date=ev.target.value; refreshOut();};
+$('#case').oninput=ev=>{state.caseName=ev.target.value; refreshOut();};
+for(const id of ['tStart','tEnd']){
+  $('#'+id).oninput=ev=>{state[id]=ev.target.value; refreshOut();};
+  $('#'+id).onblur=ev=>{const n=normTime(ev.target.value); if(n){state[id]=n; ev.target.value=n; refreshOut();}};
+}
+$('#rateGas').oninput=ev=>{rates.gas=num(ev.target.value); saveRates(); renderExpenses(); refreshOut();};
+$('#rateIdle').oninput=ev=>{rates.idle=num(ev.target.value); saveRates(); renderExpenses(); refreshOut();};
+$('#addPerson').onclick=()=>{ state.people.push({name:'',means:'車',gasKm:'',idleH:'',tolls:[],others:[]}); render(); };
+
+/* ---------- output actions ---------- */
+async function copyText(){
+  const t=build();
+  try{ await navigator.clipboard.writeText(t); toast('コピーしました'); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=t; document.body.append(ta); ta.select();
+    document.execCommand('copy'); ta.remove(); toast('コピーしました');
+  }
+}
+$('#btnCopy').onclick=copyText;
+function fileBase(){ return `${(state.date||'').replace(/-/g,'')}_${(state.caseName||'日報').replace(/[\\/:*?"<>|\s]/g,'')}`; }
+$('#btnTxt').onclick=()=>{ download(fileBase()+'.txt', build(), 'text/plain'); };
+function download(name,content,type){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type:type+';charset=utf-8'}));
+  a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+/* ---------- saved list ---------- */
+function loadList(){ try{ return JSON.parse(localStorage.getItem(LS_LIST)||'[]'); }catch(e){ return []; } }
+function saveList(l){ localStorage.setItem(LS_LIST, JSON.stringify(l)); }
+$('#btnSave').onclick=()=>{
+  const list=loadList();
+  const key=state.date+'|'+state.caseName;
+  const idx=list.findIndex(x=>x.key===key);
+  const item={key,date:state.date,caseName:state.caseName,savedAt:new Date().toISOString(),data:state};
+  if(idx>=0) list[idx]=item; else list.unshift(item);
+  saveList(list.slice(0,60)); renderSaved(); toast('保存しました');
+};
+function renderSaved(){
+  const box=$('#savedList'); box.innerHTML='';
+  const list=loadList();
+  if(!list.length){ box.append(el('p',{class:'hint'},'保存された日報はありません。')); return; }
+  list.forEach(it=>{
+    const when=new Date(it.savedAt);
+    box.append(el('div',{class:'saved-item'},
+      el('div',{},`${fmtDateShort(it.date)} ${it.caseName||'（案件名なし）'} `,el('span',{},`保存 ${when.getMonth()+1}/${when.getDate()} ${p2(when.getHours())}:${p2(when.getMinutes())}`)),
+      el('div',{class:'btns',style:'margin:0'},
+        el('button',{class:'mini',onclick:()=>{ state=JSON.parse(JSON.stringify(it.data)); render(); toast('読み込みました'); window.scrollTo(0,0); }},'開く'),
+        el('button',{class:'mini danger',onclick:()=>{ if(confirm('この保存を削除しますか？')){ saveList(loadList().filter(x=>x.key!==it.key)); renderSaved(); } }},'削除')
+      )));
+  });
+}
+$('#btnSavedList').onclick=()=>{ const s=$('#savedSec'); s.style.display=s.style.display==='none'?'':'none'; renderSaved(); if(s.style.display!=='none') s.scrollIntoView({behavior:'smooth'}); };
+$('#btnNew').onclick=()=>{ if(confirm('入力内容を消して新規作成しますか？（保存済みの日報は残ります）')){ state=blank(); render(); window.scrollTo(0,0); } };
+$('#exportJson').onclick=()=>{ download(fileBase()+'.json', JSON.stringify(state,null,2), 'application/json'); };
+$('#importJson').onchange=ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d.people||!d.timeline) throw 0; state=d; render(); toast('読み込みました'); window.scrollTo(0,0);}catch(e){ toast('読み込めないファイルです'); } };
+  r.readAsText(f); ev.target.value='';
+};
+
+let toastTimer;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),1800); }
+
+/* ---------- init ---------- */
+try{ const c=JSON.parse(localStorage.getItem(LS_CUR)||'null'); if(c&&c.people) state=c; }catch(e){}
+render();
+})();
+</script>
+</body>
+</html>
