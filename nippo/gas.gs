@@ -19,7 +19,14 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-07c';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08a';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+
+// グループに招待されたときのあいさつ文
+const GREETING = 'こんにちは、探偵AIが調査のサポートをいたします、よろしくお願いいたします';
+
+// 調査日報を送ってよいグループ名。これ以外のグループは送信先にしない。
+// 比較時に 【】・空白・全角半角の違いは無視するので「【ラクーン　経費報告】」でも一致する。
+const ALLOWED_GROUP_NAME = 'ラクーン　経費報告';
 
 function doPost(e) {
   let body = {};
@@ -47,12 +54,34 @@ function doGet(e) {
     });
   }
 
+  // 動作確認用: <exec URL>?key=nippo&groupinfo=1
+  // 現在の送信先グループの名前をLINEに問い合わせる（グループ名で制限をかけるための下調べ）
+  if (q.groupinfo) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    const gid = p.getProperty('GROUP_ID');
+    const token = p.getProperty('CHANNEL_ACCESS_TOKEN');
+    if (!gid || !token) return json_({ ok: false, error: 'GROUP_ID か トークンが未設定です' });
+    const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/group/' + encodeURIComponent(gid) + '/summary', {
+      method: 'get', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true
+    });
+    return json_({
+      ok: true, version: VERSION, groupId: gid,
+      httpCode: res.getResponseCode(),
+      body: res.getContentText().slice(0, 500)
+    });
+  }
+
+  const gid = p.getProperty('GROUP_ID');
+  const dest = gid ? destinationOk_(gid) : { ok: false, name: null };
   return json_({
     ok: true,
     version: VERSION,
     mapReply: true,                 // 地図変換つきのコードが反映されていれば true
     tokenSet: !!p.getProperty('CHANNEL_ACCESS_TOKEN'),
-    groupSet: !!p.getProperty('GROUP_ID'),
+    groupSet: !!gid,
+    groupName: dest.name,           // 現在の送信先グループの名前
+    allowedGroupName: ALLOWED_GROUP_NAME,
+    canSend: dest.ok,               // 日報を送れる状態か（送信先の名前が一致しているか）
     sheetUrl: p.getProperty('SHEET_ID') ? 'https://docs.google.com/spreadsheets/d/' + p.getProperty('SHEET_ID') : null
   });
 }
@@ -67,15 +96,18 @@ function handleLineWebhook_(body) {
 
     // 1) 送信先グループを記憶する
     if (src.type === 'group' && src.groupId) {
+      // 招待されたとき。あいさつを返し、グループ名が一致すれば日報の送信先にする。
       if (ev.type === 'join') {
-        p.setProperty('GROUP_ID', src.groupId);
-        reply_(ev.replyToken, 'このグループに調査日報を自動送信します。\n'
-          + 'Googleマップのリンクを貼ると、名称と所在地に変換して返信します。');
+        const set = setDestinationIfAllowed_(src.groupId);
+        reply_(ev.replyToken, GREETING + (set.ok ? '\n（このグループを調査日報の送信先に設定しました）' : ''));
         return;
       }
       if (text === '日報送信先') {
-        p.setProperty('GROUP_ID', src.groupId);
-        reply_(ev.replyToken, 'このグループを調査日報の送信先に設定しました。');
+        const set = setDestinationIfAllowed_(src.groupId);
+        reply_(ev.replyToken, set.ok
+          ? 'このグループを調査日報の送信先に設定しました。'
+          : '日報の送信先にできるのは「' + ALLOWED_GROUP_NAME + '」のグループだけです。\n'
+            + 'このグループ名: ' + (set.name || '（取得できませんでした）'));
         return;
       }
     }
@@ -104,6 +136,57 @@ function handleLineWebhook_(body) {
     if (blocks.length) reply_(ev.replyToken, blocks.join('\n\n'));
   });
   return json_({ ok: true });
+}
+
+/* ================= 送信先グループの制限 =================
+ * 日報は「ALLOWED_GROUP_NAME」のグループにだけ送る。
+ * グループ名は LINE の `GET /v2/bot/group/{groupId}/summary` で取得する（実測で200が返る）。
+ * 名前を確認できたときだけ送信先として登録するので、保存済みの送信先は必ず確認済み。
+ */
+
+/** 比較用にグループ名をそろえる（【】・空白・全角半角の違いを無視する） */
+function normName_(s) {
+  let t = String(s || '');
+  try { t = t.normalize('NFKC'); } catch (err) { /* 旧ランタイム対策 */ }
+  return t.replace(/[【】\[\]\s　]/g, '').toLowerCase();
+}
+
+/** グループ名をLINEに問い合わせる。取得できないときは null */
+function fetchGroupName_(groupId) {
+  const token = PropertiesService.getScriptProperties().getProperty('CHANNEL_ACCESS_TOKEN');
+  if (!token || !groupId) return null;
+  try {
+    const res = UrlFetchApp.fetch(
+      'https://api.line.me/v2/bot/group/' + encodeURIComponent(groupId) + '/summary',
+      { method: 'get', headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) return null;
+    return JSON.parse(res.getContentText()).groupName || null;
+  } catch (err) {
+    return null;
+  }
+}
+
+/** グループ名が一致すれば送信先として保存する。{ok, name} を返す */
+function setDestinationIfAllowed_(groupId) {
+  const name = fetchGroupName_(groupId);
+  // 名前を確認できないときは送信先を変えない（誤ったグループに日報が流れるのを防ぐ）
+  if (name === null || normName_(name) !== normName_(ALLOWED_GROUP_NAME)) {
+    return { ok: false, name: name };
+  }
+  const p = PropertiesService.getScriptProperties();
+  p.setProperty('GROUP_ID', groupId);
+  p.setProperty('GROUP_NAME', name);
+  return { ok: true, name: name };
+}
+
+/** 送信直前の確認。名前が引けなければ登録時に確認済みの名前を信用して通す */
+function destinationOk_(groupId) {
+  const saved = PropertiesService.getScriptProperties().getProperty('GROUP_NAME');
+  const name = fetchGroupName_(groupId);
+  if (name === null) {
+    return { ok: !!saved && normName_(saved) === normName_(ALLOWED_GROUP_NAME), name: saved, checked: false };
+  }
+  return { ok: normName_(name) === normName_(ALLOWED_GROUP_NAME), name: name, checked: true };
 }
 
 /* ================= Googleマップのリンク → 名称＋所在地 =================
@@ -341,7 +424,18 @@ function handleReport_(body) {
   const token = p.getProperty('CHANNEL_ACCESS_TOKEN');
   const groupId = p.getProperty('GROUP_ID');
   if (!token) return json_({ ok: false, error: 'GAS に CHANNEL_ACCESS_TOKEN が設定されていません' });
-  if (!groupId) return json_({ ok: false, error: '送信先グループが未設定です。公式LINEをグループに招待してください' });
+  if (!groupId) {
+    return json_({ ok: false, error: '送信先グループが未設定です。公式LINEを「'
+      + ALLOWED_GROUP_NAME + '」のグループに招待してください' });
+  }
+
+  // 日報は ALLOWED_GROUP_NAME のグループにだけ送る
+  const dest = destinationOk_(groupId);
+  if (!dest.ok) {
+    return json_({ ok: false, error: '送信先が「' + ALLOWED_GROUP_NAME + '」ではないため送信しませんでした'
+      + '（現在の送信先: ' + (dest.name || '不明') + '）。'
+      + '公式LINEを「' + ALLOWED_GROUP_NAME + '」に招待するか、そのグループで「日報送信先」と送ってください' });
+  }
 
   const header = body.sender ? '【' + body.sender + 'さんの日報】\n' : '';
   const messages = chunk_(header + text, 4900).slice(0, 5).map(function (t) { return { type: 'text', text: t }; });
