@@ -124,7 +124,10 @@
         <button class="mini" id="todayBtn">今日</button>
       </div>
     </div>
-    <div><label class="f">案件名</label><input id="case" placeholder="例：福島様調査"></div>
+    <div>
+      <label class="f">案件名</label><input id="case" placeholder="例：福島様調査">
+      <label class="f">探偵社</label><input id="agency" placeholder="例：ラクーン探偵社">
+    </div>
   </div>
   <div class="grid3">
     <div><label class="f">開始時刻</label><input id="tStart" inputmode="numeric" placeholder="17:30"></div>
@@ -213,7 +216,8 @@ const AUTO_SEND_URL = 'https://script.google.com/macros/s/AKfycbzOnlfYku0ovOuWG4
 const AUTO_SEND_KEY = 'nippo';   // GAS側の SHARED_KEY と一致させる
 
 const $ = s => document.querySelector(s);
-const LS_CUR='nippo:current', LS_LIST='nippo:list', LS_RATE='nippo:rates', LS_SENDER='nippo:sender', LS_FARE='nippo:fares';
+const LS_CUR='nippo:current', LS_LIST='nippo:list', LS_RATE='nippo:rates', LS_SENDER='nippo:sender',
+      LS_FARE='nippo:fares', LS_AGENCY='nippo:agency';
 const WATCH = '監視態勢を継続するも動き認められない';
 const MEANS = ['車','電車','バイク','徒歩','その他'];
 const WD = ['日','月','火','水','木','金','土'];
@@ -226,7 +230,9 @@ let rates = loadRates();
 let fares = loadFares();
 let state = blank();
 
-function blank(){ return { date: todayISO(), caseName:'', tStart:'', tEnd:'', people:[newPerson()], detail:'' }; }
+function blank(){ return { date: todayISO(), caseName:'', agency: lastAgency(), tStart:'', tEnd:'', people:[newPerson()], detail:'' }; }
+/* 探偵社は毎回同じなので、最後に入力した社名を次回の初期値にする */
+function lastAgency(){ try{ return localStorage.getItem(LS_AGENCY)||''; }catch(e){ return ''; } }
 function newPerson(){ return {name:'', means:'車', gasKm:'', idleH:'', gasRate:rates.gas, idleRate:rates.idle, tolls:[], trains:[], others:[]}; }
 function gasRate(p){ return num(p.gasRate)||rates.gas; }
 function idleRate(p){ return num(p.idleRate)||rates.idle; }
@@ -311,6 +317,7 @@ function migrate(s){
     delete s.timeline;
   }
   if(s.detail==null) s.detail='';
+  if(s.agency==null) s.agency=lastAgency();
   (s.people||[]).forEach(p=>{
     if(!Array.isArray(p.tolls)) p.tolls=[];
     if(!Array.isArray(p.trains)) p.trains=[];
@@ -369,6 +376,7 @@ function build(){
   if(state.tStart && !s) errs.push('開始時刻の形式が正しくありません（例 17:30）');
   if(state.tEnd && !e) errs.push('終了時刻の形式が正しくありません（例 25:00）');
   if(!state.caseName) errs.push('案件名が未入力です');
+  if(!(state.agency||'').trim()) errs.push('探偵社が未入力です');
   if(!state.people.some(p=>p.name)) errs.push('調査員が未入力です');
   if(!(state.detail||'').trim()) errs.push('調査詳細が未入力です');
   const estCount=state.people.reduce((n,p)=>n+(p.tolls||[]).filter(t=>t.est&&num(t.amt)>0).length,0);
@@ -377,6 +385,7 @@ function build(){
   out.push('【調査日】','',dateFull,'');
   out.push('【調査時間】','',`${s||''}-${e||''}(${hoursText()})`,'');
   out.push('【案件名】','',state.caseName,'');
+  if((state.agency||'').trim()) out.push(`【${state.agency.trim()}】`,'');
   out.push('【調査員】','');
   state.people.filter(p=>p.name).forEach(p=>out.push(p.name+(p.means?`(${p.means})`:'')));
   out.push('','【使用経費】','');
@@ -392,7 +401,7 @@ function build(){
 
 /* ---------- render ---------- */
 function render(){
-  setDateFields(); $('#case').value=state.caseName||'';
+  setDateFields(); $('#case').value=state.caseName||''; $('#agency').value=state.agency||'';
   $('#tStart').value=state.tStart||''; $('#tEnd').value=state.tEnd||'';
   $('#detail').value=state.detail||'';
   /* 保存データを開いたときも、覚えている区間の料金を入れておく */
@@ -644,6 +653,11 @@ function fromReiwaFields(){
 $('#date').oninput=ev=>{ state.date=ev.target.value; setDateFields(); refreshOut(); };
 $('#todayBtn').onclick=()=>{ state.date=todayISO(); setDateFields(); refreshOut(); };
 $('#case').oninput=ev=>{state.caseName=ev.target.value; refreshOut();};
+$('#agency').oninput=ev=>{
+  state.agency=ev.target.value;
+  try{ localStorage.setItem(LS_AGENCY, state.agency.trim()); }catch(e){}
+  refreshOut();
+};
 for(const id of ['tStart','tEnd']){
   $('#'+id).oninput=ev=>{state[id]=ev.target.value; refreshOut();};
   $('#'+id).onblur=ev=>{const n=normTime(ev.target.value); if(n){state[id]=n; ev.target.value=n; refreshOut();}};
