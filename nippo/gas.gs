@@ -19,6 +19,7 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
+const VERSION = '2026-09-07c';   // 「デプロイした版が反映されているか」を外から確かめるための目印
 
 function doPost(e) {
   let body = {};
@@ -27,10 +28,29 @@ function doPost(e) {
   return handleReport_(body);
 }
 
-function doGet() {
+function doGet(e) {
   const p = PropertiesService.getScriptProperties();
+  const q = (e && e.parameter) || {};
+
+  // 動作確認用: <exec URL>?key=nippo&maptest=<GoogleマップのURL>
+  // LINEを経由せずに、リンクの展開結果と返信文だけを確認できる。
+  if (q.maptest) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    const expanded = expandUrl_(q.maptest);
+    const info = parseMapUrl_(expanded);
+    return json_({
+      ok: true,
+      version: VERSION,
+      expanded: expanded,
+      parsed: { name: info.name, lat: info.lat, lng: info.lng, qtext: info.qtext },
+      reply: mapLinkReply_(q.maptest, true)
+    });
+  }
+
   return json_({
     ok: true,
+    version: VERSION,
+    mapReply: true,                 // 地図変換つきのコードが反映されていれば true
     tokenSet: !!p.getProperty('CHANNEL_ACCESS_TOKEN'),
     groupSet: !!p.getProperty('GROUP_ID'),
     sheetUrl: p.getProperty('SHEET_ID') ? 'https://docs.google.com/spreadsheets/d/' + p.getProperty('SHEET_ID') : null

@@ -106,7 +106,34 @@ LINEアプリで、日報を流したいグループに公式アカウントを�
 > 仕組みのメモ: 短縮URLは本文（HTML）に名称も住所も含んでおらず、302リダイレクト先のURLだけが情報源です。
 > そこから施設名と座標（`!3d`/`!4d`）を取り出し、名称＋座標周辺で正引き→座標から逆引きの順で住所を確定しています。
 
-### 既存のGASを更新する手順
+### 反映できているかを外から確かめる
+
+`…/exec` をブラウザで開いたときの JSON に **`"version"` と `"mapReply":true`** が入っていれば、
+地図変換つきのコードが反映されています。入っていなければ古いバージョンが配られたままです。
+
+リンク単体の変換結果だけを見たいときは（LINEを経由しません）:
+
+```
+…/exec?key=nippo&maptest=https://maps.app.goo.gl/xxxxxxxx
+```
+
+展開後のURL・取り出した名称と座標・実際の返信文が JSON で返ります。
+
+### 既存のGASを更新する手順（コマンドで行う場合）
+
+`C:\Users\racoo\gdrive-tools\gas.bat`（Apps Script API のCLI）でコードの差し替えとデプロイができます。
+
+```
+gas.bat info                      … ファイル一覧とデプロイ一覧を確認
+gas.bat push ..\cd-my-lp\nippo\gas.gs
+gas.bat deploy --desc "地図変換"    … 新バージョンを作り既存デプロイを更新（URLは変わらない）
+```
+
+初回だけ次の2つが必要です。
+1. https://script.google.com/home/usersettings で **「Google Apps Script API」をオン**（アカウント単位の設定）
+2. `gas.bat auth`（ブラウザで許可）→ そのあと `gas.bat enable`（GCP側の有効化）
+
+### 既存のGASを更新する手順（手で行う場合）
 
 1. GASエディタで `gas.gs` の内容を**全文貼り替え**（`コード.gs` を全選択して上書き）。
 2. エディタ上部の関数選択で **`testMapLink`** を選び「実行」→ 実行ログに変換結果が3件出れば成功です。
