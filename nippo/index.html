@@ -104,14 +104,7 @@
   <h2>使用経費 <small>調査員ごとに入力。空欄の項目は出力されません</small></h2>
   <div id="expenses"></div>
   <div class="sum">合計 <b id="grandTotal">0円</b></div>
-  <details class="settings">
-    <summary>単価の設定（ガソリン・アイドリング）</summary>
-    <div class="grid2">
-      <div><label class="f">ガソリン代 単価（円/km）</label><input type="number" id="rateGas" inputmode="decimal" step="0.1"></div>
-      <div><label class="f">アイドリング 単価（円/時間）</label><input type="number" id="rateIdle" inputmode="decimal" step="1"></div>
-    </div>
-    <p class="hint">単価はこの端末に保存され、次回以降も使われます。元受けの規定に合わせてください。</p>
-  </details>
+  <p class="hint">ガソリン代・アイドリングの単価は調査員ごとに選べます。最後に選んだ単価が次回の初期値になります。</p>
 </section>
 
 <section>
@@ -146,7 +139,8 @@
 </div>
 
 <div class="bar">
-  <button class="pri" id="btnCopy">日報テキストをコピー</button>
+  <button class="pri" id="btnLine" style="background:#06C755;border-color:#06C755">LINEに送る</button>
+  <button id="btnCopy">テキストをコピー</button>
   <button id="btnTxt">.txt保存</button>
   <button id="btnSave">この日報を保存</button>
 </div>
@@ -161,16 +155,20 @@ const WATCH = '監視態勢を継続するも動き認められない';
 const MEANS = ['車','電車','バイク','徒歩','その他'];
 const WD = ['日','月','火','水','木','金','土'];
 
-let state = blank();
 let rates = loadRates();
+let state = blank();
 
 function blank(){
   return {
     date: todayISO(), caseName: '', tStart: '', tEnd: '',
-    people: [ {name:'', means:'車', gasKm:'', idleH:'', tolls:[], others:[]} ],
+    people: [ newPerson() ],
     timeline: []
   };
 }
+function newPerson(){ return {name:'', means:'車', gasKm:'', idleH:'', gasRate:rates.gas, idleRate:rates.idle, tolls:[], others:[]}; }
+const GAS_RATES=[15,20], IDLE_RATES=[150,200];
+function gasRate(p){ return num(p.gasRate)||rates.gas; }
+function idleRate(p){ return num(p.idleRate)||rates.idle; }
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
 function p2(n){ return String(n).padStart(2,'0'); }
 function loadRates(){
@@ -218,8 +216,8 @@ function personLines(p){
   const lines=[]; let total=0;
   const label = p.name + (p.means?`(${p.means})`:'');
   lines.push(label);
-  if(num(p.gasKm)>0){ const a=num(p.gasKm)*rates.gas; total+=a; lines.push(`ガソリン代 ${num(p.gasKm)}km　${yen(a)}`); }
-  if(num(p.idleH)>0){ const a=num(p.idleH)*rates.idle; total+=a; lines.push(`アイドリング ${num(p.idleH)}h　${yen(a)}`); }
+  if(num(p.gasKm)>0){ const a=num(p.gasKm)*gasRate(p); total+=a; lines.push(`ガソリン代 ${num(p.gasKm)}km　${yen(a)}`); }
+  if(num(p.idleH)>0){ const a=num(p.idleH)*idleRate(p); total+=a; lines.push(`アイドリング ${num(p.idleH)}h　${yen(a)}`); }
   const tolls=p.tolls.filter(t=>t.from||t.to||num(t.amt)>0);
   if(tolls.length){
     lines.push('高速代');
@@ -278,7 +276,6 @@ function render(){
   $('#tStart').value=state.tStart||'';
   $('#tEnd').value=state.tEnd||'';
   $('#hours').value=hoursText();
-  $('#rateGas').value=rates.gas; $('#rateIdle').value=rates.idle;
   renderPeople(); renderExpenses(); renderTimeline(); refreshOut();
 }
 function refreshOut(){
@@ -317,11 +314,21 @@ function renderExpenses(){
   state.people.forEach((p,i)=>{
     const card=el('div',{class:'person'});
     card.append(el('h3',{},(p.name||'（名前未入力）')+(p.means?`(${p.means})`:'')));
+    const rateSel=(opts,cur,unit,onch)=>{
+      const s=el('select',{style:'flex:0 0 112px',oninput:ev=>onch(num(ev.target.value))});
+      opts.forEach(v=>s.append(el('option',{value:v},`${v}${unit}`)));
+      s.value=String(opts.includes(num(cur))?num(cur):opts[0]);
+      return s;
+    };
     const g=el('div',{class:'grid2'});
-    g.append(el('div',{},el('label',{class:'f'},'ガソリン代 走行距離（km）'),
-      el('input',{type:'number',inputmode:'decimal',placeholder:'165',value:p.gasKm,oninput:ev=>{p.gasKm=ev.target.value; refreshOut(); updSum();}})));
-    g.append(el('div',{},el('label',{class:'f'},'アイドリング（時間）'),
-      el('input',{type:'number',inputmode:'decimal',step:'0.5',placeholder:'4',value:p.idleH,oninput:ev=>{p.idleH=ev.target.value; refreshOut(); updSum();}})));
+    g.append(el('div',{},el('label',{class:'f'},'ガソリン代 走行距離（km）と単価'),
+      el('div',{class:'row'},
+        el('input',{type:'number',inputmode:'decimal',placeholder:'165',value:p.gasKm,oninput:ev=>{p.gasKm=ev.target.value; refreshOut(); updSum();}}),
+        rateSel(GAS_RATES,p.gasRate,'円/km',v=>{p.gasRate=v; rates.gas=v; saveRates(); refreshOut(); updSum();}))));
+    g.append(el('div',{},el('label',{class:'f'},'アイドリング（時間）と単価'),
+      el('div',{class:'row'},
+        el('input',{type:'number',inputmode:'decimal',step:'0.5',placeholder:'4',value:p.idleH,oninput:ev=>{p.idleH=ev.target.value; refreshOut(); updSum();}}),
+        rateSel(IDLE_RATES,p.idleRate,'円/h',v=>{p.idleRate=v; rates.idle=v; saveRates(); refreshOut(); updSum();}))));
     card.append(g);
 
     card.append(el('label',{class:'f'},'高速代（区間と金額）'));
@@ -438,9 +445,7 @@ for(const id of ['tStart','tEnd']){
   $('#'+id).oninput=ev=>{state[id]=ev.target.value; refreshOut();};
   $('#'+id).onblur=ev=>{const n=normTime(ev.target.value); if(n){state[id]=n; ev.target.value=n; refreshOut();}};
 }
-$('#rateGas').oninput=ev=>{rates.gas=num(ev.target.value); saveRates(); renderExpenses(); refreshOut();};
-$('#rateIdle').oninput=ev=>{rates.idle=num(ev.target.value); saveRates(); renderExpenses(); refreshOut();};
-$('#addPerson').onclick=()=>{ state.people.push({name:'',means:'車',gasKm:'',idleH:'',tolls:[],others:[]}); render(); };
+$('#addPerson').onclick=()=>{ state.people.push(newPerson()); render(); };
 
 /* ---------- output actions ---------- */
 async function copyText(){
@@ -452,6 +457,16 @@ async function copyText(){
   }
 }
 $('#btnCopy').onclick=copyText;
+$('#btnLine').onclick=async()=>{
+  const t=build();
+  if($('#errs').textContent && !confirm('未入力の項目があります。このまま送りますか？\n'+$('#errs').textContent)) return;
+  try{ await navigator.clipboard.writeText(t); }catch(e){}
+  // LINEアプリを開き、送信先（グループ）を選ぶ画面に本文を渡す。念のためコピーもしてあるので貼り付けでも送れる。
+  const url='https://line.me/R/share?text='+encodeURIComponent(t);
+  const w=window.open(url,'_blank');
+  if(!w) location.href=url;
+  toast('LINEを開きます。送信先のグループを選んでください（本文はコピー済み）');
+};
 function fileBase(){ return `${(state.date||'').replace(/-/g,'')}_${(state.caseName||'日報').replace(/[\\/:*?"<>|\s]/g,'')}`; }
 $('#btnTxt').onclick=()=>{ download(fileBase()+'.txt', build(), 'text/plain'); };
 function download(name,content,type){
