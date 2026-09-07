@@ -19,7 +19,7 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08c';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08d';   // 「デプロイした版が反映されているか」を外から確かめるための目印
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
@@ -309,7 +309,21 @@ function askClaude_(question, history) {
     .join('\n')
     .trim();
   if (!text) return '';
-  return body.stop_reason === 'max_tokens' ? text + '\n（長くなったため省略しました）' : text;
+  const out = stripFormLink_(text);
+  return body.stop_reason === 'max_tokens' ? out + '\n（長くなったため省略しました）' : out;
+}
+
+/**
+ * 調査日報フォームのURLを本文から取り除く（ユーザー指示: どのグループにも貼らない）。
+ * システムプロンプトでも禁じているが、言い方次第で出てしまうことがあるので送信直前にも落とす。
+ */
+function stripFormLink_(text) {
+  // https付き・スキーム省略・裸のドメインのいずれも拾う
+  return String(text)
+    .replace(/(?:https?:\/\/)?(?:www\.)?lp\.exeresearch\.jp\/nippo\/?[^\s、。）)]*/gi,
+      '（フォームのURLは管理者から個別に共有します）')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 /** AIへの指示文 */
@@ -336,9 +350,12 @@ function AI_SYSTEM_PROMPT_() {
     '  戸籍や住民票の不正取得、盗聴など）の具体的な手順は案内しない。',
     '  代わりに合法的な代替手段や、必要な手続き・許可の取り方を示す。',
     '- 依頼者や対象者の個人情報を、聞かれていないのに書き出したり推測したりしない。',
+    '- 調査日報フォームのURL（リンク）は、どのグループでも絶対に書かない。聞かれても',
+    '  「フォームのURLは管理者から個別に共有します」と答え、アドレスそのものは出さない。',
+    '  フォームの使い方の説明はしてよいが、リンクは貼らない。',
     '',
     '社内の道具',
-    '- 調査日報フォーム: https://lp.exeresearch.jp/nippo/ （入力すると日報の文面ができ、',
+    '- 調査日報フォーム（URLは書かない。入力すると日報の文面ができ、',
     '  「LINEグループに送信」で「ラクーン　経費報告」のグループに投稿される）',
     '- このグループにGoogleマップのリンクや位置情報を貼ると、名称と所在地に変換して返す。'
   ].join('\n');
