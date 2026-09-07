@@ -69,6 +69,7 @@
   .fld .unit{flex:0 0 auto;width:auto;color:var(--sub);font-size:.9rem}
   .fld select.rate{flex:0 0 auto;width:auto;padding:10px 6px;font-size:.92rem}
   .fld .calc{flex:0 0 auto;color:var(--ink);font-size:.9rem;font-variant-numeric:tabular-nums}
+  .fld input.ymd{flex:0 0 58px;text-align:center;padding:10px 4px;font-variant-numeric:tabular-nums}
 
   /* 区間カード（高速代・電車代） */
   .seg{border:1px solid var(--line);border-radius:9px;padding:9px;margin-bottom:8px;background:#0f1a25}
@@ -110,7 +111,19 @@
 <section>
   <h2>基本情報</h2>
   <div class="grid2">
-    <div><label class="f">調査日</label><input type="date" id="date"></div>
+    <div>
+      <label class="f">調査日</label>
+      <div class="fld">
+        <span class="unit">令和</span><input id="rY" class="ymd" inputmode="numeric" maxlength="2" placeholder="8">
+        <span class="unit">年</span><input id="rM" class="ymd" inputmode="numeric" maxlength="2" placeholder="9">
+        <span class="unit">月</span><input id="rD" class="ymd" inputmode="numeric" maxlength="2" placeholder="7">
+        <span class="unit">日</span><span class="unit" id="wdLbl"></span>
+      </div>
+      <div class="fld" style="margin-top:6px">
+        <input type="date" id="date" style="flex:1 1 150px" title="カレンダーから選ぶ">
+        <button class="mini" id="todayBtn">今日</button>
+      </div>
+    </div>
     <div><label class="f">案件名</label><input id="case" placeholder="例：福島様調査"></div>
   </div>
   <div class="grid3">
@@ -379,7 +392,7 @@ function build(){
 
 /* ---------- render ---------- */
 function render(){
-  $('#date').value=state.date||''; $('#case').value=state.caseName||'';
+  setDateFields(); $('#case').value=state.caseName||'';
   $('#tStart').value=state.tStart||''; $('#tEnd').value=state.tEnd||'';
   $('#detail').value=state.detail||'';
   /* 保存データを開いたときも、覚えている区間の料金を入れておく */
@@ -596,7 +609,40 @@ $('#fillWatch').onclick=()=>{
 };
 
 /* ---------- basic inputs ---------- */
-$('#date').oninput=ev=>{state.date=ev.target.value; refreshOut();};
+/* 調査日は「令和○年○月○日」で入力する。カレンダー欄と相互に同期する。 */
+function wdOf(iso){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const [y,m,d]=iso.split('-').map(Number);
+  return '('+WD[new Date(y,m-1,d).getDay()]+')';
+}
+function setDateFields(){
+  const iso=state.date||'';
+  $('#date').value=iso;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(iso)){
+    const [y,m,d]=iso.split('-').map(Number);
+    $('#rY').value=String(y-2018); $('#rM').value=String(m); $('#rD').value=String(d);
+  }else{
+    $('#rY').value=''; $('#rM').value=''; $('#rD').value='';
+  }
+  $('#wdLbl').textContent=wdOf(iso);
+}
+function digits(v){ return String(v??'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[^\d]/g,''); }
+function fromReiwaFields(){
+  const ry=+digits($('#rY').value), m=+digits($('#rM').value), d=+digits($('#rD').value);
+  let iso='';
+  if(ry>=1&&ry<=99&&m>=1&&m<=12&&d>=1&&d<=31){
+    const y=2018+ry, dt=new Date(y,m-1,d);
+    /* 2月30日のような存在しない日付を弾く */
+    if(dt.getMonth()===m-1&&dt.getDate()===d) iso=`${y}-${p2(m)}-${p2(d)}`;
+  }
+  state.date=iso; $('#date').value=iso; $('#wdLbl').textContent=wdOf(iso); refreshOut();
+}
+['rY','rM','rD'].forEach(id=>{
+  $('#'+id).oninput=fromReiwaFields;
+  $('#'+id).onblur=ev=>{ const n=digits(ev.target.value); if(ev.target.value!==n){ ev.target.value=n; fromReiwaFields(); } };
+});
+$('#date').oninput=ev=>{ state.date=ev.target.value; setDateFields(); refreshOut(); };
+$('#todayBtn').onclick=()=>{ state.date=todayISO(); setDateFields(); refreshOut(); };
 $('#case').oninput=ev=>{state.caseName=ev.target.value; refreshOut();};
 for(const id of ['tStart','tEnd']){
   $('#'+id).oninput=ev=>{state[id]=ev.target.value; refreshOut();};
