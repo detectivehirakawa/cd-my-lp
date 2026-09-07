@@ -19,13 +19,13 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08b';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08c';   // 「デプロイした版が反映されているか」を外から確かめるための目印
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
  * 未設定なら AI応答だけが無効になり、日報送信と地図変換はそのまま動く。
  */
-const AI_MODEL = 'claude-opus-5';
+const AI_MODEL = 'claude-sonnet-5';   // 入力$2/出力$10 per 1Mトークン。claude-opus-5 に変えるとより高性能（$5/$25）
 const AI_EFFORT = 'medium';      // LINEは待たされるので chat 向けに抑えている（high にすると熟考するが遅い）
 const AI_MAX_TOKENS = 8000;      // 思考トークンも含む上限。見える返信の長さは指示文で抑える
 const AI_DAILY_LIMIT = 50;       // 1日の呼び出し上限（暴走と課金事故の防止）
@@ -266,19 +266,25 @@ function askClaude_(question, history) {
     max_tokens: AI_MAX_TOKENS,
     system: AI_SYSTEM_PROMPT_(),
     output_config: { effort: AI_EFFORT },
-    fallbacks: 'default',            // 安全側の判断で断られたときは代替モデルで自動的にやり直す
     messages: messages
   };
+  const headers = {
+    'x-api-key': key,
+    'anthropic-version': '2023-06-01'
+  };
+  // 安全側の判断で断られたときに代替モデルでやり直す指定。
+  // 受け付けるモデルが限られている（Opus 5 / Fable 系）ので、それ以外では付けない。
+  if (/^claude-(opus-5|fable-5)/.test(AI_MODEL)) {
+    payload.fallbacks = 'default';
+    headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
+  }
+
   let res;
   try {
     res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
       method: 'post',
       contentType: 'application/json',
-      headers: {
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'server-side-fallback-2026-07-01'
-      },
+      headers: headers,
       payload: JSON.stringify(payload),
       muteHttpExceptions: true
     });
