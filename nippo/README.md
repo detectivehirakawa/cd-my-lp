@@ -210,9 +210,6 @@ Apps Script API ではスクリプトプロパティを設定できないため�
 `…/exec?key=nippo&aitest=日報の書き方を教えて` を開くと、LINEを経由せずに実際の回答が見られます。
 そのあとグループで公式アカウントを @メンションして質問してみてください。
 
-`…/exec` の JSON で `"aiKeySet":true` になれば登録できています。
-LINEを経由せず答えだけ試すには `…/exec?key=nippo&aitest=日報の書き方を教えて`。
-
 ### 費用と安全弁
 
 - 料金は Claude API の従量課金（`claude-sonnet-5` は入力 $2 / 出力 $10 per 1Mトークン）。
