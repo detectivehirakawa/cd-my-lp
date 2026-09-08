@@ -7,6 +7,8 @@
  *  2. LINE の Webhook を受け取り、公式LINEが招待されたグループの groupId を自動で記憶する。
  *  3. 送信した日報を Google スプレッドシートに1行ずつ記録する（初回に自動作成）。
  *  4. グループに貼られた Googleマップのリンクを「名称＋所在地」に変換して返信する。
+ *  5. 名指しされたら Claude が答える。ウェブ検索も使えるので、建物名と住所を渡すと
+ *     総戸数・想定入居層（単身／ファミリー）・オートロックやコンシェルジュの有無を調べて報告する。
  *
  * 必要な設定（プロジェクトの設定 → スクリプト プロパティ）
  *  CHANNEL_ACCESS_TOKEN : LINE Developers の Messaging API チャネルの「チャネルアクセストークン（長期）」
@@ -19,7 +21,7 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08d';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08e';   // 「デプロイした版が反映されているか」を外から確かめるための目印
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
@@ -31,6 +33,34 @@ const AI_MAX_TOKENS = 8000;      // 思考トークンも含む上限。見え�
 const AI_DAILY_LIMIT = 50;       // 1日の呼び出し上限（暴走と課金事故の防止）
 const AI_HISTORY_TURNS = 6;      // グループごとに覚えておく往復数（発言6件＝3往復）
 const AI_TRIGGER_WORDS = ['探偵AI', '探偵ai'];   // メンションが取れない端末向けの予備トリガー
+
+/* ---- ウェブ検索（Anthropicのサーバー側ツール。GAS側の実装は不要） ----
+ * tools に宣言するだけで Claude が自分で検索し、結果は同じ応答に入って返る。
+ * 料金は検索1,000回あたり$10（1回約1.5円）＋読み込んだトークン分。
+ * この型（_20260209）は Sonnet 5 / Opus 5 系で使える。古いモデルに変えるときは
+ * web_search_20250305 / web_fetch_20250910 に落とすこと。
+ */
+const AI_WEB_SEARCH = true;
+const WEB_SEARCH_TOOL = 'web_search_20260209';
+const WEB_FETCH_TOOL = 'web_fetch_20260209';
+const AI_SEARCH_MAX_USES = 3;    // 通常の会話で許す検索回数（多いとLINEの返信期限に間に合わない）
+const AI_FETCH_MAX_USES = 2;     // ページ本文の読み込み回数（1回あたり数秒かかる）
+const AI_MAX_ROUNDS = 3;         // pause_turn で再開する上限回数
+// 検索を打ち切るまでの目安。1周が長いと超過してから止まるので、GASの実行上限6分の半分以下にしておく。
+const AI_TIME_BUDGET_MS = 90000;
+
+/* ---- 物件（建物）の下調べモード ----
+ * 実測: effort=high / 検索10回 で 196秒（GASの6分上限に近く危険）。
+ *       effort=medium / 検索6回 に絞って 90〜120秒を狙う。
+ */
+const PROP_EFFORT = 'medium';
+const PROP_SEARCH_MAX_USES = 6;  // 総戸数・オートロック・間取り等を項目ごとに検索する
+const PROP_FETCH_MAX_USES = 2;
+const PROP_MAX_TOKENS = 12000;
+const PROP_DAILY_LIMIT = 20;     // 1件あたり15〜30円かかるので別枠で上限を持つ
+
+// LINEの返信トークンは受信から約60秒で切れる。これを超えそうならpushに切り替える。
+const REPLY_TOKEN_BUDGET_MS = 45000;
 
 // グループに招待されたときのあいさつ文
 const GREETING = 'こんにちは、探偵AIが調査のサポートをいたします、よろしくお願いいたします';
@@ -72,12 +102,40 @@ function doGet(e) {
     if (!p.getProperty('ANTHROPIC_API_KEY')) return json_({ ok: false, error: 'ANTHROPIC_API_KEY が未設定です' });
     if (!bumpAiCount_()) return json_({ ok: false, error: '本日の上限に達しました' });
     const t0 = Date.now();
-    const answer = askClaude_(String(q.aitest), []);
+    const r = askClaude_(String(q.aitest), [], { web: q.nosearch ? false : undefined });
     return json_({
-      ok: !!answer, version: VERSION, model: AI_MODEL, effort: AI_EFFORT,
+      ok: !!r.text, version: VERSION, model: AI_MODEL, effort: AI_EFFORT,
+      searches: r.searches,
       seconds: Math.round((Date.now() - t0) / 100) / 10,
-      answer: answer
+      answer: r.text
     });
+  }
+
+  // 動作確認用: <exec URL>?key=nippo&proptest=<建物名＋住所>
+  // LINEを経由せずに建物の下調べだけを確認できる（物件調べ1件分を消費する）
+  if (q.proptest) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    if (!p.getProperty('ANTHROPIC_API_KEY')) return json_({ ok: false, error: 'ANTHROPIC_API_KEY が未設定です' });
+    if (!bumpPropCount_()) return json_({ ok: false, error: '本日の物件調べの上限に達しました' });
+    const t0 = Date.now();
+    const r = askClaude_(String(q.proptest), [], {
+      web: true, maxUses: PROP_SEARCH_MAX_USES, fetchMaxUses: PROP_FETCH_MAX_USES,
+      effort: PROP_EFFORT, maxTokens: PROP_MAX_TOKENS, system: AI_PROPERTY_PROMPT_()
+    });
+    return json_({
+      ok: !!r.text, version: VERSION, model: AI_MODEL, effort: PROP_EFFORT,
+      searches: r.searches,
+      seconds: Math.round((Date.now() - t0) / 100) / 10,
+      answer: r.text
+    });
+  }
+
+  // 動作確認用: <exec URL>?key=nippo&proptrigger=<発言>
+  // その発言が「建物の下調べ」と判定されるかだけを見る（AIは呼ばない＝無料）
+  if (q.proptrigger) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    const detected = propertyQuery_(String(q.proptrigger));
+    return json_({ ok: true, version: VERSION, isProperty: !!detected, query: detected });
   }
 
   // 動作確認用: <exec URL>?key=nippo&groupinfo=1
@@ -112,6 +170,9 @@ function doGet(e) {
     aiModel: AI_MODEL,
     aiCallsToday: aiCountToday_(),
     aiDailyLimit: AI_DAILY_LIMIT,
+    webSearch: AI_WEB_SEARCH,       // ウェブ検索つきのコードが反映されていれば true
+    propCallsToday: propCountToday_(),
+    propDailyLimit: PROP_DAILY_LIMIT,
     sheetUrl: p.getProperty('SHEET_ID') ? 'https://docs.google.com/spreadsheets/d/' + p.getProperty('SHEET_ID') : null
   });
 }
@@ -156,8 +217,12 @@ function handleLineWebhook_(body) {
 
     // 2-b) 本文に貼られた Googleマップのリンク
     if (ev.message.type !== 'text' || !text) return;
+    // 「@探偵AI この建物を調べて <地図リンク>」のときは地図変換ではなく建物の下調べを優先する。
+    // （リンクから名称と所在地を割り出してから調べるので、現場で撮ったピンをそのまま渡せる）
+    const askedBot = src.type === 'user' || addressedToBot_(ev.message);
+    const wantsProperty = askedBot && !!propertyQuery_(stripMentions_(ev.message).trim() || text);
     const urls = findMapUrls_(text);
-    if (urls.length) {
+    if (urls.length && !wantsProperty) {
       const blocks = [];
       urls.forEach(function (u) {
         const b = mapLinkReply_(u);
@@ -243,74 +308,270 @@ function aiReply_(ev, text, src) {
   // メンション部分（@探偵AI など）は質問文から外す
   const question = stripMentions_(ev.message).trim() || text;
   const convKey = 'ai:hist:' + (src.groupId || src.roomId || src.userId || 'unknown');
-  const history = readHistory_(cache, convKey);
+  const to = src.groupId || src.roomId || src.userId || '';
 
-  const answer = askClaude_(question, history);
+  // 建物の下調べは検索回数が多く1分近くかかるので、先に受付だけ返して結果は push で送る
+  const prop = propertyQuery_(question);
+  if (prop) {
+    if (!bumpPropCount_()) {
+      reply_(ev.replyToken, '本日の物件調べの上限（' + PROP_DAILY_LIMIT + '件）に達しました。日をまたぐと再開します。');
+      return;
+    }
+    reply_(ev.replyToken, '「' + prop.slice(0, 40) + '」の建物情報を調べています。2〜3分ほどお待ちください。');
+    const r = askClaude_(withResolvedMaps_(prop), [], {
+      web: true, maxUses: PROP_SEARCH_MAX_USES, fetchMaxUses: PROP_FETCH_MAX_USES,
+      effort: PROP_EFFORT, maxTokens: PROP_MAX_TOKENS, system: AI_PROPERTY_PROMPT_()
+    });
+    push_(to, r.text
+      ? r.text.slice(0, 4900)
+      : '建物情報を調べきれませんでした。建物名と住所（丁目まで）を分けて、もう一度お試しください。');
+    return;
+  }
+
+  const history = readHistory_(cache, convKey);
+  const r = askClaude_(question, history);
+  const answer = r.text;
   if (!answer) {
     reply_(ev.replyToken, 'うまく応答できませんでした。少し時間をおいてもう一度お試しください。');
     return;
   }
-  reply_(ev.replyToken, answer.slice(0, 4900));
+  // 検索で時間を使うと返信トークンが切れている（受信から約60秒）ので、その場合は push で送る
+  const body = answer.slice(0, 4900);
+  if (r.seconds * 1000 > REPLY_TOKEN_BUDGET_MS || reply_(ev.replyToken, body) >= 300) push_(to, body);
   writeHistory_(cache, convKey, history.concat([
     { role: 'user', content: question },
     { role: 'assistant', content: answer }
   ]));
 }
 
-/** Claude に問い合わせて本文を返す。失敗したら '' */
-function askClaude_(question, history) {
+/* ---------- 建物（物件）の下調べ ---------- */
+
+/**
+ * この発言は建物の下調べ依頼か。依頼なら検索に渡す文字列、違えば ''。
+ * 明示コマンド「物件調査 〜」と、建物名＋依頼語からの自動判定の両方に対応する。
+ */
+function propertyQuery_(text) {
+  const s = String(text || '').trim();
+  if (!s) return '';
+
+  // 明示コマンド: 「物件調査 グランドメゾン◯◯ 東京都…」
+  const cmd = s.match(/^(?:物件調査|物件調べ|建物調査|建物調べ|物件情報)[\s　:：]*([\s\S]+)$/);
+  if (cmd) return cmd[1].trim();
+
+  // 自動判定: 建物を指す語と、調べてほしいことを表す語の両方があるとき
+  const building = /(物件|建物|マンション|アパート|ハイツ|コーポ|レジデンス|パレス|ハイム|メゾン|荘|団地|文化住宅|ビル|タワー|テラス|ヴィラ|ヒルズ|コート|ガーデン)/;
+  const ask = /(調べ|調査|教え|どんな|どういう|どのくらい|どれくらい|何戸|総戸数|戸数|世帯|単身|ファミリー|間取り|オートロック|コンシェルジュ|管理人|セキュリティ|防犯|築年|竣工|階建|入居)/;
+  if (building.test(s) && ask.test(s)) return s;
+  return '';
+}
+
+/**
+ * 質問文にGoogleマップのリンクが入っていたら、名称と所在地に展開して添える。
+ * 短縮URLはClaude側からは中身が読めないので、GAS側で先に解いておく。
+ */
+function withResolvedMaps_(q) {
+  const urls = findMapUrls_(q);
+  if (!urls.length) return q;
+  const resolved = [];
+  urls.forEach(function (u) {
+    let block = '';
+    try { block = mapLinkReply_(u, true); } catch (err) { /* 解けなくても調査は続ける */ }
+    if (block) resolved.push(block);
+  });
+  if (!resolved.length) return q;
+  return q + '\n\n（共有された地図のリンクから判明している情報）\n' + resolved.join('\n');
+}
+
+/** 建物の下調べ用の指示文 */
+function AI_PROPERTY_PROMPT_() {
+  return [
+    'あなたは探偵事務所（合同会社EXE RESEARCH／ラクーン探偵社）の調査員のために、',
+    '現地調査の前の「建物（物件）の下調べ」をする調査補助です。',
+    '渡された建物名と住所をウェブ検索し、下の項目を埋めて報告します。',
+    '',
+    '調べる項目',
+    '1. 物件の特定: 正式名称 / 所在地 / 種別（分譲マンション・賃貸マンション・アパート・ビル等）',
+    '2. 規模: 総戸数（＝入居可能世帯数）/ 階数 / 構造（RC・SRC・鉄骨・木造）/ 竣工年',
+    '3. 想定入居層: 間取り構成と専有面積から「単身者中心」「単身〜DINKS混在」「ファミリー中心」を判定し、根拠を書く。',
+    '   目安は 1R・1K中心で20〜35㎡なら単身者中心、2LDK以上や55㎡超が中心ならファミリー中心、',
+    '   1LDK〜2DKが中心なら混在。間取りが分からなければ判定せず「不明」とする。',
+    '4. セキュリティ: オートロック / 防犯カメラ / コンシェルジュの有無 /',
+    '   管理形態（管理人の常駐・日勤・巡回・無人）/ 宅配ボックス / モニター付きインターホン',
+    '5. 現地で使う情報: 敷地内駐車場（形式・台数）/ 駐輪場 / 出入口の数 / 最寄駅と徒歩分数 /',
+    '   賃料または価格の相場帯（入居層の裏づけになる）',
+    '6. 管理会社・分譲会社・施工会社（分かる範囲で）',
+    '',
+    '検索のしかた',
+    '- 項目ごとに検索語を変える。例「<建物名> <市区町村> 総戸数」「<建物名> オートロック」',
+    '  「<建物名> マンションレビュー」「<建物名> 賃貸 間取り」。',
+    '- 主に見るサイト: SUUMO、LIFULL HOME\'S、アットホーム、マンションレビュー、マンションノート、',
+    '  スマイティ、いえらぶ、ホームアドパーク、管理会社や分譲会社の公式サイト。',
+    '- 建物名は略さず、必ず住所（市区町村＋町名・丁目）と一緒に検索して同名物件と区別する。',
+    '- 検索できる回数には上限がある。現場を待たせないため、優先順位をつけて手短に調べる。',
+    '  1回目で物件の特定と規模、2回目で間取り、3回目で設備、と1回の検索語にまとめて複数項目を狙う。',
+    '  調べきれなかったものは【未確認】に回す。検索回数や上限のことは報告文に書かない。',
+    '',
+    '絶対に守ること',
+    '- 検索で確認できた数値・設備だけ書く。確認できない項目は「不明」と書き、推測値や一般的な相場で埋めない。',
+    '- 住所が一致しない検索結果は使わない。同名物件が複数あって特定できないときは、',
+    '  項目を埋めずに候補の所在地を並べ、どの建物か確認を求める。',
+    '- 各項目の末尾に出典サイト名を（）で添える。例「総戸数：48戸（SUUMO）」',
+    '- 出典は SUUMO・マンションレビュー・ホームズ のような**サイト名**で書く。URLやドメイン名（〜.com など）は書かない。',
+    '- 検索結果の文章をそのまま引用しない。値だけを書いて出典を添える。',
+    '  ×「総戸数：\n「〜は総戸数650戸の大規模タワーです」（住友不動産）」　○「総戸数：650戸（住友不動産）」',
+    '- 1つの項目は必ず1行で完結させる（LINEでは折り返しが読みにくいため）。',
+    '- 不動産サイトの掲載情報は古いことがあるので、設備は「掲載時点の情報」である旨を添える。',
+    '  募集終了の情報しか無い場合はそう書く。',
+    '- 居住者の氏名・部屋番号・家族構成など、個人に関する情報は探さないし書かない。建物の情報だけを扱う。',
+    '',
+    '出力の形（LINEなので # や ** などの装飾記号は使わない。全体で1000字以内。すべて日本語で書く）',
+    '【物件】正式名称',
+    '所在地：',
+    '種別／構造／竣工：',
+    '総戸数（入居可能世帯数）：',
+    '階数：',
+    '【想定入居層】判定と根拠を1〜2行',
+    '【セキュリティ】',
+    '・オートロック：',
+    '・防犯カメラ：',
+    '・コンシェルジュ／管理人：',
+    '・宅配ボックス：',
+    '【現地調査メモ】出入口・駐車場・駐輪場・最寄駅・賃料帯など2〜4行',
+    '【管理会社】管理会社／分譲会社／施工会社（分かるものだけ1行）',
+    '【未確認】不明だった項目と、その確認方法（現地確認／管理会社への問い合わせ／登記情報の取得など）'
+  ].join('\n');
+}
+
+/**
+ * Claude に問い合わせて本文を返す。失敗したら ''。
+ *
+ * opts（省略可）
+ *   web      : false にするとウェブ検索を渡さない（既定は AI_WEB_SEARCH）
+ *   maxUses  : 検索の上限回数
+ *   effort   : 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+ *   maxTokens: 応答の上限トークン（思考も含む）
+ *   system   : 指示文の差し替え（物件調べモードで使う）
+ */
+function askClaude_(question, history, opts) {
+  opts = opts || {};
   const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  const useWeb = (opts.web === undefined ? AI_WEB_SEARCH : !!opts.web);
+  const t0 = Date.now();
+
+  const tools = useWeb ? [
+    { type: WEB_SEARCH_TOOL, name: 'web_search', max_uses: opts.maxUses || AI_SEARCH_MAX_USES },
+    // 検索結果だけで足りないときにページ本文を読む。読み込み量を絞って課金と時間を抑える。
+    { type: WEB_FETCH_TOOL, name: 'web_fetch', max_uses: opts.fetchMaxUses || AI_FETCH_MAX_USES, max_content_tokens: 8000 }
+  ] : [];
+
   const messages = history.concat([{ role: 'user', content: question }]);
-  const payload = {
-    model: AI_MODEL,
-    max_tokens: AI_MAX_TOKENS,
-    system: AI_SYSTEM_PROMPT_(),
-    output_config: { effort: AI_EFFORT },
-    messages: messages
-  };
-  const headers = {
-    'x-api-key': key,
-    'anthropic-version': '2023-06-01'
-  };
+  const headers = { 'x-api-key': key, 'anthropic-version': '2023-06-01' };
   // 安全側の判断で断られたときに代替モデルでやり直す指定。
   // 受け付けるモデルが限られている（Opus 5 / Fable 系）ので、それ以外では付けない。
-  if (/^claude-(opus-5|fable-5)/.test(AI_MODEL)) {
-    payload.fallbacks = 'default';
-    headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
+  const useFallbacks = /^claude-(opus-5|fable-5)/.test(AI_MODEL);
+  if (useFallbacks) headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
+
+  let searches = 0;      // 実際に検索した回数（診断用）
+  let partial = '';      // 打ち切ったときに返す途中までの本文
+  let stop = '';
+
+  for (let round = 0; round < AI_MAX_ROUNDS; round++) {
+    const payload = {
+      model: AI_MODEL,
+      max_tokens: opts.maxTokens || AI_MAX_TOKENS,
+      system: opts.system || AI_SYSTEM_PROMPT_(),
+      output_config: { effort: opts.effort || AI_EFFORT },
+      messages: messages
+    };
+    if (tools.length) payload.tools = tools;
+    if (useFallbacks) payload.fallbacks = 'default';
+
+    let res;
+    try {
+      res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
+        method: 'post',
+        contentType: 'application/json',
+        headers: headers,
+        payload: JSON.stringify(payload),
+        muteHttpExceptions: true
+      });
+    } catch (err) {
+      console.log('Claude API 通信エラー: ' + err);
+      break;
+    }
+
+    const code = res.getResponseCode();
+    if (code !== 200) {
+      const errText = res.getContentText().slice(0, 400);
+      console.log('Claude API エラー ' + code + ': ' + errText);
+      // 検索ツールがモデル/アカウントで使えない場合の保険。
+      // 一度だけツール無しでやり直せば、少なくとも従来どおりの返答は返る。
+      if (code === 400 && tools.length) {
+        console.log('ウェブ検索なしで再試行します');
+        tools.length = 0;
+        continue;
+      }
+      break;
+    }
+
+    let body;
+    try { body = JSON.parse(res.getContentText()); } catch (err) { break; }
+
+    // content を読む前に stop_reason を見る（安全側の判断で断られた場合がある）
+    if (body.stop_reason === 'refusal') {
+      return {
+        text: 'この内容にはお答えできませんでした。別の聞き方でお試しください。',
+        searches: searches, seconds: (Date.now() - t0) / 1000
+      };
+    }
+
+    searches += countSearches_(body.content);
+    const text = textBlocks_(body.content);
+    stop = body.stop_reason || '';
+
+    // pause_turn: サーバー側ツールの途中。返ってきた content をそのまま返して続きを頼む。
+    if (stop === 'pause_turn') {
+      if (text) partial = partial ? partial + '\n' + text : text;
+      messages.push({ role: 'assistant', content: body.content });
+      if (Date.now() - t0 > AI_TIME_BUDGET_MS) {
+        console.log('検索の時間切れで打ち切りました（' + searches + '回検索）');
+        break;
+      }
+      continue;
+    }
+
+    if (!text) break;
+    let out = stripFormLink_(text);
+    if (stop === 'max_tokens') out += '\n（長くなったため省略しました）';
+    return { text: out, searches: searches, seconds: (Date.now() - t0) / 1000 };
   }
 
-  let res;
-  try {
-    res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
-      method: 'post',
-      contentType: 'application/json',
-      headers: headers,
-      payload: JSON.stringify(payload),
-      muteHttpExceptions: true
-    });
-  } catch (err) {
-    return '';
+  // 正常終了できなかった場合。途中までの本文があればそれを返す。
+  if (partial) {
+    return {
+      text: stripFormLink_(partial) + '\n（調べきれなかった項目があります。もう一度お試しください）',
+      searches: searches, seconds: (Date.now() - t0) / 1000
+    };
   }
-  if (res.getResponseCode() !== 200) {
-    console.log('Claude API エラー ' + res.getResponseCode() + ': ' + res.getContentText().slice(0, 300));
-    return '';
-  }
+  return { text: '', searches: searches, seconds: (Date.now() - t0) / 1000 };
+}
 
-  let body;
-  try { body = JSON.parse(res.getContentText()); } catch (err) { return ''; }
-
-  // content を読む前に stop_reason を見る（安全側の判断で断られた場合がある）
-  if (body.stop_reason === 'refusal') {
-    return 'この内容にはお答えできませんでした。別の聞き方でお試しください。';
-  }
-  const text = (body.content || [])
+/** 応答の content からテキストブロックだけをつなぐ */
+function textBlocks_(content) {
+  return (content || [])
     .filter(function (b) { return b.type === 'text'; })
     .map(function (b) { return b.text; })
     .join('\n')
     .trim();
-  if (!text) return '';
-  const out = stripFormLink_(text);
-  return body.stop_reason === 'max_tokens' ? out + '\n（長くなったため省略しました）' : out;
+}
+
+/** 応答の content から実際の検索回数を数える（診断用） */
+function countSearches_(content) {
+  let n = 0;
+  (content || []).forEach(function (b) {
+    if (b.type === 'server_tool_use' && b.name === 'web_search') n++;
+  });
+  return n;
 }
 
 /**
@@ -339,7 +600,19 @@ function AI_SYSTEM_PROMPT_() {
     '- 事実が確認できないことは推測で埋めず、「確認が必要」と伝えて確認方法を示す。',
     '- 相手は現場の調査員。実務で使える具体的な手順や判断材料を出す。',
     '',
+    'ウェブ検索',
+    '- 検索の道具（web_search / web_fetch）が使える。事実の最新性や裏づけが必要なときだけ使う。',
+    '  例: 建物や施設の情報、法令の改正、交通・天候、料金、企業や店舗の所在地や営業時間。',
+    '- 社内の運用（日報の書き方、経費の単価、フォームの使い方）や一般的な段取りの相談では検索しない。',
+    '- 検索して答えたときは、末尾に出典のサイト名を（）で添える。URLは長いので書かない。',
+    '- 検索しても確認できなかったことは「確認できなかった」と書く。検索結果を膨らませて推測で埋めない。',
+    '- 個人（対象者や依頼者）の氏名・住所・勤務先・SNSアカウントをウェブで探すことはしない。',
+    '  聞かれたら、正規の手続き（依頼者からの情報提供、現地調査、公的記録の取得）を案内する。',
+    '',
     '扱う内容',
+    '- 建物（物件）の下調べ。建物名と住所をもらったら、種別・総戸数（入居可能世帯数）・間取りからの',
+    '  想定入居層（単身者向けかファミリー向けか）・オートロックやコンシェルジュの有無などを調べて報告する。',
+    '  「物件調査 <建物名> <住所>」と書いてもらうと専用の書式でまとめる（結果は少し時間がかかる）。',
     '- 調査日報の書き方、経費（ガソリン代・高速代・電車代）の計算、時間の締め方の相談。',
     '- 尾行・張り込み・車両移動などの一般的な段取り、装備、天候や交通の判断。',
     '- 報告書の表現、依頼者への説明の言い回し。',
@@ -357,7 +630,8 @@ function AI_SYSTEM_PROMPT_() {
     '社内の道具',
     '- 調査日報フォーム（URLは書かない。入力すると日報の文面ができ、',
     '  「LINEグループに送信」で「ラクーン　経費報告」のグループに投稿される）',
-    '- このグループにGoogleマップのリンクや位置情報を貼ると、名称と所在地に変換して返す。'
+    '- このグループにGoogleマップのリンクや位置情報を貼ると、名称と所在地に変換して返す。',
+    '- 「物件調査 <建物名> <住所>」で建物の下調べ（総戸数・入居層・セキュリティ）をまとめて返す。'
   ].join('\n');
 }
 
@@ -403,6 +677,21 @@ function bumpAiCount_() {
 
 function aiCountToday_() {
   const key = 'AI_COUNT_' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+  return Number(PropertiesService.getScriptProperties().getProperty(key) || '0');
+}
+
+/** 物件調べは1件あたりの費用が大きいので別枠で数える。上限内なら true */
+function bumpPropCount_() {
+  const p = PropertiesService.getScriptProperties();
+  const key = 'PROP_COUNT_' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+  const n = Number(p.getProperty(key) || '0') + 1;
+  if (n > PROP_DAILY_LIMIT) return false;
+  p.setProperty(key, String(n));
+  return true;
+}
+
+function propCountToday_() {
+  const key = 'PROP_COUNT_' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
   return Number(PropertiesService.getScriptProperties().getProperty(key) || '0');
 }
 
@@ -744,16 +1033,39 @@ function logToSheet_(body, text) {
 }
 
 /* ---------- helpers ---------- */
+/** 返信する。HTTPコードを返す（300以上なら失敗＝トークン切れなど） */
 function reply_(replyToken, text) {
   const token = PropertiesService.getScriptProperties().getProperty('CHANNEL_ACCESS_TOKEN');
-  if (!token || !replyToken) return;
-  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
+  if (!token || !replyToken) return 0;
+  const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
     method: 'post',
     contentType: 'application/json',
     headers: { Authorization: 'Bearer ' + token },
     payload: JSON.stringify({ replyToken: replyToken, messages: [{ type: 'text', text: text }] }),
     muteHttpExceptions: true
   });
+  const code = res.getResponseCode();
+  if (code >= 300) console.log('LINE reply 失敗 ' + code + ': ' + res.getContentText().slice(0, 200));
+  return code;
+}
+
+/**
+ * 返信トークンを使わずに送る（返信の期限切れ後や、調べ物の結果を後から届けるとき）。
+ * push は無料枠 月200通に数えられるので、返信で足りるときは reply_ を使う。
+ */
+function push_(to, text) {
+  const token = PropertiesService.getScriptProperties().getProperty('CHANNEL_ACCESS_TOKEN');
+  if (!token || !to) return 0;
+  const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + token },
+    payload: JSON.stringify({ to: to, messages: [{ type: 'text', text: text }] }),
+    muteHttpExceptions: true
+  });
+  const code = res.getResponseCode();
+  if (code >= 300) console.log('LINE push 失敗 ' + code + ': ' + res.getContentText().slice(0, 200));
+  return code;
 }
 
 function chunk_(s, n) {
