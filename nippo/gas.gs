@@ -23,7 +23,7 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08g';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+const VERSION = '2026-09-08h';   // 「デプロイした版が反映されているか」を外から確かめるための目印
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
@@ -60,8 +60,11 @@ const MEM_CACHE_SEC = 21600;     // キャッシュの保持時間（6時間＝C
 const AI_WEB_SEARCH = true;
 const WEB_SEARCH_TOOL = 'web_search_20260209';
 const WEB_FETCH_TOOL = 'web_fetch_20260209';
-const AI_SEARCH_MAX_USES = 3;    // 通常の会話で許す検索回数（多いとLINEの返信期限に間に合わない）
-const AI_FETCH_MAX_USES = 2;     // ページ本文の読み込み回数（1回あたり数秒かかる）
+// 1つの質問あたりの検索回数。3回だと「5県ぶん調べて」のような質問で足りず、
+// AIが「検索の上限に達しました」と言い出してしまったので5回にした（実測: 1回約1.5円）。
+// pause_turn をまたいでも合計がこの数を超えないよう askClaude_ で残り枠を管理している。
+const AI_SEARCH_MAX_USES = 5;    // 通常の会話で許す検索回数（多いとLINEの返信期限に間に合わない）
+const AI_FETCH_MAX_USES = 3;     // ページ本文の読み込み回数（1回あたり数秒かかる）
 const AI_MAX_ROUNDS = 3;         // pause_turn で再開する上限回数
 // 検索を打ち切るまでの目安。1周が長いと超過してから止まるので、GASの実行上限6分の半分以下にしておく。
 const AI_TIME_BUDGET_MS = 90000;
@@ -796,7 +799,8 @@ function AI_PROPERTY_PROMPT_() {
     '- 建物名は略さず、必ず住所（市区町村＋町名・丁目）と一緒に検索して同名物件と区別する。',
     '- 検索できる回数には上限がある。現場を待たせないため、優先順位をつけて手短に調べる。',
     '  1回目で物件の特定と規模、2回目で間取り、3回目で設備、と1回の検索語にまとめて複数項目を狙う。',
-    '  調べきれなかったものは【未確認】に回す。検索回数や上限のことは報告文に書かない。',
+    '  調べきれなかったものは【未確認】に回す。',
+    '  **検索回数や「上限に達した」といった道具の内部事情は報告文に一切書かない。**',
     '- 検索が全部終わってから報告文を書く。途中で下書きを書き始めない（見出しが二重になる）。',
     '- **前置きを書かない。**「報告します」「情報が集まりました」等は不要で、1行目は必ず「【物件】」から始める。',
     '',
@@ -849,14 +853,14 @@ function AI_PROPERTY_PROMPT_() {
 function askClaude_(question, history, opts) {
   opts = opts || {};
   const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
-  const useWeb = (opts.web === undefined ? AI_WEB_SEARCH : !!opts.web);
+  let useWeb = (opts.web === undefined ? AI_WEB_SEARCH : !!opts.web);
   const t0 = Date.now();
 
-  const tools = useWeb ? [
-    { type: WEB_SEARCH_TOOL, name: 'web_search', max_uses: opts.maxUses || AI_SEARCH_MAX_USES },
-    // 検索結果だけで足りないときにページ本文を読む。読み込み量を絞って課金と時間を抑える。
-    { type: WEB_FETCH_TOOL, name: 'web_fetch', max_uses: opts.fetchMaxUses || AI_FETCH_MAX_USES, max_content_tokens: 8000 }
-  ] : [];
+  // max_uses は「1リクエストあたり」の上限なので、pause_turn で続きを頼むたびに
+  // 枠がリセットされてしまう。ここで使った回数を持ち回り、残り枠を毎回入れ直すことで
+  // 1つの質問あたりの合計回数を本当に頭打ちにする。
+  const searchBudget = opts.maxUses || AI_SEARCH_MAX_USES;
+  const fetchBudget = opts.fetchMaxUses || AI_FETCH_MAX_USES;
 
   const messages = history.concat([{ role: 'user', content: question }]);
   const headers = { 'x-api-key': key, 'anthropic-version': '2023-06-01' };
@@ -865,11 +869,24 @@ function askClaude_(question, history, opts) {
   const useFallbacks = /^claude-(opus-5|fable-5)/.test(AI_MODEL);
   if (useFallbacks) headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
 
-  let searches = 0;      // 実際に検索した回数（診断用）
+  let searches = 0;      // この質問で実際に検索した回数（診断用・残り枠の計算用）
+  let fetches = 0;
   let partial = '';      // 打ち切ったときに返す途中までの本文
   let stop = '';
 
   for (let round = 0; round < AI_MAX_ROUNDS; round++) {
+    // 残り枠を計算する。使い切ったらツールを渡さない＝そのまま答えを書かせる。
+    const searchLeft = searchBudget - searches;
+    const fetchLeft = fetchBudget - fetches;
+    const tools = [];
+    if (useWeb && searchLeft > 0) {
+      tools.push({ type: WEB_SEARCH_TOOL, name: 'web_search', max_uses: searchLeft });
+      // 検索結果だけで足りないときにページ本文を読む。読み込み量を絞って課金と時間を抑える。
+      if (fetchLeft > 0) {
+        tools.push({ type: WEB_FETCH_TOOL, name: 'web_fetch', max_uses: fetchLeft, max_content_tokens: 8000 });
+      }
+    }
+
     const payload = {
       model: AI_MODEL,
       max_tokens: opts.maxTokens || AI_MAX_TOKENS,
@@ -902,7 +919,7 @@ function askClaude_(question, history, opts) {
       // 一度だけツール無しでやり直せば、少なくとも従来どおりの返答は返る。
       if (code === 400 && tools.length) {
         console.log('ウェブ検索なしで再試行します');
-        tools.length = 0;
+        useWeb = false;
         continue;
       }
       break;
@@ -919,7 +936,8 @@ function askClaude_(question, history, opts) {
       };
     }
 
-    searches += countSearches_(body.content);
+    searches += countToolUse_(body.content, 'web_search');
+    fetches += countToolUse_(body.content, 'web_fetch');
     const text = textBlocks_(body.content);
     stop = body.stop_reason || '';
 
@@ -975,11 +993,11 @@ function textBlocks_(content) {
   return texts.map(function (b) { return b.text; }).join('').trim();
 }
 
-/** 応答の content から実際の検索回数を数える（診断用） */
-function countSearches_(content) {
+/** 応答の content から、そのサーバー側ツールを実際に何回使ったか数える */
+function countToolUse_(content, name) {
   let n = 0;
   (content || []).forEach(function (b) {
-    if (b.type === 'server_tool_use' && b.name === 'web_search') n++;
+    if (b.type === 'server_tool_use' && b.name === name) n++;
   });
   return n;
 }
@@ -1019,6 +1037,12 @@ function AI_SYSTEM_PROMPT_(ctx) {
     '- 社内の運用（日報の書き方、経費の単価、フォームの使い方）や一般的な段取りの相談では検索しない。',
     '- 検索して答えたときは、末尾に出典のサイト名を（）で添える。URLは長いので書かない。',
     '- 検索しても確認できなかったことは「確認できなかった」と書く。検索結果を膨らませて推測で埋めない。',
+    '- **道具の内部事情は書かない。**「検索ツールの呼び出し回数上限に達した」「max_usesを超えた」のような',
+    '  仕組みの話は相手には関係がない。調べきれなかったときは',
+    '  「〇〇までは確認できました。残りは調べきれていないので、もう一度声をかけてください」のように、',
+    '  **どこまで分かったかと次にどうすればよいか**だけを書く。',
+    '- 一度に多くを聞かれて全部調べきれないときは、重要なものから順に調べ、',
+    '  確認できた分を先に出して、残りを「未確認」として挙げる。',
     '- 個人（対象者や依頼者）の氏名・住所・勤務先・SNSアカウントをウェブで探すことはしない。',
     '  聞かれたら、正規の手続き（依頼者からの情報提供、現地調査、公的記録の取得）を案内する。',
     '',
