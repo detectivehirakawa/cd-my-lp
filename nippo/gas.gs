@@ -410,6 +410,7 @@ function AI_PROPERTY_PROMPT_() {
     '- 検索できる回数には上限がある。現場を待たせないため、優先順位をつけて手短に調べる。',
     '  1回目で物件の特定と規模、2回目で間取り、3回目で設備、と1回の検索語にまとめて複数項目を狙う。',
     '  調べきれなかったものは【未確認】に回す。検索回数や上限のことは報告文に書かない。',
+    '- 検索が全部終わってから報告文を書く。途中で下書きを書き始めない（見出しが二重になる）。',
     '',
     '絶対に守ること',
     '- 検索で確認できた数値・設備だけ書く。確認できない項目は「不明」と書き、推測値や一般的な相場で埋めない。',
@@ -556,13 +557,29 @@ function askClaude_(question, history, opts) {
   return { text: '', searches: searches, seconds: (Date.now() - t0) / 1000 };
 }
 
-/** 応答の content からテキストブロックだけをつなぐ */
+/**
+ * 応答の content から本文を取り出す。
+ *
+ * 検索を使うと content は [text, server_tool_use, web_search_tool_result, text, text, …] のように
+ * 1つの応答の中でツールと本文が混ざる。ここで2つ気をつける必要がある。
+ *  1) 検索前に書かれた下書きを拾うと、同じ見出しが二重に出る
+ *     → 最後のツール関連ブロックより後ろだけを使う。
+ *  2) 出典が付くところでテキストブロックが分割される
+ *     → 連結時に改行を挟むと「総戸数：／650戸／（SUUMO）」と行が割れるので、区切り文字なしでつなぐ。
+ */
 function textBlocks_(content) {
-  return (content || [])
-    .filter(function (b) { return b.type === 'text'; })
-    .map(function (b) { return b.text; })
-    .join('\n')
-    .trim();
+  const blocks = content || [];
+  const isText = function (b) { return b.type === 'text'; };
+
+  let from = 0;
+  for (let i = 0; i < blocks.length; i++) {
+    const t = blocks[i].type;
+    if (t === 'server_tool_use' || t === 'web_search_tool_result' || t === 'web_fetch_tool_result') from = i + 1;
+  }
+  let texts = blocks.slice(from).filter(isText);
+  if (!texts.length) texts = blocks.filter(isText);   // 検索のあとに本文が無ければ全体から拾う
+
+  return texts.map(function (b) { return b.text; }).join('').trim();
 }
 
 /** 応答の content から実際の検索回数を数える（診断用） */
