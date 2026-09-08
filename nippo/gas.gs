@@ -25,7 +25,7 @@ const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させ
 const SHEET_NAME = '調査日報ログ';
 // 「デプロイした版が反映されているか」を外から確かめるための目印。
 // 地図変換のキャッシュキーにも混ぜているので、抽出の仕方を直したときは必ず上げる。
-const VERSION = '2026-09-08q';
+const VERSION = '2026-09-08r';
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
@@ -95,7 +95,10 @@ const PROP_EFFORT = 'medium';
 const PROP_SEARCH_MAX_USES = 6;  // 総戸数・オートロック・間取り等を項目ごとに検索する
 const PROP_FETCH_MAX_USES = 2;
 const PROP_MAX_TOKENS = 12000;
-const PROP_DAILY_LIMIT = 20;     // 1件あたり15〜30円かかるので別枠で上限を持つ
+// 1件あたり15〜30円かかるので別枠で上限を持つ。
+// 2026-09-08 にユーザー指示で 20 → 50（20/20に到達して足りなかった）。使い切ると 750〜1,500円/日。
+// 建物台帳にある建物の再照会はこの枠を消費しない。
+const PROP_DAILY_LIMIT = 50;
 
 // LINEの返信トークンは受信から約60秒で切れる。これを超えそうならpushに切り替える。
 const REPLY_TOKEN_BUDGET_MS = 45000;
