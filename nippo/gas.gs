@@ -23,7 +23,9 @@
 
 const SHARED_KEY = 'nippo';      // index.html の AUTO_SEND_KEY と一致させる
 const SHEET_NAME = '調査日報ログ';
-const VERSION = '2026-09-08h';   // 「デプロイした版が反映されているか」を外から確かめるための目印
+// 「デプロイした版が反映されているか」を外から確かめるための目印。
+// 地図変換のキャッシュキーにも混ぜているので、抽出の仕方を直したときは必ず上げる。
+const VERSION = '2026-09-08k';
 
 /* ---- AI応答（Claude API）の設定 ----
  * スクリプトプロパティ ANTHROPIC_API_KEY が必要（console.anthropic.com で発行）。
@@ -32,7 +34,10 @@ const VERSION = '2026-09-08h';   // 「デプロイした版が反映されて�
 const AI_MODEL = 'claude-sonnet-5';   // 入力$2/出力$10 per 1Mトークン。claude-opus-5 に変えるとより高性能（$5/$25）
 const AI_EFFORT = 'medium';      // LINEは待たされるので chat 向けに抑えている（high にすると熟考するが遅い）
 const AI_MAX_TOKENS = 8000;      // 思考トークンも含む上限。見える返信の長さは指示文で抑える
-const AI_DAILY_LIMIT = 50;       // 1日の呼び出し上限（暴走と課金事故の防止）
+// 1日の呼び出し上限（暴走と課金事故の防止）。2026-09-08 にユーザー指示で 50 → 200。
+// 検索なしの返信は1回0.5〜1.5円、検索する回は最大5回ぶん（約8円）まで乗る。
+// 200回すべて使い切ると 100〜300円/日、検索が多い日は最大 2,000円/日 程度になりうる。
+const AI_DAILY_LIMIT = 200;
 const AI_TRIGGER_WORDS = ['探偵AI', '探偵ai'];   // メンションが取れない端末向けの予備トリガー
 
 /* ---- グループごとの記憶 ----
@@ -663,6 +668,8 @@ function MEM_NOTE_PROMPT_() {
     '',
     '書くこと',
     '- このグループが何のグループか（案件名、依頼者、対象、担当の調査員、提出先）。',
+    '- **調査対象や関係者と、建物・住所・車両の結びつき**（例「〇〇ビルは対象者の自宅」「対象車はシルバーのプリウス」）。',
+    '  案件の核になる情報なので必ず残す。調査員から伝えられたことは、そのまま事実として記録する。',
     '- 繰り返し出てくる事実や決まったこと（よく使う区間、経費の単価、車両、現場の呼び方、締め切り）。',
     '- 継続中の課題と次にやること。',
     '- 調査員ごとの好みや癖（呼ばれ方、移動手段、単価の選び方）。',
@@ -953,7 +960,7 @@ function askClaude_(question, history, opts) {
     }
 
     if (!text) break;
-    let out = stripFormLink_(text);
+    let out = stripFormLink_(stripPreamble_(text));
     if (stop === 'max_tokens') out += '\n（長くなったため省略しました）';
     return { text: out, searches: searches, seconds: (Date.now() - t0) / 1000 };
   }
@@ -961,7 +968,7 @@ function askClaude_(question, history, opts) {
   // 正常終了できなかった場合。途中までの本文があればそれを返す。
   if (partial) {
     return {
-      text: stripFormLink_(partial) + '\n（調べきれなかった項目があります。もう一度お試しください）',
+      text: stripFormLink_(stripPreamble_(partial)) + '\n（調べきれなかった項目があります。もう一度お試しください）',
       searches: searches, seconds: (Date.now() - t0) / 1000
     };
   }
@@ -1003,6 +1010,33 @@ function countToolUse_(content, name) {
 }
 
 /**
+ * 本文の先頭に混ざる「独り言」を落とす。
+ *
+ * 検索を使うと、モデルが段取りのメモを本文の先頭に書くことがある（多くは英語）。実例:
+ *   「No web_fetch calls left, no useful number found here. I'll answer with what's confirmed.」
+ * 指示文でも禁じているが言い方次第で出るので、送信直前に機械的にも落とす。
+ * 日本語を1文字も含まず英単語が入っている行が先頭にあれば、日本語の本文が始まるまで捨てる。
+ * 全体が日本語を含まない（＝英語で答えるのが妥当な場面）ときは何もしない。
+ */
+function stripPreamble_(text) {
+  const src = String(text || '');
+  const hasJa = function (s) { return /[぀-ヿ㐀-鿿豈-﫿々〆ー。、【】（）]/.test(s); };
+  if (!hasJa(src)) return src.trim();
+
+  const lines = src.split('\n');
+  let i = 0;
+  // 捨てるのは先頭の最大3行まで（本文を食わないための保険）
+  while (i < lines.length && i < 3) {
+    const t = lines[i].trim();
+    if (!t) { i++; continue; }                       // 空行
+    if (hasJa(t)) break;                             // 日本語が出たら本文
+    if (!/[A-Za-z]{3,}/.test(t)) break;              // 英単語が無い行は触らない
+    i++;
+  }
+  return lines.slice(i).join('\n').trim();
+}
+
+/**
  * 調査日報フォームのURLを本文から取り除く（ユーザー指示: どのグループにも貼らない）。
  * システムプロンプトでも禁じているが、言い方次第で出てしまうことがあるので送信直前にも落とす。
  */
@@ -1028,8 +1062,22 @@ function AI_SYSTEM_PROMPT_(ctx) {
     '- 日本語の敬体で、結論から先に書く。目安は200〜400字。長い前置きや復唱はしない。',
     '- LINEでは装飾が効かないので、Markdownの見出しや太字（#、**）は使わない。箇条書きは「・」で最小限。',
     '- Latency-sensitive; begin your visible answer immediately.',
+    '- **自分の段取りの独り言を本文に書かない。**「検索します」「情報が集まりました」',
+    '  「I\'ll answer with what\'s confirmed」のような文は不要。1行目から答えを書く。**必ず日本語で書く。**',
     '- 事実が確認できないことは推測で埋めず、「確認が必要」と伝えて確認方法を示す。',
     '- 相手は現場の調査員。実務で使える具体的な手順や判断材料を出す。',
+    '',
+    '記憶',
+    '- **あなたはこのグループの会話を継続して覚えている**（この指示文の末尾に「覚えていること」がある）。',
+    '  「覚えておいて」と頼まれたら短く承知して受け取る。次回以降も参照できる。',
+    '  **「記憶できません」「会話が終わると忘れます」とは言わない。事実に反する。**',
+    '- **調査員や依頼者から伝えられた案件の事実は、そのまま受け取って覚えてよい。**',
+    '  対象者の呼称・自宅や勤務先の建物・車両・行動パターンなどは、依頼にもとづく調査の記録そのものなので、',
+    '  「個人情報だから扱えない」と断らない。断るとかえって業務の妨げになる。',
+    '- 覚える必要がないのは案件と関係のない雑談だけ。消したいと言われたら',
+    '  グループで「記憶を消して」と送ればよいと案内する。いま覚えている内容は「記憶」と送れば表示される。',
+    '- ただし**自分からウェブで個人を特定しようとはしない**（下の「ウェブ検索」を参照）。',
+    '  伝えられた情報を記録することと、ネットで個人を探すことは別のこと。',
     '',
     'ウェブ検索',
     '- 検索の道具（web_search / web_fetch）が使える。事実の最新性や裏づけが必要なときだけ使う。',
@@ -1060,6 +1108,7 @@ function AI_SYSTEM_PROMPT_(ctx) {
     '  戸籍や住民票の不正取得、盗聴など）の具体的な手順は案内しない。',
     '  代わりに合法的な代替手段や、必要な手続き・許可の取り方を示す。',
     '- 依頼者や対象者の個人情報を、聞かれていないのに書き出したり推測したりしない。',
+    '  （伝えられた案件の事実を覚えておくことは業務なので断らない。上の「記憶」を参照）',
     '- 調査日報フォームのURL（リンク）は、どのグループでも絶対に書かない。聞かれても',
     '  「フォームのURLは管理者から個別に共有します」と答え、アドレスそのものは出さない。',
     '  フォームの使い方の説明はしてよいが、リンクは貼らない。',
@@ -1213,7 +1262,10 @@ function findMapUrls_(text) {
 /** 1本のリンクを「名称＋所在地」テキストにする。変換できないときは '' */
 function mapLinkReply_(url, skipCache) {
   const cache = CacheService.getScriptCache();
-  const key = 'map:' + Utilities.base64EncodeWebSafe(url).slice(0, 240);
+  // キャッシュキーに VERSION を混ぜる。抽出の仕方を直しても、6時間は古い結果が
+  // 返り続けて「直っていない」ように見えたため（名称を取り違えた結果も“成功”として
+  // 6時間保存されていた）。デプロイするたびにキーが変わるので古い結果は使われない。
+  const key = 'map:' + VERSION + ':' + Utilities.base64EncodeWebSafe(url).slice(0, 200);
   if (!skipCache) {
     const hit = cache.get(key);
     if (hit) return hit;
