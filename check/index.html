@@ -378,6 +378,25 @@
   /* 広い画面だけで改行させる（スマホでは無視する） */
   .pc-only { display: none; }
 
+
+  /* ===== 埋め込み表示（LPのモーダルから ?embed=1 で開かれたとき） =====
+     診断と結果と相談導線だけを残す。ページ全体の案内はLP側にあるので重ねない。 */
+  body.embed .announce,
+  body.embed header,
+  body.embed .sticky,
+  body.embed #priceSec,
+  body.embed #faqSec,
+  body.embed footer { display: none !important; }
+  body.embed .hero { padding: 20px 0 16px; }
+  body.embed .hero-kicker,
+  body.embed .hero p,
+  body.embed #start,
+  body.embed .hero-note { display: none; }
+  body.embed .hero h1 { font-size: clamp(1.1rem, 4.6vw, 1.3rem); margin-bottom: 11px; }
+  body.embed .assure { margin-bottom: 0; }
+  body.embed section { padding: 22px 0; }
+  body.embed .wrap { padding: 0 14px; }
+
   @media (min-width: 600px) {
     .cta-btns { flex-direction: row; justify-content: center; }
     .cta-btns .btn { max-width: 250px; }
@@ -577,7 +596,7 @@
 </section>
 
 <!-- ===== 信頼情報 ===== -->
-<section class="sec-light">
+<section class="sec-light" id="priceSec">
   <div class="wrap">
     <h2 class="sec">調査をご依頼いただく場合の料金</h2>
     <p class="sec-lead">見積り以外の追加費用はいただきません。</p>
@@ -601,7 +620,7 @@
   </div>
 </section>
 
-<section>
+<section id="faqSec">
   <div class="wrap">
     <h2 class="sec">よくあるご質問</h2>
     <div style="margin-top:18px">
@@ -1106,6 +1125,11 @@ function submitForm(ev) {
 
 /* ---------- 起動 ---------- */
 document.addEventListener('DOMContentLoaded', function () {
+  /* LPのモーダルから開かれた場合は、周辺の案内を畳んで診断だけを見せる */
+  try {
+    if (/[?&]embed=1/.test(location.search)) document.body.classList.add('embed');
+  } catch (e) {}
+
   $('lineBtn').href = LINE_URL;
   $('lineSticky').href = LINE_URL;
 
