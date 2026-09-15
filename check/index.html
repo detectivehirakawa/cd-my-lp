@@ -315,6 +315,24 @@
   .ai-meta { font-size: .7rem; color: var(--muted); margin-top: 10px; }
   .err { font-size: .82rem; color: var(--critical); background: #fdf3f2;
     border-radius: 9px; padding: 10px 12px; margin-top: 10px; }
+  .okmsg { font-size: .82rem; color: var(--success); background: #f1f8f3;
+    border-radius: 9px; padding: 10px 12px; margin-top: 10px; line-height: 1.7; }
+
+  /* ---------- 結果の受け取り（LINE／メール） ---------- */
+  .get-card { margin-top: 18px; }
+  .get-card h3 { font-size: 1rem; font-weight: 900; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 7px; }
+  .get-card p.lead { font-size: .83rem; color: var(--muted); margin-bottom: 13px; }
+  .get-card .btn-line { max-width: none; }
+  .get-note { font-size: .72rem; color: var(--muted); margin-top: 8px; line-height: 1.65; }
+  .get-mail { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 15px; }
+  .get-mail > label { display: block; font-size: .84rem; font-weight: 700; margin-bottom: 7px; }
+  .get-row { display: flex; gap: 8px; }
+  .get-row input { flex: 1 1 auto; min-width: 0; font-family: inherit; font-size: .93rem;
+    color: var(--text); background: #fff;
+    border: 2px solid var(--border); border-radius: 11px; padding: 12px 13px; }
+  .get-row input:focus { outline: none; border-color: var(--primary-light); }
+  .get-row .btn { flex: 0 0 auto; width: auto; max-width: none; white-space: nowrap; }
 
   /* ---------- CTA ---------- */
   .cta { background: linear-gradient(170deg, var(--primary) 0%, #16304d 100%); color: #fff;
@@ -536,6 +554,29 @@
       </div>
     </div>
 
+    <!-- 診断結果の受け取り（LINE／メール） -->
+    <div class="card get-card" id="getCard">
+      <h3>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 7.2h17v11.3a1.5 1.5 0 01-1.5 1.5H5a1.5 1.5 0 01-1.5-1.5V7.2z" stroke="var(--primary)" stroke-width="1.8" stroke-linejoin="round"/><path d="M3.9 7.6l8.1 6 8.1-6" stroke="var(--primary)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        この診断結果を受け取る
+      </h3>
+      <p class="lead">結果とAIの所見を手元に残せます。あとで読み返したい方、そのまま相談したい方はこちらから。</p>
+      <a class="btn btn-line" id="getLine" href="#" data-cv="line-send">LINEで受け取る・相談する</a>
+      <p class="get-note">LINEが開き、診断結果が入力された状態になります。<b>送信するまで内容は届きません。</b>送信すると、ご自身のトークにも結果が残ります。</p>
+      <div class="get-mail">
+        <label for="g-mail">メールで受け取る</label>
+        <div class="get-row">
+          <input type="email" id="g-mail" inputmode="email" autocomplete="email" placeholder="example@mail.com">
+          <button class="btn btn-ghost btn-sm" id="getMailGo" type="button">送る</button>
+        </div>
+        <label class="consent">
+          <input type="checkbox" id="g-agree">
+          <span>この結果と入力内容を送信することに同意します。担当者にも通知が届きますが、依頼をすすめるための連絡はいたしません。<a href="https://exeresearch.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></span>
+        </label>
+        <div id="getMsg"></div>
+      </div>
+    </div>
+
     <!-- CTA -->
     <div class="cta" style="margin-top:18px">
       <h3>この結果をもとに、<br>何ができるかを一緒に整理します</h3>
@@ -591,6 +632,10 @@
           <textarea id="f-msg" name="message" maxlength="1000" style="min-height:88px" placeholder="いつ頃から気になっているか、確認したいことなどをお書きください。"></textarea>
         </div>
         <label class="consent">
+          <input type="checkbox" id="f-copy" checked>
+          <span>診断結果とAIの所見を、自分にもメールで送る（連絡先にメールアドレスをご入力いただいた場合）</span>
+        </label>
+        <label class="consent">
           <input type="checkbox" id="f-agree" required>
           <span>診断結果・入力内容を送信することに同意します。<a href="https://exeresearch.jp/privacy-policy/" target="_blank" rel="noopener">プライバシーポリシー</a></span>
         </label>
@@ -602,6 +647,7 @@
       <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="var(--success)" stroke-width="2"/><path d="M7.5 12.4l3 3 6-6.4" stroke="var(--success)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <h3>送信しました</h3>
       <p>担当者が内容を確認し、ご希望の時間帯に折り返します。<br>お急ぎの場合は <a href="tel:0489339980" style="color:var(--accent-hover);font-weight:700">048-933-9980</a> へお電話ください。</p>
+      <p id="okCopy" style="display:none;margin-top:10px">診断結果とAIの所見は <b class="dst"></b> にもお送りしました。</p>
     </div>
   </div>
 </section>
@@ -758,7 +804,8 @@
 
 /* 相談先。LINEは集客用の公式アカウント（@206fdxiw）の友だち追加URL。
    調査用BOT（@958safxm）とは別アカウントなので混同しないこと。 */
-var LINE_URL = 'https://line.me/R/ti/p/@206fdxiw';
+var LINE_OA_ID = '@206fdxiw';
+var LINE_URL = 'https://line.me/R/ti/p/' + LINE_OA_ID;
 /* AI所見とメール相談の中継先（GASプロジェクト「浮気ポリス受付」）。
    空にするとAIブロックを出さず、メール相談は電話・LINEの案内に切り替わる。 */
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbx1pzFG8iP7v4PLBqZ5DsFn9XEHzpGHu4HYDn0rJ5tSJsG5WjjwiWu6Twv5Anf1C0bU/exec';
@@ -1055,6 +1102,9 @@ function finish() {
   /* AI所見ブロックは中継先が設定されているときだけ出す */
   $('ai-wrap').style.display = GAS_URL ? '' : 'none';
 
+  /* 結果が出たので、LINEは友だち追加ではなく「結果を入れてトークを開く」に変える */
+  refreshLineLinks();
+
   $('quiz').style.display = 'none';
   $('result').style.display = 'block';
   $('sticky').classList.add('show');
@@ -1086,6 +1136,48 @@ function summary() {
   };
 }
 
+/* ---------- LINEで受け取る ----------
+ * LINE URL スキームで公式アカウントのトークを開き、本文を入れた状態にする。
+ * 送信するのは本人なので、押しただけでは何も届かない。送れば本人のトーク履歴にも
+ * 残り、事務所もLINEで受け取れる（Messaging API の設定が要らないのが利点）。 */
+function lineText() {
+  var s = summary();
+  var t = totals();
+  var top = CATS.map(function (c) {
+    var d = t.per[c.id];
+    return { name: c.name, got: d.got, max: d.max, pct: d.max ? d.got / d.max : 0 };
+  }).filter(function (r) { return r.got > 0; })
+    .sort(function (a, b) { return b.pct - a.pct; })
+    .slice(0, 3)
+    .map(function (r) { return r.name + ' ' + r.got + '/' + r.max; });
+
+  var lines = [
+    '【浮気ポリス｜セルフチェックの結果】',
+    '注意度：レベル' + s.level + '（' + s.total + '/' + s.max + '点）',
+    '該当が多い項目：' + (top.length ? top.join('／') : '該当なし')
+  ];
+  /* 自由記述は長くなりがちなので切る（URLの長さにも上限がある） */
+  var free = (s.free || '').replace(/\s+/g, ' ');
+  if (free) {
+    lines.push('気になっていること：' + free.slice(0, 200) + (free.length > 200 ? '…' : ''));
+  }
+  lines.push('', 'この結果をふまえて相談したいです。');
+  return lines.join('\n');
+}
+
+function lineSendUrl() {
+  return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_OA_ID) +
+    '/?' + encodeURIComponent(lineText());
+}
+
+/** 結果が出たあとのLINEボタンは、診断結果が入った状態でトークを開く */
+function refreshLineLinks() {
+  var u = lineSendUrl();
+  $('getLine').href = u;
+  $('lineBtn').href = u;
+  $('lineSticky').href = u;
+}
+
 /* ---------- GASへの送信 ----------
  * GASのウェブアプリは応答の取得に失敗することがある（処理自体は通っているのに
  * HTMLのエラーページが返る）。そこで送り直すが、同じ submitId を付けることで
@@ -1115,6 +1207,8 @@ function postGas(body, tries) {
 
 /* ---------- AI所見 ---------- */
 var aiId = '', aiKey = '', formId = '';
+/* 作成できた所見。メールに同封するために持っておく（LINEには長すぎるので入れない） */
+var adviceText = '';
 
 function askAI() {
   if (!$('consent').checked) {
@@ -1137,6 +1231,7 @@ function askAI() {
 
   postGas({ key: GAS_KEY, mode: 'advice', submitId: aiId, payload: s }).then(function (d) {
     if (!d || !d.ok || !d.text) throw new Error(d && d.error ? d.error : '所見を作成できませんでした');
+    adviceText = d.text;
     $('aiBody').textContent = d.text;
     $('aiMeta').textContent = 'この所見は一般的な傾向をもとにした整理であり、事実の認定ではありません。';
     btn.style.display = 'none';
@@ -1150,6 +1245,49 @@ function askAI() {
   });
 }
 
+/* ---------- 診断結果をメールで受け取る ---------- */
+var dlvId = '', dlvTo = '';
+
+function sendResultMail() {
+  var to = $('g-mail').value.trim();
+  var msg = $('getMsg');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    msg.innerHTML = '<p class="err">メールアドレスをご確認ください。</p>';
+    return;
+  }
+  if (!$('g-agree').checked) {
+    msg.innerHTML = '<p class="err">送信に同意いただけると結果をお送りできます。</p>';
+    return;
+  }
+  msg.innerHTML = '';
+  var btn = $('getMailGo');
+  btn.disabled = true;
+  btn.textContent = '送信中…';
+
+  /* 宛先を書き直したときは新しいIDにする（GAS側が同じ送信とみなさないように） */
+  if (!dlvId || dlvTo !== to) { dlvId = newId(); dlvTo = to; }
+
+  var s = summary();
+  postGas({
+    key: GAS_KEY, mode: 'deliver', submitId: dlvId,
+    payload: s, contact: { email: to, advice: adviceText }
+  }).then(function (d) {
+    if (!d || !d.ok) throw new Error((d && d.error) || '送信できませんでした');
+    msg.innerHTML = '<p class="okmsg"><b class="dst"></b> に診断結果をお送りしました。' +
+      '数分たっても届かない場合は、迷惑メールフォルダをご確認ください。</p>';
+    msg.querySelector('.dst').textContent = to;
+    btn.style.display = 'none';
+    $('g-mail').disabled = true;
+    ev('result_mail', { level: s.level.slice(0, 1), score: s.total });
+  })['catch'](function (e) {
+    msg.innerHTML = '<p class="err"><span class="why"></span>' +
+      'お手数ですが、LINEまたはお電話（048-933-9980）からご連絡ください。</p>';
+    msg.querySelector('.why').textContent = (e && e.message ? e.message : '送信できませんでした') + '。';
+    btn.disabled = false;
+    btn.textContent = 'もう一度送る';
+  });
+}
+
 /* ---------- メール相談 ---------- */
 function openForm() {
   if (!GAS_URL) {
@@ -1159,7 +1297,7 @@ function openForm() {
   var s = summary();
   $('attachInfo').innerHTML = '<b>この内容が一緒に送信されます</b>' +
     '注意度レベル' + s.level + '（' + s.total + '/' + s.max + '点）／' + s.cats +
-    (s.free ? '／AIに書いた文章' : '');
+    (s.free ? '／AIに書いた文章' : '') + (adviceText ? '／AIの所見' : '');
   $('formsec').style.display = 'block';
   $('formsec').scrollIntoView({ block: 'start' });
   ev('form_open', { level: s.level.slice(0, 1), score: s.total });
@@ -1188,9 +1326,18 @@ function submitForm(ev) {
   postGas({
     key: GAS_KEY, mode: 'contact', submitId: formId,
     payload: summary(),
-    contact: { name: name, contact: contact, when: $('f-when').value, message: $('f-msg').value.trim() }
+    contact: {
+      name: name, contact: contact,
+      when: $('f-when').value, message: $('f-msg').value.trim(),
+      /* 連絡先がメールアドレスなら、同じ内容を本人にも送る（GAS側でも形式を確認する） */
+      copy: $('f-copy').checked, advice: adviceText
+    }
   }).then(function (d) {
     if (!d || !d.ok) throw new Error('送信できませんでした');
+    if (d.copied) {
+      $('okCopy').style.display = '';
+      $('okCopy').querySelector('.dst').textContent = contact;
+    }
     $('formCard').style.display = 'none';
     $('okBox').style.display = 'block';
     $('okBox').scrollIntoView({ block: 'center' });
@@ -1248,7 +1395,17 @@ document.addEventListener('DOMContentLoaded', function () {
     $('consent').checked = false;
     $('aiOut').style.display = 'none';
     $('aiErr').innerHTML = '';
-    aiId = ''; aiKey = ''; formId = '';
+    aiId = ''; aiKey = ''; formId = ''; dlvId = ''; dlvTo = ''; adviceText = '';
+    $('g-mail').value = '';
+    $('g-mail').disabled = false;
+    $('g-agree').checked = false;
+    $('getMsg').innerHTML = '';
+    $('getMailGo').style.display = '';
+    $('getMailGo').disabled = false;
+    $('getMailGo').textContent = '送る';
+    $('okCopy').style.display = 'none';
+    $('lineBtn').href = LINE_URL;
+    $('lineSticky').href = LINE_URL;
     $('aiGo').style.display = '';
     $('aiGo').disabled = false;
     $('aiGo').textContent = 'AIの所見を見る（無料）';
@@ -1263,8 +1420,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   $('free').addEventListener('input', function () {
     $('charn').textContent = $('free').value.length;
+    /* 書き足した内容もLINEの本文に載せる（結果表示後に書く人が多い） */
+    if ($('result').style.display === 'block') refreshLineLinks();
   });
   $('aiGo').addEventListener('click', askAI);
+  $('getMailGo').addEventListener('click', sendResultMail);
+  $('g-mail').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); sendResultMail(); }
+  });
   $('toForm').addEventListener('click', openForm);
   $('form').addEventListener('submit', submitForm);
 });
