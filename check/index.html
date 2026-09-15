@@ -1362,6 +1362,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   $('lineBtn').href = LINE_URL;
   $('lineSticky').href = LINE_URL;
+  $('getLine').href = LINE_URL;
+
+  /* LPのポップアップ（iframe）では、小窓の中がLINEの起動ページに変わってしまうので別タブで開く */
+  if (document.body.classList.contains('embed')) {
+    ['getLine', 'lineBtn'].forEach(function (id) {
+      $(id).target = '_blank';
+      $(id).rel = 'noopener';
+    });
+  }
 
   /* LINE・電話のタップを計測する（data-cv="line-result" 等を種類と場所に分解） */
   document.addEventListener('click', function (e) {
