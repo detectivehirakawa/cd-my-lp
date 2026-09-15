@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>浮気ポリス｜30秒の無料セルフチェック｜ラクーン探偵社</title>
-<meta name="description" content="浮気ポリスは、パートナーの気になる変化を12の質問で整理する無料のセルフチェックです。回答は端末内で処理され送信されません。埼玉県公安委員会第43230060号・ラクーン探偵社が運営。24時間365日・匿名相談可。" />
+<title>浮気の兆候チェック｜12項目でわかる無料セルフ診断｜浮気ポリス</title>
+<meta name="description" content="浮気の兆候を12の質問でチェックできる無料の診断です。スマホ・帰宅時間・お金・車など項目別に整理し、いま確認できることと避けるべき行動をお伝えします。回答は送信されません。埼玉県公安委員会第43230060号のラクーン探偵社が運営。" />
 <link rel="canonical" href="https://lp.exeresearch.jp/check/" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 
@@ -12,8 +12,8 @@
 <meta property="og:site_name" content="浮気ポリス" />
 <meta property="og:locale" content="ja_JP" />
 <meta property="og:url" content="https://lp.exeresearch.jp/check/" />
-<meta property="og:title" content="浮気ポリス｜30秒の無料セルフチェック" />
-<meta property="og:description" content="12の質問に答えるだけ。気になる変化を項目ごとに整理して、いま何が確認できるのかをお伝えします。回答は送信されません。" />
+<meta property="og:title" content="浮気の兆候チェック｜12項目でわかる無料セルフ診断" />
+<meta property="og:description" content="12の質問に答えるだけ。気になる変化がどの項目に集まっているかを整理して、いま何が確認できるのかをお伝えします。無料・匿名・回答は送信されません。" />
 <meta property="og:image" content="https://lp.exeresearch.jp/og-image.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -41,7 +41,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "浮気ポリス",
+  "name": "浮気ポリス｜浮気の兆候チェック",
   "url": "https://lp.exeresearch.jp/check/",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "All",
@@ -397,6 +397,17 @@
   body.embed section { padding: 22px 0; }
   body.embed .wrap { padding: 0 14px; }
 
+  /* ===== 兆候の解説 ===== */
+  .signs { display: flex; flex-direction: column; gap: 12px; }
+  .sign { background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 15px 16px; box-shadow: var(--shadow-sm); }
+  .sign h3 { font-size: .95rem; font-weight: 900; color: var(--primary);
+    margin-bottom: 6px; line-height: 1.5; }
+  .sign p { font-size: .85rem; line-height: 1.85; color: #46566a; }
+  /* 埋め込み（ポップアップ）では診断だけを見せるので畳む */
+  body.embed #signs { display: none !important; }
+
+
   @media (min-width: 600px) {
     .cta-btns { flex-direction: row; justify-content: center; }
     .cta-btns .btn { max-width: 250px; }
@@ -592,6 +603,78 @@
       <h3>送信しました</h3>
       <p>担当者が内容を確認し、ご希望の時間帯に折り返します。<br>お急ぎの場合は <a href="tel:0489339980" style="color:var(--accent-hover);font-weight:700">048-933-9980</a> へお電話ください。</p>
     </div>
+  </div>
+</section>
+
+<!-- ===== 兆候の解説（検索から来た方向け） ===== -->
+<section id="signs">
+  <div class="wrap">
+    <h2 class="sec">浮気の兆候としてよく挙げられる12のこと</h2>
+    <p class="sec-lead">上の診断で使っている12の項目を、そのまま解説します。<br>
+      どれも単独では偶然で説明できるものです。重なり方を見るためのものとお考えください。</p>
+    <div class="signs">
+      <div class="sign">
+        <h3>1. スマホの扱いが変わる</h3>
+        <p>ロック画面に通知を出さなくなる、画面を下に伏せて置く、浴室にも持ち込む。これらは「見られたくないやり取りがある」ときに現れやすい変化です。ただし仕事の都合や、単にプライバシー意識が変わっただけのこともあります。</p>
+      </div>
+      <div class="sign">
+        <h3>2. 帰宅時間と連絡のつきやすさ</h3>
+        <p>残業や急な用事が増えるだけなら珍しくありませんが、連絡がつかない時間帯が定期的に生まれている場合は、行動の記録が取りやすい兆候でもあります。理由の説明が毎回同じ言い方になる、という点に気づく方も多いです。</p>
+      </div>
+      <div class="sign">
+        <h3>3. 休日の過ごし方が変わる</h3>
+        <p>一人で出かけることが増え、行き先を細かく話さなくなる。「同僚と」「趣味で」という説明が続くのに、その相手の話題が出てこない場合は、休日の行動を確認する価値があります。</p>
+      </div>
+      <div class="sign">
+        <h3>4. 身だしなみや外見への意識</h3>
+        <p>服装や髪型に気を使い始める、香水や下着の好みが変わる、急にジムや脱毛に通い始める。単独では最も弱い兆候で、これだけで判断することはできません。他の項目と重なったときに意味を持ちます。</p>
+      </div>
+      <div class="sign">
+        <h3>5. お金の使い方</h3>
+        <p>現金払いが増える、明細を見せなくなる、使いみちの分からない出金がある。ホテルや飲食店の履歴が見つかった場合は、日付と場所が記録として残るため、調査の計画を立てやすくなります。</p>
+      </div>
+      <div class="sign">
+        <h3>6. 車と移動のしかた</h3>
+        <p>助手席のシート位置が変わっている、車内のにおいが違う、洗車が急に増える。ドライブレコーダーやETC、カーナビの履歴が消えている場合は、移動の記録を消す動機があったことになります。</p>
+      </div>
+      <div class="sign">
+        <h3>7. あなたへの態度</h3>
+        <p>会話が減る場合と、逆に急に優しくなる場合の両方があります。共通して現れやすいのは、その話題に触れたときだけ強く怒る、話をそらすという反応です。</p>
+      </div>
+      <div class="sign">
+        <h3>8. SNSの使い方</h3>
+        <p>公開範囲を狭める、投稿や写真からあなたの存在を消す、知らない相手とのやり取りがある。SNSは本人が消してしまえば残らないため、気づいた時点の記録が重要になります。</p>
+      </div>
+      <div class="sign">
+        <h3>9. ふたりの関係の変化</h3>
+        <p>減る場合も、急に増える場合もあります。指輪を外していることが増えた、というご相談も少なくありません。答えにくい項目なので、無理に確認しようとしないことをおすすめします。</p>
+      </div>
+      <div class="sign">
+        <h3>10. 話のつじつまが合わない</h3>
+        <p>職場や同僚に確認したら話が事実と違った、出張や予定そのものが存在しなかった。ここまで具体的な矛盾が出ている場合、事実関係を確認できる可能性は高くなります。</p>
+      </div>
+      <div class="sign">
+        <h3>11. 第三者からの目撃</h3>
+        <p>知人から「見かけた」と言われた、誰かと一緒にいるところを自分で見た。見た場所と時間が分かっていれば、そこから行動のパターンを追えることがあります。</p>
+      </div>
+      <div class="sign">
+        <h3>12. これまでの経緯</h3>
+        <p>過去にも同じことがあった、本人は認めたが関係が続いていそう。一度あったことは繰り返されやすく、前回の経緯が今回の調査の手がかりになることもあります。</p>
+      </div>
+    </div>
+    <div class="note-box" style="margin-top:20px">
+      <h4>兆候が重なったときに、何が確認できるのか</h4>
+      <ol>
+        <li><b>行動のパターン</b>。曜日や時間帯が決まっている場合、いつ何を確認すればよいかが定まります。</li>
+        <li><b>同行者の有無</b>。誰と一緒にいたかは、写真や動画で記録できる部分です。</li>
+        <li><b>滞在先と滞在時間</b>。宿泊の有無は、慰謝料請求の場面で重視されることがあります。</li>
+      </ol>
+    </div>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:14px;line-height:1.8">
+      ここに書いたものは、当社が相談を受けてきた中でよく挙がる変化です。
+      特定の行為があったことを示すものではなく、医学的・法律的な判断でもありません。
+      事実の確認は調査によってのみ可能です。
+    </p>
   </div>
 </section>
 
