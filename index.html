@@ -584,6 +584,11 @@
     .guarantee-icon { color: var(--gold); line-height: 1; }
     .guarantee-icon .ic { display: block; margin: 0 auto; }
     .evidence-card-body h4 .ic { color: var(--accent); margin-right: 5px; }
+    /* 会社サイトのポップアップから開かれたとき（?embed=1）は、
+       画面下の固定バーが小窓の中で本文に重なるので隠す */
+    body.embed .float-cta,
+    body.embed .fixed-line { display: none; }
+
 
 
 
@@ -1062,6 +1067,11 @@
 </div>
 
 <script>
+  /* 会社サイトのポップアップから開かれた場合の目印 */
+  try {
+    if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('in-pop');
+  } catch (e) {}
+
   if (window.location.hash) {
     history.replaceState(null, null, window.location.pathname);
     window.scrollTo(0, 0);
@@ -1125,6 +1135,12 @@
       if ((e.key === 'Escape' || e.key === 'Esc') && modal.classList.contains('on')) close();
     });
   })();
+
+  if (document.documentElement.classList.contains('in-pop')) {
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.classList.add('embed');
+    });
+  }
 
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
