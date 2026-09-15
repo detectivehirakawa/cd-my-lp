@@ -31,6 +31,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 
+  <!-- Google tag (gtag.js)：会社サイトと同じGA4プロパティに送る -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5Y67CRKZJW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5Y67CRKZJW');
+  </script>
+
   <!-- 構造化データ：事業者情報（ローカルビジネス） -->
   <script type="application/ld+json">
   {
@@ -500,12 +509,36 @@
       .trust-bar-inner { gap: 14px; }
       .trust-item-text strong { font-size: .8rem; }
     }
+
+    /* ===== 浮気ポリス（/check/）への導線 ===== */
+    .check-link { display: inline-block; margin-top: 14px; font-size: .84rem; font-weight: 700;
+      color: var(--gold); text-decoration: underline; text-underline-offset: 3px;
+      padding: 10px 6px; line-height: 1.6; }
+    .check-link:hover { color: #fff; }
+    .check-promo { margin-top: 26px; background: #fff; border: 2px solid var(--accent);
+      border-radius: 16px; padding: 24px 18px; text-align: center;
+      box-shadow: 0 8px 28px rgba(232,93,38,.16); }
+    .check-promo-label { display: inline-block; font-size: .72rem; font-weight: 900;
+      letter-spacing: .08em; color: #fff; background: var(--accent);
+      border-radius: 999px; padding: 4px 14px; margin-bottom: 12px; }
+    .check-promo h3 { font-size: clamp(1.1rem, 4.6vw, 1.4rem); font-weight: 900;
+      line-height: 1.5; color: var(--primary); margin-bottom: 10px; }
+    .check-promo-lead { font-size: .88rem; line-height: 1.8; color: #444; margin-bottom: 18px; }
+    .check-promo-lead strong { color: #c44d1a; }
+    .check-promo-btn { display: inline-flex; align-items: center; justify-content: center;
+      width: 100%; max-width: 400px; min-height: 56px; font-size: 1rem; font-weight: 900;
+      color: #fff; background: var(--accent); border-radius: 999px; text-decoration: none;
+      box-shadow: 0 6px 18px rgba(232,93,38,.38); transition: background .15s, transform .12s; }
+    .check-promo-btn:hover { background: #c44d1a; }
+    .check-promo-btn:active { transform: translateY(1px); }
+    .check-promo-note { font-size: .74rem; color: #6a7684; margin-top: 12px; line-height: 1.6; }
+
   </style>
 </head>
 <body>
 
 <div class="announce-bar">
-  📞 <a href="tel:0489339980">048-933-9980</a>　｜　<span style="color:var(--gold)">24時間365日</span> 無料相談受付中<br>強引な勧誘は一切なし
+  📞 <a href="tel:0489339980" data-cv="tel-announce">048-933-9980</a>　｜　<span style="color:var(--gold)">24時間365日</span> 無料相談受付中<br>強引な勧誘は一切なし
 </div>
 
 <header>
@@ -519,11 +552,11 @@
     </div>
   </div>
   <div class="header-right">
-    <a href="tel:0489339980" class="header-tel">
+    <a href="tel:0489339980" data-cv="tel-header" class="header-tel">
       <span class="tel-label">📞 無料通話</span>
       <span class="tel-num">048-933-9980</span>
     </a>
-    <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="header-cta">無料相談する</a>
+    <a href="https://exeresearch.jp/contact/" data-cv="contact-header" target="_blank" rel="noopener" class="header-cta">無料相談する</a>
   </div>
 </header>
 
@@ -560,17 +593,18 @@
     </div>
     <div class="hero-cta-group">
       <div class="hero-cta-row">
-        <a href="tel:0489339980" class="btn-tel">
+        <a href="tel:0489339980" data-cv="tel-hero" class="btn-tel">
           📞 048-933-9980
           <span>24時間受付・通話無料</span>
         </a>
-        <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener" class="btn-line">
+        <a href="https://lin.ee/ZJeosMu" data-cv="line-hero" target="_blank" rel="noopener" class="btn-line">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.208 2 11.4c0 2.897 1.402 5.484 3.59 7.19.186.146.291.374.249.607l-.373 1.857c-.067.333.288.598.592.435l2.073-1.12c.179-.097.393-.12.588-.053.836.281 1.733.434 2.681.434 5.523 0 10-4.208 10-9.4C22 6.208 17.523 2 12 2z"/></svg>
           LINEで相談
         </a>
       </div>
-      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
+      <a href="https://exeresearch.jp/contact/" data-cv="contact-hero" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
       <p class="note">相談・見積もり完全無料 ／ 強引な勧誘は一切なし ／ 匿名OK</p>
+      <a href="/check/" class="check-link" data-cv="check-hero">いきなり相談するのは不安な方へ　30秒の無料セルフチェック →</a>
     </div>
   </div>
   <div class="hero-scroll">SCROLL</div>
@@ -600,6 +634,14 @@
     </div>
     <div class="pain-answer">
       <p>そのお悩み、<strong>リモート浮気調査プラン</strong>が解決します。<br>業界最安水準の料金で、確かな証拠をご提供。<br>まずは<strong>無料相談</strong>から、気軽に話してください。</p>
+    </div>
+    <div class="check-promo">
+      <p class="check-promo-label">まだ相談するか決められない方へ</p>
+      <h3>その違和感、30秒で整理できます</h3>
+      <p class="check-promo-lead">12の質問に答えるだけで、気になる変化がどの項目に集まっているかが分かります。<br>
+        <strong>無料・匿名・回答は送信されません。</strong></p>
+      <a href="/check/" class="check-promo-btn" data-cv="check-pain">無料セルフチェックを試す →</a>
+      <p class="check-promo-note">結果画面では、いま確認できることと「やってはいけない行動」もお伝えします</p>
     </div>
   </div>
 </section>
@@ -642,7 +684,7 @@
             <li>正式調査報告書付き</li>
             <li>尾行なし・低コストで証拠取得</li>
           </ul>
-          <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="plan-cta">このプランで相談する</a>
+          <a href="https://exeresearch.jp/contact/" data-cv="contact-plan" target="_blank" rel="noopener" class="plan-cta">このプランで相談する</a>
         </div>
       </div>
       <div class="plan-card">
@@ -660,7 +702,7 @@
             <li>正式調査報告書付き</li>
             <li>車両・機材費：22,000円（一律）</li>
           </ul>
-          <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="plan-cta">このプランで相談する</a>
+          <a href="https://exeresearch.jp/contact/" data-cv="contact-plan" target="_blank" rel="noopener" class="plan-cta">このプランで相談する</a>
         </div>
       </div>
     </div>
@@ -902,16 +944,17 @@
     <p class="sub">秘密厳守・匿名OK・見積もり無料。24時間受付中です。<br>強引な勧誘は一切行いません。</p>
     <div class="cta-group">
       <div class="cta-tel-box">
-        <a href="tel:0489339980">📞 048-933-9980</a>
+        <a href="tel:0489339980" data-cv="tel-cta">📞 048-933-9980</a>
         <span>24時間365日受付・通話無料</span>
       </div>
       <div class="cta-divider">または</div>
-      <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
-      <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener" class="btn-line">
+      <a href="https://exeresearch.jp/contact/" data-cv="contact-cta" target="_blank" rel="noopener" class="btn-primary">Webフォームで無料相談する</a>
+      <a href="https://lin.ee/ZJeosMu" data-cv="line-cta" target="_blank" rel="noopener" class="btn-line">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.477 2 2 6.208 2 11.4c0 2.897 1.402 5.484 3.59 7.19.186.146.291.374.249.607l-.373 1.857c-.067.333.288.598.592.435l2.073-1.12c.179-.097.393-.12.588-.053.836.281 1.733.434 2.681.434 5.523 0 10-4.208 10-9.4C22 6.208 17.523 2 12 2z"/></svg>
         LINEで相談する
       </a>
       <span class="cta-sub">相談・見積もり完全無料 ／ 所要時間5分〜 ／ 強引な勧誘なし</span>
+      <a href="/check/" class="check-link" data-cv="check-cta">まだ迷っている方は　30秒の無料セルフチェック →</a>
     </div>
   </div>
 </section>
@@ -975,19 +1018,19 @@
 
 <footer>
   <div class="footer-license">探偵業届出番号：埼玉県公安委員会第43230060号</div>
-  <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong>　📞 <a href="tel:0489339980">048-933-9980</a></p>
-  <p style="margin-top:8px;"><a href="#privacy-policy">プライバシーポリシー</a> ／ <a href="#commercial-transactions">特定商取引法に基づく表記</a> ／ <a href="https://exeresearch.jp/contact/" target="_blank" rel="noopener">お問い合わせ</a> ／ <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a></p>
+  <p><strong style="color:#6a8fa8;">ラクーン探偵社</strong>　📞 <a href="tel:0489339980" data-cv="tel-footer">048-933-9980</a></p>
+  <p style="margin-top:8px;"><a href="#privacy-policy">プライバシーポリシー</a> ／ <a href="#commercial-transactions">特定商取引法に基づく表記</a> ／ <a href="https://exeresearch.jp/contact/" data-cv="contact-footer" target="_blank" rel="noopener">お問い合わせ</a> ／ <a href="https://exeresearch.jp/" target="_blank" rel="noopener">会社サイト</a></p>
   <p style="margin-top:12px;">&copy; 2026 ラクーン探偵社. All rights reserved.</p>
 </footer>
 
 <div class="fixed-line">
-  <a href="https://lin.ee/ZJeosMu" target="_blank" rel="noopener">
+  <a href="https://lin.ee/ZJeosMu" data-cv="line-fixed" target="_blank" rel="noopener">
     <img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" height="36" border="0">
   </a>
 </div>
 
 <div class="float-cta">
-  <a href="tel:0489339980">📞 今すぐ無料相談 048-933-9980</a>
+  <a href="tel:0489339980" data-cv="tel-float">📞 今すぐ無料相談 048-933-9980</a>
 </div>
 
 <script>
@@ -996,6 +1039,21 @@
     window.scrollTo(0, 0);
   }
   window.history.scrollRestoration = 'manual';
+
+  /* ===== GA4：CV導線のクリックを計測する =====
+     data-cv="tel-hero" のように「種類-場所」で書いてあるので、
+     tel_click / line_click / contact_click / check_click に振り分けて送る。 */
+  function ev(name, params) {
+    try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {}
+  }
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-cv]') : null;
+    if (!el) return;
+    var v = el.getAttribute('data-cv') || '';
+    var i = v.indexOf('-');
+    ev((i < 0 ? v : v.slice(0, i)) + '_click',
+       { location: i < 0 ? '' : v.slice(i + 1), page: 'lp' });
+  }, true);
 
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');

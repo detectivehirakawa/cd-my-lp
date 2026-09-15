@@ -28,6 +28,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 
+<!-- Google tag (gtag.js)：LPと会社サイトと同じGA4プロパティに送る -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5Y67CRKZJW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5Y67CRKZJW');
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -777,8 +786,22 @@ var LEVELS = [
 /* ---------- 状態 ---------- */
 var idx = 0;
 var answers = new Array(QUESTIONS.length).fill(null);
+var started = false;   // 1問目に答えた時点で1度だけ check_start を送る
 
 var $ = function (id) { return document.getElementById(id); };
+
+/* ---------- GA4 ----------
+ * どこで離脱しているかを見るため、診断の開始・完了・所見・相談を段階で送る。
+ * 送るのは選んだ項目の数と注意度だけで、回答の本文や連絡先は送らない。 */
+function ev(name, params) {
+  try {
+    if (typeof gtag === 'function') {
+      params = params || {};
+      params.page = 'check';
+      gtag('event', name, params);
+    }
+  } catch (e) {}
+}
 
 /* ---------- 描画 ---------- */
 function render() {
@@ -813,6 +836,7 @@ function render() {
 }
 
 function choose(i) {
+  if (!started) { started = true; ev('check_start'); }
   answers[idx] = i;
   if (idx < QUESTIONS.length - 1) {
     idx++;
@@ -916,6 +940,9 @@ function finish() {
   $('result').style.display = 'block';
   $('sticky').classList.add('show');
   $('result').scrollIntoView({ block: 'start' });
+
+  var answered = answers.filter(function (a) { return a !== null; }).length;
+  ev('check_complete', { level: lv.idx + 1, score: t.total, answered: answered });
 }
 
 /* ---------- サマリ（AI・フォームに渡す） ---------- */
@@ -994,6 +1021,7 @@ function askAI() {
     $('aiBody').textContent = d.text;
     $('aiMeta').textContent = 'この所見は一般的な傾向をもとにした整理であり、事実の認定ではありません。';
     btn.style.display = 'none';
+    ev('advice_view', { wrote: s.free ? 1 : 0 });
   })['catch'](function (e) {
     out.style.display = 'none';
     $('aiErr').innerHTML = '<p class="err">' +
@@ -1015,6 +1043,7 @@ function openForm() {
     (s.free ? '／AIに書いた文章' : '');
   $('formsec').style.display = 'block';
   $('formsec').scrollIntoView({ block: 'start' });
+  ev('form_open', { level: s.level.slice(0, 1), score: s.total });
 }
 
 function submitForm(ev) {
@@ -1046,6 +1075,9 @@ function submitForm(ev) {
     $('formCard').style.display = 'none';
     $('okBox').style.display = 'block';
     $('okBox').scrollIntoView({ block: 'center' });
+    /* 相談の送信完了が主要な成果地点。GA4のキーイベントに使う */
+    var done = summary();
+    ev('generate_lead', { level: done.level.slice(0, 1), score: done.total });
   })['catch'](function () {
     $('fErr').innerHTML = '<p class="err">送信できませんでした。' +
       'お手数ですが <a href="tel:0489339980" style="font-weight:700">048-933-9980</a> ' +
@@ -1059,6 +1091,15 @@ function submitForm(ev) {
 document.addEventListener('DOMContentLoaded', function () {
   $('lineBtn').href = LINE_URL;
   $('lineSticky').href = LINE_URL;
+
+  /* LINE・電話のタップを計測する（data-cv="line-result" 等を種類と場所に分解） */
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-cv]') : null;
+    if (!el) return;
+    var v = el.getAttribute('data-cv') || '';
+    var i = v.indexOf('-');
+    ev((i < 0 ? v : v.slice(0, i)) + '_click', { location: i < 0 ? '' : v.slice(i + 1) });
+  }, true);
 
   render();
 
