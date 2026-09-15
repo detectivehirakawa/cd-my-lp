@@ -631,9 +631,9 @@
 /* 相談先。LINEは集客用の公式アカウント（@206fdxiw）の友だち追加URL。
    調査用BOT（@958safxm）とは別アカウントなので混同しないこと。 */
 var LINE_URL = 'https://line.me/R/ti/p/@206fdxiw';
-/* AI所見とメール相談の中継先（GASウェブアプリ）。空のあいだは
-   AIブロックを出さず、メール相談は電話・LINEの案内に切り替える。 */
-var GAS_URL = '';
+/* AI所見とメール相談の中継先（GASプロジェクト「浮気ポリス受付」）。
+   空にするとAIブロックを出さず、メール相談は電話・LINEの案内に切り替わる。 */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbx1pzFG8iP7v4PLBqZ5DsFn9XEHzpGHu4HYDn0rJ5tSJsG5WjjwiWu6Twv5Anf1C0bU/exec';
 var GAS_KEY = 'uwakipolice';
 
 /* ---------- 設問 ----------
@@ -940,7 +940,36 @@ function summary() {
   };
 }
 
+/* ---------- GASへの送信 ----------
+ * GASのウェブアプリは応答の取得に失敗することがある（処理自体は通っているのに
+ * HTMLのエラーページが返る）。そこで送り直すが、同じ submitId を付けることで
+ * GAS側が冪等に扱う（所見はキャッシュから返し、相談は二重登録しない）。 */
+function newId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function postGas(body, tries) {
+  tries = tries || 3;
+  function attempt(n) {
+    return fetch(GAS_URL, { method: 'POST', body: JSON.stringify(body), redirect: 'follow' })
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        var j = null;
+        try { j = JSON.parse(t); } catch (e) {}
+        if (!j) throw new Error('応答を読めませんでした');
+        return j;
+      })['catch'](function (e) {
+        if (n >= tries) throw e;
+        return new Promise(function (res) { setTimeout(res, 900 * n); })
+          .then(function () { return attempt(n + 1); });
+      });
+  }
+  return attempt(1);
+}
+
 /* ---------- AI所見 ---------- */
+var aiId = '', aiKey = '', formId = '';
+
 function askAI() {
   if (!$('consent').checked) {
     $('aiErr').innerHTML = '<p class="err">送信に同意いただけると所見を作成できます。</p>';
@@ -956,10 +985,11 @@ function askAI() {
   $('aiMeta').textContent = '';
 
   var s = summary();
-  fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify({ key: GAS_KEY, mode: 'advice', payload: s })
-  }).then(function (r) { return r.json(); }).then(function (d) {
+  /* 内容が変わっていなければ同じIDで送る（作り直させない） */
+  var k = JSON.stringify(s);
+  if (k !== aiKey) { aiKey = k; aiId = newId(); }
+
+  postGas({ key: GAS_KEY, mode: 'advice', submitId: aiId, payload: s }).then(function (d) {
     if (!d || !d.ok || !d.text) throw new Error(d && d.error ? d.error : '所見を作成できませんでした');
     $('aiBody').textContent = d.text;
     $('aiMeta').textContent = 'この所見は一般的な傾向をもとにした整理であり、事実の認定ではありません。';
@@ -1004,14 +1034,14 @@ function submitForm(ev) {
   btn.disabled = true;
   btn.textContent = '送信しています…';
 
-  fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      key: GAS_KEY, mode: 'contact',
-      payload: summary(),
-      contact: { name: name, contact: contact, when: $('f-when').value, message: $('f-msg').value.trim() }
-    })
-  }).then(function (r) { return r.json(); }).then(function (d) {
+  /* 送信ボタンを押し直しても二重登録にならないよう、IDは1回だけ作る */
+  if (!formId) formId = newId();
+
+  postGas({
+    key: GAS_KEY, mode: 'contact', submitId: formId,
+    payload: summary(),
+    contact: { name: name, contact: contact, when: $('f-when').value, message: $('f-msg').value.trim() }
+  }).then(function (d) {
     if (!d || !d.ok) throw new Error('送信できませんでした');
     $('formCard').style.display = 'none';
     $('okBox').style.display = 'block';
@@ -1053,6 +1083,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('consent').checked = false;
     $('aiOut').style.display = 'none';
     $('aiErr').innerHTML = '';
+    aiId = ''; aiKey = ''; formId = '';
     $('aiGo').style.display = '';
     $('aiGo').disabled = false;
     $('aiGo').textContent = 'AIの所見を見る（無料）';

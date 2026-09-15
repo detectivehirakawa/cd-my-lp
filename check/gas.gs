@@ -47,9 +47,40 @@ function doPost(e) {
     return json_({ ok: false, error: 'いま混み合っています。少し時間をおいてお試しください' });
   }
 
+  /* GASのウェブアプリは応答の取得に失敗することがあり、フロントは同じ内容で
+     送り直す。処理そのものは成功していることが多いので、submitId で冪等にする。
+       - advice  … 作った所見をキャッシュから返す（作り直さない＝料金も増えない）
+       - contact … 二重登録・二重通知を防ぎ、受付済みとだけ返す */
+  var sid = String(body.submitId || '').slice(0, 60);
+  var cache = CacheService.getScriptCache();
+
   try {
-    if (body.mode === 'advice') return adviceReply_(body.payload || {});
-    if (body.mode === 'contact') return contactReply_(body.payload || {}, body.contact || {});
+    if (body.mode === 'advice') {
+      if (sid) {
+        var done = cache.get('adv:' + sid);
+        if (done) return json_({ ok: true, version: VERSION, text: done, cached: true });
+      }
+      var r = adviceReply_(body.payload || {});
+      if (sid) {
+        try {
+          var parsed = JSON.parse(r.getContent());
+          if (parsed.ok && parsed.text) cache.put('adv:' + sid, parsed.text, 21600);
+        } catch (e) {}
+      }
+      return r;
+    }
+    if (body.mode === 'contact') {
+      if (sid && cache.get('con:' + sid)) {
+        return json_({ ok: true, version: VERSION, dedup: true });
+      }
+      var rc = contactReply_(body.payload || {}, body.contact || {});
+      if (sid) {
+        try {
+          if (JSON.parse(rc.getContent()).ok) cache.put('con:' + sid, '1', 21600);
+        } catch (e) {}
+      }
+      return rc;
+    }
   } catch (err) {
     console.log('処理に失敗: ' + err + ' / ' + (err && err.stack));
     return json_({ ok: false, error: '処理できませんでした' });
@@ -95,18 +126,28 @@ function doGet(e) {
       keyLen: key.length, keyHead: key.slice(0, 8) });
   }
 
-  var sheetOk = false, sheetErr = '';
-  try { sheetOk = !!sheet_(); } catch (err) { sheetErr = String(err); }
+  /* シートを開く権限の確認: <exec URL>?key=uwakipolice&sheettest=1
+     ここを既定の状態表示から分けているのは、権限が足りないときに
+     GAS がHTMLのエラーページを返してしまい、状態そのものが読めなくなるため。 */
+  if (q.sheettest) {
+    if (q.key !== SHARED_KEY) return json_({ ok: false, error: '認証キーが一致しません' });
+    try {
+      var sh = sheet_();
+      return json_({ ok: true, version: VERSION, sheetName: sh.getName(), rows: sh.getLastRow() });
+    } catch (err) {
+      return json_({ ok: false, version: VERSION, error: String(err) });
+    }
+  }
 
+  var key0 = p.getProperty('ANTHROPIC_API_KEY') || '';
   return json_({
     ok: true,
     version: VERSION,
-    aiKeySet: !!p.getProperty('ANTHROPIC_API_KEY'),
+    aiKeySet: !!key0,
+    aiKeyLen: key0.length,
     aiModel: AI_MODEL,
     adviceToday: Number(p.getProperty(dayKey_()) || 0),
     adviceDailyLimit: AI_DAILY_LIMIT,
-    sheetOk: sheetOk,
-    sheetErr: sheetErr || undefined,
     notifyTo: NOTIFY_TO,
     sheetUrl: 'https://docs.google.com/spreadsheets/d/' + SHEET_ID
   });
