@@ -14,6 +14,35 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+<!-- 構造化データ。事業者（#organization）とサイト（#website）はトップページで
+     定義しているので、ここでは @id で参照するだけにして重複を作らない -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://lp.exeresearch.jp/privacy/#webpage",
+      "url": "https://lp.exeresearch.jp/privacy/",
+      "name": "プライバシーポリシー｜ラクーン探偵社",
+      "description": "ラクーン探偵社（合同会社EXE RESEARCH）のプライバシーポリシー。個人情報の取得・利用目的・第三者提供・管理体制について記載しています。",
+      "inLanguage": "ja",
+      "isPartOf": { "@id": "https://lp.exeresearch.jp/#website" },
+      "publisher": { "@id": "https://lp.exeresearch.jp/#organization" },
+      "breadcrumb": { "@id": "https://lp.exeresearch.jp/privacy/#breadcrumb" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://lp.exeresearch.jp/privacy/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lp.exeresearch.jp/" },
+        { "@type": "ListItem", "position": 2, "name": "プライバシーポリシー" }
+      ]
+    }
+  ]
+}
+</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --primary: #0d1f35; --accent: #e85d26; --gold: #f0b429; }
