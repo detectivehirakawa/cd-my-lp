@@ -7,6 +7,22 @@
   <meta name="description" content="カメラを設置して対象の出入りを24時間記録するリモート浮気調査。77,000円／24時間の定額で、調査時間による変動はありません。尾行との併用も可能。全国対応・匿名相談可・埼玉県公安委員会第43230060号のラクーン探偵社が運営。" />
   <link rel="canonical" href="https://exeresearch.jp/lp/" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <!-- LPDEPLOY:STRIP:BEGIN
+       lp.exeresearch.jp（旧サブドメイン）に来た訪問者・クローラーを新URLへ転送する。
+       canonicalだけでは実際に2つのURLが別々にクロール・表示され続けていた
+       （2026-09-16のGSC実測で確認）。build-lp-deploy.py の convert() がこの
+       ブロックをマーカーで検出して除去するので、exeresearch.jp/lp/ 側には残らない
+       （自分自身へリダイレクトする事故を避けるため）。
+       文字列 "lp." を分割して書いているのは、これも同じ convert() の置換ルール
+       （lp.exeresearch.jp -> exeresearch.jp/lp/）に巻き込まれないようにするため。 -->
+  <script>
+  (function () {
+    if (/^lp\./.test(location.hostname)) {
+      location.replace('https://' + location.hostname.slice(3) + '/lp' + location.pathname + location.search);
+    }
+  })();
+  </script>
+  <!-- LPDEPLOY:STRIP:END -->
 
   <!-- Open Graph / SNS -->
   <meta property="og:type" content="website" />
