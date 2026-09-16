@@ -116,9 +116,10 @@
   :root {
     --primary: #0d1f35;
     --primary-light: #1a3a5c;
-    --accent: #e85d26;
-    --accent-hover: #c44d1a;
-    --gold: #f0b429;
+    --accent: #1668d8;
+    --accent-hover: #0f4fa8;
+    --gold: #6ea8ee;
+    --caution: #f0b429;
     --white: #fff;
     --light-bg: #f4f6f9;
     --text: #1a1a2e;
@@ -169,10 +170,10 @@
   .hero { background: linear-gradient(170deg, var(--primary) 0%, var(--primary-light) 100%);
     color: #fff; padding: 34px 0 30px; text-align: center; position: relative; overflow: hidden; }
   .hero::after { content: ""; position: absolute; inset: 0;
-    background: radial-gradient(circle at 78% 12%, rgba(240,180,41,.14), transparent 58%); }
+    background: radial-gradient(circle at 78% 12%, rgba(110,168,238,.14), transparent 58%); }
   .hero > * { position: relative; z-index: 1; }
   .hero-kicker { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .1em;
-    color: var(--gold); border: 1px solid rgba(240,180,41,.45); border-radius: 999px;
+    color: var(--gold); border: 1px solid rgba(110,168,238,.45); border-radius: 999px;
     padding: 4px 13px; margin-bottom: 15px; }
   .hero h1 { font-size: clamp(1.45rem, 6.2vw, 2rem); font-weight: 900; line-height: 1.45;
     letter-spacing: .005em; margin-bottom: 13px; }
@@ -188,7 +189,7 @@
     text-decoration: none; transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
     width: 100%; max-width: 420px; }
   .btn:active { transform: translateY(1px); }
-  .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 6px 20px rgba(232,93,38,.42); }
+  .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 6px 20px rgba(22,104,216,.42); }
   .btn-accent:hover { background: var(--accent-hover); }
   .btn-line { background: #06c755; color: #fff; box-shadow: 0 6px 20px rgba(6,199,85,.35); }
   .btn-line:hover { background: #05a948; }
@@ -218,7 +219,7 @@
   .prog-fill { height: 100%; width: 0; background: var(--accent); border-radius: 999px;
     transition: width .28s ease; }
   .q-cat { display: inline-block; font-size: .68rem; font-weight: 900; letter-spacing: .06em;
-    color: var(--accent); background: rgba(232,93,38,.09); border-radius: 6px;
+    color: var(--accent); background: rgba(22,104,216,.09); border-radius: 6px;
     padding: 3px 9px; margin-bottom: 10px; }
   .q-text { font-size: 1.08rem; font-weight: 900; line-height: 1.55; margin-bottom: 4px; }
   .q-hint { font-size: .76rem; color: var(--muted); margin-bottom: 15px; }
@@ -228,8 +229,8 @@
     background: #fff; border: 2px solid var(--border); border-radius: 12px;
     padding: 13px 14px; cursor: pointer; transition: border-color .12s, background .12s; }
   .opt:hover { border-color: var(--primary-light); background: #fafbfd; }
-  .opt:focus-visible { outline: 3px solid rgba(232,93,38,.4); outline-offset: 2px; }
-  .opt[aria-pressed="true"] { border-color: var(--accent); background: rgba(232,93,38,.06); }
+  .opt:focus-visible { outline: 3px solid rgba(22,104,216,.4); outline-offset: 2px; }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: rgba(22,104,216,.06); }
   .opt-mark { flex: 0 0 auto; width: 21px; height: 21px; border-radius: 50%;
     border: 2px solid var(--border); margin-top: 2px; position: relative; }
   .opt[aria-pressed="true"] .opt-mark { border-color: var(--accent); background: var(--accent); }
@@ -264,7 +265,7 @@
   .steps-cap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
     font-size: .6rem; font-weight: 700; color: rgba(255,255,255,.55); text-align: center; }
   .steps-cap span.on { color: #fff; }
-  .lv1 { color: #3fbd7d; } .lv2 { color: var(--gold); }
+  .lv1 { color: #3fbd7d; } .lv2 { color: var(--caution); }
   .lv3 { color: #ff8a4c; } .lv4 { color: #ff6b5e; }
   .res-say { font-size: .92rem; line-height: 1.8; text-align: left; background: #fff;
     color: var(--text); border-radius: 10px; padding: 14px 15px; }
@@ -283,7 +284,7 @@
   .bar-fill.z { background: var(--border); }
   .bar-detail { font-size: .78rem; color: var(--muted); margin-top: 5px; line-height: 1.6; }
 
-  .note-box { border-left: 4px solid var(--gold); background: #fffdf5;
+  .note-box { border-left: 4px solid var(--caution); background: #fffdf5;
     border-radius: 0 10px 10px 0; padding: 14px 15px; }
   .note-box h4 { font-size: .93rem; font-weight: 900; margin-bottom: 8px; }
   .note-box ol { margin: 0 0 0 1.1em; font-size: .85rem; line-height: 1.75; }
@@ -441,7 +442,7 @@
   <div class="hd">
     <a class="brand" href="./">
       <span class="badge-police" aria-hidden="true">
-        <svg width="15" height="17" viewBox="0 0 15 17" fill="none"><path d="M7.5 1L13.5 3.2v5.1c0 3.6-2.4 6.6-6 7.7-3.6-1.1-6-4.1-6-7.7V3.2L7.5 1z" stroke="#f0b429" stroke-width="1.6" fill="rgba(240,180,41,.18)"/><path d="M4.8 8.4l2 2 3.6-3.8" stroke="#f0b429" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="15" height="17" viewBox="0 0 15 17" fill="none"><path d="M7.5 1L13.5 3.2v5.1c0 3.6-2.4 6.6-6 7.7-3.6-1.1-6-4.1-6-7.7V3.2L7.5 1z" stroke="#6ea8ee" stroke-width="1.6" fill="rgba(110,168,238,.18)"/><path d="M4.8 8.4l2 2 3.6-3.8" stroke="#6ea8ee" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         浮気ポリス
       </span>
       <small>ラクーン探偵社</small>
@@ -731,7 +732,7 @@
     <p class="sec-lead">見積り以外の追加費用はいただきません。</p>
     <div class="price">
       <div class="price-item">
-        <div>リモート浮気調査<small>独自開発のカメラを設置して確認します</small></div>
+        <div>リモート浮気調査<small>探偵仕様に特殊改良したカメラを設置して確認します</small></div>
         <b>77,000円〜</b>
       </div>
       <div class="price-item">
