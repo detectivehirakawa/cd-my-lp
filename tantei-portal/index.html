@@ -9,10 +9,19 @@ header h1{margin:0;font-size:1.3rem}
 header a{color:#cfe0ff;text-decoration:none;font-size:.85rem}
 main{max-width:1000px;margin:0 auto;padding:16px}
 .note{background:#fff8e1;border:1px solid #f0d98c;padding:10px 14px;border-radius:6px;font-size:.85rem;margin-bottom:16px}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:.85rem}
-th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top}
-th{background:#eef3fb;position:sticky;top:0}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #e3e6ea;border-radius:6px}
+table{width:100%;min-width:680px;border-collapse:collapse;background:#fff;font-size:.85rem}
+th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+th{background:#eef3fb;position:sticky;top:0;white-space:nowrap}
+th:nth-child(1){min-width:100px}
+th:nth-child(2){min-width:220px}
+th:nth-child(3){min-width:260px}
+th:nth-child(4){min-width:140px}
 tr:hover td{background:#f5f9ff}
+@media (max-width:480px){
+  main{padding:8px}
+  table{font-size:.8rem}
+}
 .pref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .pref-grid a{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px;text-decoration:none;color:#0f4fa8;text-align:center}
 .pref-grid a span{display:block;color:#888;font-size:.75rem;margin-top:4px}

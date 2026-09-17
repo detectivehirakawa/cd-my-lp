@@ -9,10 +9,19 @@ header h1{margin:0;font-size:1.3rem}
 header a{color:#cfe0ff;text-decoration:none;font-size:.85rem}
 main{max-width:1000px;margin:0 auto;padding:16px}
 .note{background:#fff8e1;border:1px solid #f0d98c;padding:10px 14px;border-radius:6px;font-size:.85rem;margin-bottom:16px}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:.85rem}
-th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top}
-th{background:#eef3fb;position:sticky;top:0}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #e3e6ea;border-radius:6px}
+table{width:100%;min-width:680px;border-collapse:collapse;background:#fff;font-size:.85rem}
+th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+th{background:#eef3fb;position:sticky;top:0;white-space:nowrap}
+th:nth-child(1){min-width:100px}
+th:nth-child(2){min-width:220px}
+th:nth-child(3){min-width:260px}
+th:nth-child(4){min-width:140px}
 tr:hover td{background:#f5f9ff}
+@media (max-width:480px){
+  main{padding:8px}
+  table{font-size:.8rem}
+}
 .pref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .pref-grid a{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px;text-decoration:none;color:#0f4fa8;text-align:center}
 .pref-grid a span{display:block;color:#888;font-size:.75rem;margin-top:4px}
@@ -21,11 +30,11 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <header><h1>佐賀県の届出探偵業者一覧（26件）</h1>
 <a href="./index.html">← 都道府県一覧に戻る</a></header>
 <main>
-<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。</div>
-<table>
+<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。表が画面に収まらない場合は横にスクロールできます。</div>
+<div class="table-scroll"><table>
 <tr><th>届出番号</th><th>業者名</th><th>営業所住所</th><th>代表者名</th></tr>
 <tr><td>91070003</td><td>帝国リサーチ<br><span style='color:#888;font-size:.8em'>テイコクリサーチ</span></td><td>三日月町三ヶ島717番地1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91070004</td><td>唐津興信所<br><span style='color:#888;font-size:.8em'>カラツコウシンショ</span></td><td>神田3284番地8</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91070005</td><td>アイ・ハート調査室<br><span style='color:#888;font-size:.8em'>アイ・ハートチョウサシツ</span></td><td>光一丁目1番7号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91070011</td><td>オフィス女性サポート<br><span style='color:#888;font-size:.8em'>オフィスジョセイサポート</span></td><td>浅井町149番地市営浅井アパート16-1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91070020</td><td>高岸<br><span style='color:#888;font-size:.8em'>タカギシ</span></td><td>大和町大久池井1528番地115</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91080001</td><td>アイズ総合探偵事務所<br><span style='color:#888;font-size:.8em'>アイズ ソウゴウタンテイジムショ</span></td><td>松原二丁目2番10号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91080004</td><td>瀬戸口法務会計コンサルタント<br><span style='color:#888;font-size:.8em'>セトグチホウムカイケイコンサルタント</span></td><td>金立町大字千府590番地4</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91140001</td><td>あいざわ調査室<br><span style='color:#888;font-size:.8em'>アイザワチョウサシツ</span></td><td>大財三丁目16号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91160004</td><td>佐賀探偵事務所<br><span style='color:#888;font-size:.8em'>サガタンテイジムショ</span></td><td>西与賀町大字厘外767番地7</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91180001</td><td>総合調査オルカジャパン福岡南<br><span style='color:#888;font-size:.8em'>ソウゴウチョウサオルカジャパンフクオカミナミ</span></td><td>本鳥栖町633番地10ザ・鳥栖タワー20</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91190005</td><td>総合探偵社 仁愛<br><span style='color:#888;font-size:.8em'>ソウゴウタンテイシャ ジンアイ</span></td><td>西唐津2丁目6225番地9</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91200008</td><td>探偵はやぶさ<br><span style='color:#888;font-size:.8em'>タンテイハヤブサ</span></td><td>吉田2985番地96-休荘203号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91210001</td><td>帝国レディース興信所<br><span style='color:#888;font-size:.8em'>テイコクレディースコウシンショ</span></td><td>開成六丁2番24-1号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91220002</td><td>村山 憲文<br><span style='color:#888;font-size:.8em'>ムラヤマノリフミ</span></td><td>大字園部2593番地2</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91230001</td><td>ミス・シャーロックいずみ.佐賀<br><span style='color:#888;font-size:.8em'>ミスシャーロックイズミサガ</span></td><td>川副町小々森146番地1kyusanbuilding201</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91230004</td><td>109探偵事務所<br><span style='color:#888;font-size:.8em'>イチマルクタンテイジムショ</span></td><td>脇田町物引471番地1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91240001</td><td>HM探偵事務所<br><span style='color:#888;font-size:.8em'>エイチエムタンテイジムショ</span></td><td>鏡2095番地7</td><td>香月 省二<br><span style='color:#888;font-size:.8em'>カツキショウジ</span></td></tr><tr><td>91240005</td><td>佐賀の探偵さん<br><span style='color:#888;font-size:.8em'>サガノタンテイサン</span></td><td>牛津町乙梛131番地</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91250002</td><td>総合調査オフィス<br><span style='color:#888;font-size:.8em'>ソウゴウタンテイチョウサオフィス</span></td><td>東川登町大字永野6360番地1YOLO-107G号</td><td>岸田 直樹<br><span style='color:#888;font-size:.8em'>キシダナオキ</span></td></tr><tr><td>91250005</td><td>総合探偵事務所女探偵わか<br><span style='color:#888;font-size:.8em'>ソウゴウタンテイジムショオンナタンテイワカ</span></td><td>兵庫北四丁目5番3-1号エクセルガーデンA102</td><td>高原 和彦<br><span style='color:#888;font-size:.8em'>タカハラカズヒコ</span></td></tr><tr><td>91250006</td><td>株式会社アーネット調査事務所佐賀支店<br><span style='color:#888;font-size:.8em'>(KK)アーネットチョウサジムショサガシテン</span></td><td>栄町2番8号さかえヤマトビル508号室</td><td>安武 尚朗<br><span style='color:#888;font-size:.8em'>ヤスタケナオヒロ</span></td></tr><tr><td>91250007</td><td>Prires探偵事務所<br><span style='color:#888;font-size:.8em'>プライリスタンテイジムショ</span></td><td>鏡2536番地3リアンメゾンD</td><td>古川 和樹<br><span style='color:#888;font-size:.8em'>フルカワカズキ</span></td></tr><tr><td>91250008</td><td>サンライズ総合探偵社 福岡佐賀<br><span style='color:#888;font-size:.8em'>サンライズソウゴウタンテイシャフクオカサガ</span></td><td>大財5丁8番76号-1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>91250010</td><td>(株)光リサーチ<br><span style='color:#888;font-size:.8em'>(KK)ヒカリリサーチ</span></td><td>駅前中央2丁8-12-1</td><td>光武 洋輔<br><span style='color:#888;font-size:.8em'>ミツタケヨウスケ</span></td></tr><tr><td>91250011</td><td>女探偵358<br><span style='color:#888;font-size:.8em'>オンナタンテイサンゴーハチ</span></td><td>唐人一丁5番地38エステイト山城105</td><td>福山 浩和<br><span style='color:#888;font-size:.8em'>フクヤマヒロカズ</span></td></tr><tr><td>91260001</td><td>ぞうむしプロ合同会社<br><span style='color:#888;font-size:.8em'>ゾウムシプロ</span></td><td>桜町1205</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr>
-</table>
+</table></div>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
 </body></html>

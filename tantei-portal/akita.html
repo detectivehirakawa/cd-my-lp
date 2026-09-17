@@ -9,10 +9,19 @@ header h1{margin:0;font-size:1.3rem}
 header a{color:#cfe0ff;text-decoration:none;font-size:.85rem}
 main{max-width:1000px;margin:0 auto;padding:16px}
 .note{background:#fff8e1;border:1px solid #f0d98c;padding:10px 14px;border-radius:6px;font-size:.85rem;margin-bottom:16px}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:.85rem}
-th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top}
-th{background:#eef3fb;position:sticky;top:0}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #e3e6ea;border-radius:6px}
+table{width:100%;min-width:680px;border-collapse:collapse;background:#fff;font-size:.85rem}
+th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+th{background:#eef3fb;position:sticky;top:0;white-space:nowrap}
+th:nth-child(1){min-width:100px}
+th:nth-child(2){min-width:220px}
+th:nth-child(3){min-width:260px}
+th:nth-child(4){min-width:140px}
 tr:hover td{background:#f5f9ff}
+@media (max-width:480px){
+  main{padding:8px}
+  table{font-size:.8rem}
+}
 .pref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .pref-grid a{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px;text-decoration:none;color:#0f4fa8;text-align:center}
 .pref-grid a span{display:block;color:#888;font-size:.75rem;margin-top:4px}
@@ -21,11 +30,11 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <header><h1>秋田県の届出探偵業者一覧（28件）</h1>
 <a href="./index.html">← 都道府県一覧に戻る</a></header>
 <main>
-<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。</div>
-<table>
+<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。表が画面に収まらない場合は横にスクロールできます。</div>
+<div class="table-scroll"><table>
 <tr><th>届出番号</th><th>業者名</th><th>営業所住所</th><th>代表者名</th></tr>
 <tr><td>23070001</td><td>城東探偵事務所<br><span style='color:#888;font-size:.8em'>ジョウトウタンテイジムショ</span></td><td>東通仲町6番10号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23070013</td><td>アイ調査事務所<br><span style='color:#888;font-size:.8em'>アイチョウサジムショ</span></td><td>大鍬町127-5</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23070017</td><td>リサーチネット<br><span style='color:#888;font-size:.8em'>リサーチネット</span></td><td>新屋田尻西町3番5号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23080013</td><td>東北損害調査(株)<br><span style='color:#888;font-size:.8em'>トウホクソンガイチョウサ(KK)</span></td><td>茨島六丁目10番17号</td><td>佐藤 忠治<br><span style='color:#888;font-size:.8em'>サトウ チュウジ</span></td></tr><tr><td>23100006</td><td>総合調査ライフパートナー秋田<br><span style='color:#888;font-size:.8em'>ソウゴウチョウサライフパートナーアキタ</span></td><td>字向町8番地コミュニティビル向町2階A号室</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23130005</td><td>秋田総合調査事務所<br><span style='color:#888;font-size:.8em'>アキタソウゴウチョウサジムショ</span></td><td>港北新町13番38号コーポ港北2号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23140002</td><td>秋田調査探偵事務所<br><span style='color:#888;font-size:.8em'>アキタチョウサタンテイジムショ</span></td><td>十文字町字西上65番地10</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23150004</td><td>アメージング企画秋田<br><span style='color:#888;font-size:.8em'>アメージングキカクアキタ</span></td><td>仁井田栄町17番58号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23170002</td><td>藤野 孝<br><span style='color:#888;font-size:.8em'>フジノ タカシ</span></td><td>新屋表町14番20号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23180001</td><td>佐藤 功治<br><span style='color:#888;font-size:.8em'>サトウ コウジ</span></td><td>上北手猿田字四ツ小屋110番地155県営南ヶ丘住宅7-101</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23180004</td><td>(株)廣建秋田サービスセンター<br><span style='color:#888;font-size:.8em'>(KK)コウケンアキタサービスセンター</span></td><td>山王六丁目1番24号山王セントラルビル5F(C)</td><td>澁木 正幸<br><span style='color:#888;font-size:.8em'>シブキ マサユキ</span></td></tr><tr><td>23180005</td><td>日本総合調査<br><span style='color:#888;font-size:.8em'>ニホンソウゴウチョウサ</span></td><td>金足大清水台字大清水159</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23190002</td><td>奈良 大氣<br><span style='color:#888;font-size:.8em'>ナラ タイキ</span></td><td>十和田瀬田石字上石野12番地3</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23200002</td><td>タイガーエレファント秋田<br><span style='color:#888;font-size:.8em'>タイガーエレファントアキタ</span></td><td>朝日が丘三丁4番6号</td><td>土谷 久男<br><span style='color:#888;font-size:.8em'>ツチヤ ヒサオ</span></td></tr><tr><td>23200003</td><td>あけち探偵事務所<br><span style='color:#888;font-size:.8em'>アケチタンテイジムショ</span></td><td>朝面字大巻50番地2クオーレ202号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23200006</td><td>秋田エリ探偵事務所<br><span style='color:#888;font-size:.8em'>アキタエリタンテイジムショ</span></td><td>字64番地</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23200007</td><td>あきた中央探偵事務所<br><span style='color:#888;font-size:.8em'>アキタチュウオウタンテイジムショ</span></td><td>仁井田字横山162番地2</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23220002</td><td>秋田エリ探偵事務所秋田店<br><span style='color:#888;font-size:.8em'>アキタエリタンテイジムショアキタテン</span></td><td>中通3丁目4番5号榎ビル2階(道路側)</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23230001</td><td>(株)アックサポート 秋田営業所<br><span style='color:#888;font-size:.8em'>(KK)アックサポートアキタエイギョウショ</span></td><td>泉水六丁4番27号島英ビル203号</td><td>船越 知久<br><span style='color:#888;font-size:.8em'>フナコシ トモヒサ</span></td></tr><tr><td>23230002</td><td>A・Pro<br><span style='color:#888;font-size:.8em'>エープロ</span></td><td>浜田字宮田沢99番地1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23230004</td><td>ゆずき探偵事務所<br><span style='color:#888;font-size:.8em'>ユズキヤンテイジムショ</span></td><td>大曲福住町5-29KSビル1F</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23240002</td><td>(株)needs now<br><span style='color:#888;font-size:.8em'>(KK)ニーズナウ</span></td><td>天王字追分西70番地3-105号</td><td>鐙 将算<br><span style='color:#888;font-size:.8em'>アブミ マサカズ</span></td></tr><tr><td>23240003</td><td>N&amp;Sサービス<br><span style='color:#888;font-size:.8em'>エヌアンドエスサービス</span></td><td>雄物川町今宿字下鶴田80番地2下鶴田団地F棟-4号室</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23240004</td><td>佐藤 恵子<br><span style='color:#888;font-size:.8em'>サトウ ケイコ</span></td><td>飯島飯田二丁目40号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>23250005</td><td>(株)昭和興業<br><span style='color:#888;font-size:.8em'>(KK)ショウワコウギョウ</span></td><td>石脇字川ノ神十一番地1017</td><td>小番 誠<br><span style='color:#888;font-size:.8em'>コツガイ マコト</span></td></tr><tr><td>23260001</td><td>(株)Grit<br><span style='color:#888;font-size:.8em'>グリット</span></td><td>泉南二丁9番18号ABビル2-1</td><td>田中 佳喜<br><span style='color:#888;font-size:.8em'>タナカ ヨシキ</span></td></tr><tr><td>23260002</td><td>ガルエージェンシー秋田<br><span style='color:#888;font-size:.8em'>ガルエージェンシーアキタ</span></td><td>中通二丁32号山ニビル6階</td><td>近藤 公貴<br><span style='color:#888;font-size:.8em'>コンドウ コウキ</span></td></tr><tr><td>23260005</td><td>(株)アヴァンド<br><span style='color:#888;font-size:.8em'>(KK)アヴァンド</span></td><td>新屋粟田町25番2号</td><td>栗原 崇<br><span style='color:#888;font-size:.8em'>クリハラ タカシ</span></td></tr>
-</table>
+</table></div>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
 </body></html>

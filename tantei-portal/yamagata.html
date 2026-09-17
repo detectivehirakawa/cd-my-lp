@@ -9,10 +9,19 @@ header h1{margin:0;font-size:1.3rem}
 header a{color:#cfe0ff;text-decoration:none;font-size:.85rem}
 main{max-width:1000px;margin:0 auto;padding:16px}
 .note{background:#fff8e1;border:1px solid #f0d98c;padding:10px 14px;border-radius:6px;font-size:.85rem;margin-bottom:16px}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:.85rem}
-th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top}
-th{background:#eef3fb;position:sticky;top:0}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #e3e6ea;border-radius:6px}
+table{width:100%;min-width:680px;border-collapse:collapse;background:#fff;font-size:.85rem}
+th,td{border-bottom:1px solid #e3e6ea;padding:6px 8px;text-align:left;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+th{background:#eef3fb;position:sticky;top:0;white-space:nowrap}
+th:nth-child(1){min-width:100px}
+th:nth-child(2){min-width:220px}
+th:nth-child(3){min-width:260px}
+th:nth-child(4){min-width:140px}
 tr:hover td{background:#f5f9ff}
+@media (max-width:480px){
+  main{padding:8px}
+  table{font-size:.8rem}
+}
 .pref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .pref-grid a{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px;text-decoration:none;color:#0f4fa8;text-align:center}
 .pref-grid a span{display:block;color:#888;font-size:.75rem;margin-top:4px}
@@ -21,11 +30,11 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <header><h1>山形県の届出探偵業者一覧（23件）</h1>
 <a href="./index.html">← 都道府県一覧に戻る</a></header>
 <main>
-<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。</div>
-<table>
+<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。表が画面に収まらない場合は横にスクロールできます。</div>
+<div class="table-scroll"><table>
 <tr><th>届出番号</th><th>業者名</th><th>営業所住所</th><th>代表者名</th></tr>
 <tr><td>24070005</td><td>東商インクワイアリー<br><span style='color:#888;font-size:.8em'>トウショウインクワイアリー</span></td><td>飯田西4-7-6</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24070011</td><td>後藤 啓<br><span style='color:#888;font-size:.8em'>ゴトウ ヒラク</span></td><td>楯岡表14-26</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24090004</td><td>五十嵐 昭一<br><span style='color:#888;font-size:.8em'>イガラシ ショウイチ</span></td><td>窪田小瀬213番地</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24110003</td><td>ファミリー探偵事務所<br><span style='color:#888;font-size:.8em'>ファミリータンテイジムショ</span></td><td>ゆたか1丁8番地の10</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24140003</td><td>アンジュ調査室<br><span style='color:#888;font-size:.8em'>アンジュチョウサシツ</span></td><td>交り江2丁目2番12号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24180003</td><td>葵探偵社<br><span style='color:#888;font-size:.8em'>アオイタンテイシャ</span></td><td>大字山口2090番地5</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24180005</td><td>株式会社廣建山形サービスセンター<br><span style='color:#888;font-size:.8em'>(KK)コウケンヤマガタサービスセンター</span></td><td>本町一丁目4番21号荘銀山形ビル8F</td><td>澁木 正幸<br><span style='color:#888;font-size:.8em'>シブキ マサユキ</span></td></tr><tr><td>24180007</td><td>東日本損害調査(株)<br><span style='color:#888;font-size:.8em'>ヒガシニホンソンガイチョウサ(KK)</span></td><td>西京田字前田251番地7</td><td>吉田 隆<br><span style='color:#888;font-size:.8em'>ヨシダ タカシ</span></td></tr><tr><td>24190002</td><td>浅野 敏明<br><span style='color:#888;font-size:.8em'>アサノ トシアキ</span></td><td>東町12番25号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24210001</td><td>便利屋ふらっとらいふ<br><span style='color:#888;font-size:.8em'>ベンリヤフラットライフ</span></td><td>矢馳字金光寺123番地3</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24220001</td><td>星野 明<br><span style='color:#888;font-size:.8em'>ホシノ アキラ</span></td><td>小立二丁7番7号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24230005</td><td>山形探偵事務所<br><span style='color:#888;font-size:.8em'>ヤマガタタンテイジムショ</span></td><td>白山三丁目11番18号リバーサイドコスモE号</td><td>山川 生<br><span style='color:#888;font-size:.8em'>ヤマカワ セイ</span></td></tr><tr><td>24230006</td><td>第一探偵事務所山形本部<br><span style='color:#888;font-size:.8em'>ダイイチタンテイジムショヤマガタホンブ</span></td><td>幸町2番9号ダイワロイネットホテル山形駅前2F229号室</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24230007</td><td>ネゴサンライズ探偵事務所<br><span style='color:#888;font-size:.8em'>ネゴサンライズタンテイジムショ</span></td><td>稲生二丁目18番3号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24240001</td><td>荒井 桂治<br><span style='color:#888;font-size:.8em'>アライ ケイジ</span></td><td>双岡新町3番地1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24240005</td><td>SIGNAL山形 オフィス<br><span style='color:#888;font-size:.8em'>シグナルヤマガタオフィス</span></td><td>東山形2丁目7番9号神保ハイツ2階</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24240006</td><td>シークレットジャパン山形<br><span style='color:#888;font-size:.8em'>シークレットジャパンヤマガタ</span></td><td>中桜田一丁6番12号</td><td>鈴木 翔<br><span style='color:#888;font-size:.8em'>スズキ ショウ</span></td></tr><tr><td>24240007</td><td>株式会社ONE SERVICE MEMBERS<br><span style='color:#888;font-size:.8em'>(KK)ワンサービスメンバーズ</span></td><td>福沢196</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24250001</td><td>山形南陽探偵事務所<br><span style='color:#888;font-size:.8em'>ヤマガタナンヨウタンテイジムショ</span></td><td>三間通718番地の1</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24250002</td><td>近野探偵事務所<br><span style='color:#888;font-size:.8em'>コノタンテイジムショ</span></td><td>徳町2番55号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr><tr><td>24250005</td><td>(株)損害保険リサーチ山形サテライトオフィス<br><span style='color:#888;font-size:.8em'>(KK)ソンガイホケンリサーチヤマガタ</span></td><td>松波1-15-31アビタシオンⅡ101号</td><td>菅野 道生<br><span style='color:#888;font-size:.8em'>カノ ミチオ</span></td></tr><tr><td>24250006</td><td>ガルエージェンシー山形<br><span style='color:#888;font-size:.8em'>ガルエージェンシーヤマガタ</span></td><td>香澄町3-3-27東海林ビル2F</td><td>松本 努<br><span style='color:#888;font-size:.8em'>マツモト ツトム</span></td></tr><tr><td>24250007</td><td>小島探偵事務所<br><span style='color:#888;font-size:.8em'>コジマタンテイジムショ</span></td><td>相生町7番27号</td><td><br><span style='color:#888;font-size:.8em'></span></td></tr>
-</table>
+</table></div>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
 </body></html>
