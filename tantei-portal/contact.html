@@ -41,6 +41,10 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 .form-card input[type=text],.form-card textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd3dc;border-radius:6px;font-size:.95rem}
 .form-card textarea{min-height:120px}
 .form-card button{margin-top:18px;background:#0f4fa8;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-size:.95rem;cursor:pointer}
+.form-card button[disabled]{opacity:.6;cursor:default}
+.form-msg{margin-top:12px;font-size:.9rem}
+.form-msg.ok{color:#0f7a3d}
+.form-msg.err{color:#c0392b}
 </style></head><body>
 <header><h1 id="pageTitle">掲載に関するお問い合わせ</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
@@ -51,13 +55,16 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <label>お名前・貴社名<input type="text" id="name" required></label>
 <label>ご連絡先（電話番号またはメールアドレス）<input type="text" id="contact" required></label>
 <label>ご要望内容<textarea id="message" placeholder="掲載ページに追加したい情報（サービス内容・強み・写真の希望など）、または削除をご希望の理由をご記入ください"></textarea></label>
-<button type="submit">メールで送信する</button>
+<button type="submit" id="btn">送信する</button>
+<div class="form-msg" id="formMsg"></div>
 </form>
 </div>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
 <script>
 (function(){
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbw5fWMGBB5glT-CAK0E_RUurrdMMw8tlRvU2g7dSs0LM2yVP9GJS2K11-pdbtv4BXAJOw/exec";
+  var GAS_KEY = "tanteiportal";
   var q = new URLSearchParams(location.search);
   var id = q.get('id') || '';
   var name = q.get('name') || '';
@@ -65,14 +72,41 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
   var isRemove = type === 'remove';
   document.getElementById('pageTitle').textContent = isRemove ? '掲載情報の削除に関するお問い合わせ' : '掲載ページ充実に関するお問い合わせ';
   document.getElementById('targetNote').textContent = (name || id) ? ('対象：' + name + '（届出番号 ' + id + '）') : '対象の業者が指定されていません。届出番号がお分かりの場合はご記入内容に含めてください。';
+
+  function mailFallback(nm, ct, msg){
+    var subject = (isRemove ? '【探偵ポータル】掲載削除の希望：' : '【探偵ポータル】掲載ページ充実の希望：') + (name || '（業者名未指定）');
+    var body = ['届出番号：' + id, '業者名：' + name, 'お名前：' + nm, 'ご連絡先：' + ct, '', 'ご要望内容：', msg].join('\n');
+    location.href = 'mailto:racoontantei@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+
+  var submitId = 'c' + Date.now() + Math.random().toString(36).slice(2, 8);
   document.getElementById('f').addEventListener('submit', function(ev){
     ev.preventDefault();
     var nm = document.getElementById('name').value.trim();
     var ct = document.getElementById('contact').value.trim();
     var msg = document.getElementById('message').value.trim();
-    var subject = (isRemove ? '【探偵ポータル】掲載削除の希望：' : '【探偵ポータル】掲載ページ充実の希望：') + (name || '（業者名未指定）');
-    var body = ['届出番号：' + id, '業者名：' + name, 'お名前：' + nm, 'ご連絡先：' + ct, '', 'ご要望内容：', msg].join('\n');
-    location.href = 'mailto:racoontantei@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    var btn = document.getElementById('btn');
+    var out = document.getElementById('formMsg');
+    btn.disabled = true;
+    out.className = 'form-msg';
+    out.textContent = '送信しています…';
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
+        contactName: nm, contact: ct, message: msg, submitId: submitId })
+    }).then(function(r){ return r.json(); }).then(function(j){
+      if(j && j.ok){
+        out.className = 'form-msg ok';
+        out.textContent = 'お問い合わせを受け付けました。担当者よりご連絡いたします。';
+        document.getElementById('f').reset();
+      } else {
+        throw new Error((j && j.error) || '送信に失敗しました');
+      }
+    }).catch(function(){
+      out.className = 'form-msg err';
+      out.textContent = '送信できませんでした。お手数ですがメールでお送りします。';
+      mailFallback(nm, ct, msg);
+    }).finally(function(){ btn.disabled = false; });
   });
 })();
 </script>
