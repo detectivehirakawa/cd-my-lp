@@ -26,11 +26,72 @@ tr:hover td{background:#f5f9ff}
 .pref-grid a{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px;text-decoration:none;color:#0f4fa8;text-align:center}
 .pref-grid a span{display:block;color:#888;font-size:.75rem;margin-top:4px}
 footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
+.search-box{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.search-box input[type=text]{flex:1;min-width:200px;padding:10px 12px;border:1px solid #ccd3dc;border-radius:6px;font-size:.95rem}
+.search-box select{padding:10px 12px;border:1px solid #ccd3dc;border-radius:6px;font-size:.95rem;background:#fff}
+.search-count{font-size:.8rem;color:#666;margin:-8px 0 12px}
+.no-hit{padding:24px;text-align:center;color:#888}
+#results a.result-item{display:block;background:#fff;border:1px solid #e3e6ea;border-radius:6px;padding:10px 12px;margin-bottom:8px;text-decoration:none;color:#222}
+#results a.result-item:hover{background:#f5f9ff}
+#results .r-name{font-weight:bold;color:#0f4fa8}
+#results .r-addr{font-size:.85rem;color:#666;margin-top:2px}
 </style></head><body>
 <header><h1>全国探偵業者一覧（届出済み）</h1>
-<p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7546件</p></header>
+<p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7547件</p></header>
 <main>
 <div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。最新の届出状況は各都道府県警察の公表情報でご確認ください。</div>
+<div class="search-box">
+<input type="text" id="q" placeholder="業者名で検索（例：ABC探偵事務所）">
+<select id="prefFilter"><option value="">都道府県を選択</option><option value="北海道">北海道</option>
+<option value="青森県">青森県</option>
+<option value="岩手県">岩手県</option>
+<option value="宮城県">宮城県</option>
+<option value="秋田県">秋田県</option>
+<option value="山形県">山形県</option>
+<option value="福島県">福島県</option>
+<option value="茨城県">茨城県</option>
+<option value="栃木県">栃木県</option>
+<option value="群馬県">群馬県</option>
+<option value="埼玉県">埼玉県</option>
+<option value="千葉県">千葉県</option>
+<option value="東京都">東京都</option>
+<option value="神奈川県">神奈川県</option>
+<option value="新潟県">新潟県</option>
+<option value="富山県">富山県</option>
+<option value="石川県">石川県</option>
+<option value="福井県">福井県</option>
+<option value="山梨県">山梨県</option>
+<option value="長野県">長野県</option>
+<option value="岐阜県">岐阜県</option>
+<option value="静岡県">静岡県</option>
+<option value="愛知県">愛知県</option>
+<option value="三重県">三重県</option>
+<option value="滋賀県">滋賀県</option>
+<option value="京都府">京都府</option>
+<option value="大阪府">大阪府</option>
+<option value="兵庫県">兵庫県</option>
+<option value="奈良県">奈良県</option>
+<option value="和歌山県">和歌山県</option>
+<option value="鳥取県">鳥取県</option>
+<option value="島根県">島根県</option>
+<option value="岡山県">岡山県</option>
+<option value="広島県">広島県</option>
+<option value="山口県">山口県</option>
+<option value="徳島県">徳島県</option>
+<option value="香川県">香川県</option>
+<option value="愛媛県">愛媛県</option>
+<option value="高知県">高知県</option>
+<option value="福岡県">福岡県</option>
+<option value="佐賀県">佐賀県</option>
+<option value="長崎県">長崎県</option>
+<option value="熊本県">熊本県</option>
+<option value="大分県">大分県</option>
+<option value="宮崎県">宮崎県</option>
+<option value="鹿児島県">鹿児島県</option>
+<option value="沖縄県">沖縄県</option></select>
+</div>
+<div class="search-count" id="searchCount"></div>
+<div id="results"></div>
 <div class="pref-grid"><a href="./hokkaido.html">北海道<span>547件</span></a>
 <a href="./aomori.html">青森県<span>35件</span></a>
 <a href="./iwate.html">岩手県<span>60件</span></a>
@@ -41,7 +102,7 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <a href="./ibaraki.html">茨城県<span>245件</span></a>
 <a href="./tochigi.html">栃木県<span>110件</span></a>
 <a href="./gunma.html">群馬県<span>107件</span></a>
-<a href="./saitama.html">埼玉県<span>315件</span></a>
+<a href="./saitama.html">埼玉県<span>316件</span></a>
 <a href="./chiba.html">千葉県<span>228件</span></a>
 <a href="./tokyo.html">東京都<span>1225件</span></a>
 <a href="./kanagawa.html">神奈川県<span>540件</span></a>
@@ -80,4 +141,35 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 <a href="./okinawa.html">沖縄県<span>58件</span></a></div>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
+<script>
+(function(){
+  var input = document.getElementById('q');
+  var prefSel = document.getElementById('prefFilter');
+  var results = document.getElementById('results');
+  var countEl = document.getElementById('searchCount');
+  var data = null;
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function render(){
+    var q = (input.value||'').trim();
+    var pref = prefSel.value;
+    if(!q && !pref){ results.innerHTML=''; countEl.textContent=''; return; }
+    var hits = data.filter(function(r){
+      var okPref = !pref || r.p === pref;
+      var okQ = !q || (r.n+r.k+r.a).indexOf(q) !== -1;
+      return okPref && okQ;
+    }).slice(0, 200);
+    countEl.textContent = hits.length + '件表示（最大200件）';
+    results.innerHTML = hits.map(function(r){
+      return '<a class="result-item" href="./'+r.s+'.html#n'+r.i+'">'+
+        '<span class="r-name">'+esc(r.n)+'</span>'+
+        '<span class="r-addr">'+esc(r.p)+' '+esc(r.a)+'</span></a>';
+    }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
+  }
+  fetch('./all.json').then(function(r){return r.json();}).then(function(j){
+    data = j;
+    input.addEventListener('input', render);
+    prefSel.addEventListener('change', render);
+  });
+})();
+</script>
 </body></html>
