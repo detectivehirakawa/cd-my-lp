@@ -160,7 +160,7 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
     results.innerHTML = hits.map(function(r){
-      return '<a class="result-item" href="./'+r.s+'.html#n'+r.i+'">'+
+      return '<a class="result-item" href="./biz/'+r.i+'.html">'+
         '<span class="r-name">'+esc(r.n)+'</span>'+
         '<span class="r-addr">'+esc(r.p)+' '+esc(r.a)+'</span></a>';
     }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
