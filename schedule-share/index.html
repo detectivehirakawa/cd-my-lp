@@ -573,14 +573,25 @@ function fmtDate(s){
   return (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 
-var CALLGAS_MAX_RETRY = 6;
+var CALLGAS_MAX_RETRY = 10;
+// GAS(Webアプリ)の302リダイレクト先(echo)が不安定になった時に返ってくる、
+// 本来サーバー内部にしか出ないはずのメッセージ。これが返ってきたら通信が失敗したのと同じ扱いにする。
+var CALLGAS_GLITCH = 'GET用の公開エンドポイントはありません';
+function callGasRetryDelay(retry){ return Math.min(1000*(retry+1), 3000); }
 function callGas(body, retry){
   retry = retry || 0;
   body.key = GAS_KEY;
   return fetch(GAS_URL, { method:'POST', body: JSON.stringify(body) })
     .then(function(r){ return r.json(); })
+    .then(function(res){
+      if (res && res.error === CALLGAS_GLITCH){
+        if (retry < CALLGAS_MAX_RETRY) return new Promise(function(r2){ setTimeout(r2, callGasRetryDelay(retry)); }).then(function(){ return callGas(body, retry+1); });
+        return { ok:false, error:'通信が不安定です。少し待ってからもう一度お試しください。' };
+      }
+      return res;
+    })
     .catch(function(err){
-      if (retry < CALLGAS_MAX_RETRY) return new Promise(function(res){ setTimeout(res, 1000*(retry+1)); }).then(function(){ return callGas(body, retry+1); });
+      if (retry < CALLGAS_MAX_RETRY) return new Promise(function(res){ setTimeout(res, callGasRetryDelay(retry)); }).then(function(){ return callGas(body, retry+1); });
       return { ok:false, error:'通信が不安定です。少し待ってからもう一度お試しください。' };
     });
 }
