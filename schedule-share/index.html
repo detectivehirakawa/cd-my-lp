@@ -1463,9 +1463,16 @@ $('line-back').onclick = function(){ clearInterval(linePoll); showScreen('cal-sc
   }
 })();
 
+// Service Workerは古いキャッシュを配り続ける事故が繰り返し起きたため撤去。
+// 既にインストールされてしまった端末からも自動で登録解除し、キャッシュを破棄する。
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('sw register failed: ' + e); });
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(r){ r.unregister(); });
+    });
+    if (window.caches) {
+      caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); });
+    }
   });
 }
 
