@@ -67,6 +67,7 @@ function caseCreate_(body) {
   var title = String(body.title || '').trim();
   var partnerAgency = String(body.partnerCompanyId || '').trim();
   var memo = String(body.memo || '').trim();
+  var purpose = String(body.purpose || '').trim();
   if (!title) return json_({ ok: false, error: '案件名を入力してください' });
   if (title.length > 80) return json_({ ok: false, error: '案件名は80文字以内にしてください' });
   if (!partnerAgency) return json_({ ok: false, error: '相手の事務所を選んでください' });
@@ -77,7 +78,7 @@ function caseCreate_(body) {
   appendRow_('CASE', {
     '案件ID': newId, '案件名': title, '会社ID_A': auth.user['会社ID'], '会社ID_B': partnerAgency,
     '状態': '募集中', '担当者調査員ID': '', '経費提出状態': '',
-    '作成者調査員ID': body.investigatorId, '作成日時': now, '備考': memo,
+    '作成者調査員ID': body.investigatorId, '作成日時': now, '備考': memo, '調査目的': purpose,
   });
   logHistory_(body.investigatorId, 'case.create', newId, null, { title: title, partnerAgency: partnerAgency });
 
@@ -147,6 +148,7 @@ function caseGet_(body) {
   return json_({
     ok: true,
     id: c['案件ID'], title: c['案件名'], status: c['状態'], memo: c['備考'] || '',
+    purpose: c['調査目的'] || '',
     partnerCompanyName: partnerAgency,
     assigneeName: assignee ? assignee['氏名'] : '',
     expenseStatus: c['経費提出状態'] || '',

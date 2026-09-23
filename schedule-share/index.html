@@ -270,6 +270,7 @@
   <div class="card">
     <input type="text" id="case-title" placeholder="案件名（80文字以内）" autocomplete="off">
     <select id="case-partner"></select>
+    <textarea id="case-purpose" rows="3" placeholder="調査目的"></textarea>
     <textarea id="case-memo" rows="3" placeholder="備考（任意）"></textarea>
     <div class="msg-error" id="case-form-error" style="display:none;"></div>
     <button class="btn-primary" id="case-create-btn">作成する</button>
@@ -290,6 +291,7 @@
       <option value="完了">完了</option>
     </select>
   </div>
+  <div id="case-detail-purpose" style="background:#fff;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;color:#555;"></div>
   <div class="band c-work">🧑 対象者</div>
   <div class="row-list" id="subject-list"></div>
   <button class="btn-flat" id="subject-add-btn" style="margin:8px 14px;width:calc(100% - 28px);">＋ 対象者を追加</button>
@@ -795,7 +797,7 @@ $('case-new-btn').onclick = function(){
     opt.value = c.companyId; opt.textContent = c.companyName;
     sel.appendChild(opt);
   });
-  $('case-title').value = ''; $('case-memo').value = '';
+  $('case-title').value = ''; $('case-memo').value = ''; $('case-purpose').value = '';
   $('case-form-error').style.display = 'none';
   showScreen('case-form-screen');
 };
@@ -803,13 +805,14 @@ $('case-create-btn').onclick = function(){
   var title = $('case-title').value.trim();
   var partner = $('case-partner').value;
   var memo = $('case-memo').value.trim();
+  var purpose = $('case-purpose').value.trim();
   var err = $('case-form-error');
   err.style.display = 'none';
   if (!title || !partner){ err.textContent = '案件名と相手会社を入力してください'; err.style.display='block'; return; }
   callGas({
     mode:'case.create', submitId: newId(),
     companyCode: session.companyCode, investigatorId: session.investigatorId,
-    title: title, partnerCompanyId: partner, memo: memo,
+    title: title, partnerCompanyId: partner, memo: memo, purpose: purpose,
   }).then(function(res){
     if (!res.ok){ err.textContent = res.error || '作成に失敗しました'; err.style.display='block'; return; }
     showScreen('case-detail-screen');
@@ -825,6 +828,7 @@ function openCaseDetail(caseId){
     if (!res.ok){ $('case-detail-title').textContent = 'エラー'; $('case-messages').innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
     $('case-detail-title').textContent = res.title;
     $('case-detail-partner').textContent = res.partnerCompanyName;
+    $('case-detail-purpose').textContent = res.purpose ? ('調査目的: ' + res.purpose) : '';
     $('case-status-select').value = res.status;
     renderCaseMessages(res.messages);
   });
