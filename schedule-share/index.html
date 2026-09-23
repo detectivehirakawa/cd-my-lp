@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>調査員スケジュール共有</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f6fd6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="スケジュール共有">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+  :root{
+    --bg:#f4f6f8; --ink:#1f2937; --line:#d6dbe1;
+    --free:#d9f2df; --free-b:#34a35a;
+    --fixed:#dbe9fb; --fixed-b:#2f6fd6;
+    --busy:#eceff1; --busy-b:#8a95a1;
+    --accent:#2f6fd6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);}
+  .screen{display:none;padding:20px 16px 80px;max-width:480px;margin:0 auto;}
+  .screen.active{display:block;}
+  h1{font-size:18px;margin:8px 0 20px;}
+  .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+  input[type=text]{width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;}
+  button{font-size:15px;padding:12px 16px;border-radius:8px;border:none;cursor:pointer;}
+  .btn-main{background:var(--accent);color:#fff;width:100%;}
+  .btn-main:disabled{opacity:.5;}
+  .btn-list{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);margin-bottom:8px;}
+  .btn-list:active{background:#eef2f7;}
+  .msg-error{color:#c0392b;font-size:13px;margin:-4px 0 12px;}
+  .msg-info{color:#555;font-size:13px;margin-top:8px;}
+
+  /* カレンダー画面 */
+  #cal-screen{max-width:100%;padding:0;}
+  .cal-header{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
+  .cal-header button{background:#fff;border:1px solid var(--line);padding:6px 10px;}
+  .line-banner{background:#fff6e0;border:1px solid #e8c766;border-radius:8px;margin:10px 12px;padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .line-banner button{background:#06c755;color:#fff;white-space:nowrap;}
+  .cal-scroll{overflow-x:auto;padding:0 12px 20px;}
+  .cal-grid{border-collapse:collapse;font-size:12px;background:#fff;}
+  .cal-grid th,.cal-grid td{border:1px solid var(--line);padding:0;text-align:center;}
+  .cal-grid th{background:#eef1f5;padding:6px 2px;font-weight:600;position:sticky;top:0;}
+  .name-col{position:sticky;left:0;background:#fff;z-index:2;text-align:left;padding:6px 8px;white-space:nowrap;min-width:110px;}
+  th.name-col{background:#eef1f5;z-index:6;}
+  .company-row td{background:#e3ebf7;font-weight:700;text-align:left;padding:6px 8px;}
+  .day-col{width:34px;height:34px;}
+  .cell{width:34px;height:34px;cursor:pointer;position:relative;}
+  .cell.st-空き{background:var(--free);}
+  .cell.st-確定{background:var(--fixed);}
+  .cell.st-不可{background:var(--busy);}
+  .cell .memo-dot{position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:#c0392b;}
+  .weekend{background:#fbeaea;}
+  .legend{display:flex;gap:14px;padding:0 12px 10px;font-size:12px;flex-wrap:wrap;}
+  .legend span{display:inline-flex;align-items:center;gap:4px;}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .switch-user{text-align:center;padding:16px;font-size:13px;color:#555;}
+  .switch-user a{color:var(--accent);}
+
+  #install-banner{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:12px 14px;box-shadow:0 4px 14px rgba(0,0,0,.15);font-size:13px;z-index:50;display:none;}
+  #install-banner.show{display:block;}
+  #install-banner .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  #install-banner button.install-ok{background:var(--accent);color:#fff;white-space:nowrap;}
+  #install-banner button.install-close{background:none;border:none;color:#888;font-size:18px;padding:0 4px;}
+</style>
+</head>
+<body>
+
+<!-- ホーム画面追加バナー -->
+<div id="install-banner">
+  <div class="row">
+    <span id="install-text">ホーム画面に追加すると、アプリのように使えます。</span>
+    <button class="install-ok" id="install-ok" style="display:none;">追加</button>
+    <button class="install-close" id="install-close">×</button>
+  </div>
+</div>
+
+<!-- 1. 会社コード入力 -->
+<div class="screen active" id="code-screen">
+  <div class="card">
+    <h1>調査員スケジュール共有</h1>
+    <div class="msg-error" id="code-error" style="display:none;"></div>
+    <input type="text" id="code-input" placeholder="会社コードを入力" inputmode="latin" autocomplete="off">
+    <button class="btn-main" id="code-submit">進む</button>
+  </div>
+</div>
+
+<!-- 2. 氏名選択 -->
+<div class="screen" id="name-screen">
+  <div class="card">
+    <h1 id="name-company"></h1>
+    <div id="name-list"></div>
+    <div class="msg-info">名前が無い場合は、下に入力して登録してください。</div>
+    <input type="text" id="name-input" placeholder="氏名を入力" autocomplete="off" style="margin-top:8px;">
+    <button class="btn-main" id="name-submit">この名前で始める</button>
+    <div class="msg-error" id="name-error" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- 3. カレンダー -->
+<div class="screen" id="cal-screen">
+  <div class="cal-header">
+    <button id="prev-month">◀ 前月</button>
+    <div id="month-label" style="font-weight:700;"></div>
+    <button id="next-month">次月 ▶</button>
+  </div>
+  <div class="line-banner" id="line-banner" style="display:none;">
+    <span>LINE通知を受け取ると予定確定をすぐ確認できます</span>
+    <button id="line-link-btn">LINE連携する</button>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--free);"></i>空き</span>
+    <span><i style="background:var(--fixed);"></i>確定</span>
+    <span><i style="background:var(--busy);"></i>不可</span>
+    <span>セルをタップで状態を切替、長押し/ダブルタップでメモ</span>
+  </div>
+  <div class="cal-scroll">
+    <table class="cal-grid" id="cal-table"></table>
+  </div>
+  <div class="switch-user">現在: <b id="cur-user"></b> / <a href="#" id="switch-user">別の人に切り替える</a></div>
+</div>
+
+<!-- LINE連携コード表示 -->
+<div class="screen" id="line-screen">
+  <div class="card">
+    <h1>LINE連携</h1>
+    <p style="font-size:14px;">下のボタンで公式アカウントを友だち追加し、表示された6桁のコードをLINEのトークに送ってください。</p>
+    <div style="font-size:32px;font-weight:800;text-align:center;letter-spacing:4px;margin:16px 0;" id="line-code"></div>
+    <button class="btn-main" id="line-add-friend">友だち追加してLINEを開く</button>
+    <p class="msg-info" id="line-status">連携待ち…（このコードは10分間有効です）</p>
+    <button id="line-back" style="width:100%;margin-top:8px;background:#fff;border:1px solid var(--line);">カレンダーに戻る</button>
+  </div>
+</div>
+
+<script>
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWZ8nWjJ7JSP8s77qgDD08yEJw0O1gDfScvI3b6jYj2MMWha9OW-0Oosj9YC7Xd2Va/exec';
+var GAS_KEY = 'schedshare';
+var STORAGE_KEY = 'schedshare_session';
+
+function $(id){ return document.getElementById(id); }
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  $(id).classList.add('active');
+}
+function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+function callGas(body, retry){
+  retry = retry || 0;
+  body.key = GAS_KEY;
+  return fetch(GAS_URL, { method:'POST', body: JSON.stringify(body) })
+    .then(function(r){ return r.json(); })
+    .catch(function(err){
+      if (retry < 3) return new Promise(function(res){ setTimeout(res, 900*(retry+1)); }).then(function(){ return callGas(body, retry+1); });
+      return { ok:false, error:'通信に失敗しました: ' + err };
+    });
+}
+
+function getSession(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e){ return null; }
+}
+function setSession(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function clearSession(){ localStorage.removeItem(STORAGE_KEY); }
+
+var session = null;
+var curMonth = new Date();
+var calData = null;
+
+// ---- 1. 会社コード ----
+$('code-submit').onclick = function(){
+  var code = $('code-input').value.trim();
+  $('code-error').style.display = 'none';
+  if (!code) return;
+  callGas({ mode:'session.start', companyCode: code }).then(function(res){
+    if (!res.ok){ $('code-error').textContent = res.error; $('code-error').style.display='block'; return; }
+    window._pendingCode = code;
+    window._pendingCompany = { id: res.companyId, name: res.companyName };
+    $('name-company').textContent = res.companyName + ' の調査員を選択';
+    var list = $('name-list'); list.innerHTML = '';
+    res.investigators.forEach(function(inv){
+      var b = document.createElement('button');
+      b.className = 'btn-list'; b.textContent = inv.name;
+      b.onclick = function(){ pickName(inv.name); };
+      list.appendChild(b);
+    });
+    showScreen('name-screen');
+  });
+};
+
+// ---- 2. 氏名選択 ----
+function pickName(name){
+  $('name-error').style.display = 'none';
+  callGas({
+    mode:'session.pickName',
+    companyCode: window._pendingCode,
+    companyId: window._pendingCompany.id,
+    name: name,
+  }).then(function(res){
+    if (!res.ok){ $('name-error').textContent = res.error; $('name-error').style.display='block'; return; }
+    session = {
+      companyCode: window._pendingCode,
+      companyId: window._pendingCompany.id,
+      companyName: window._pendingCompany.name,
+      investigatorId: res.investigatorId,
+      name: res.name,
+      lineLinked: res.lineLinked,
+    };
+    setSession(session);
+    enterCalendar();
+  });
+}
+$('name-submit').onclick = function(){
+  var name = $('name-input').value.trim();
+  if (name) pickName(name);
+};
+
+// ---- 3. カレンダー ----
+function enterCalendar(){
+  $('cur-user').textContent = session.companyName + ' / ' + session.name;
+  $('line-banner').style.display = session.lineLinked ? 'none' : 'flex';
+  showScreen('cal-screen');
+  loadMonth();
+}
+$('switch-user').onclick = function(e){
+  e.preventDefault();
+  clearSession();
+  showScreen('code-screen');
+};
+
+function monthStr(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+$('prev-month').onclick = function(){ curMonth.setMonth(curMonth.getMonth()-1); loadMonth(); };
+$('next-month').onclick = function(){ curMonth.setMonth(curMonth.getMonth()+1); loadMonth(); };
+
+function loadMonth(){
+  $('month-label').textContent = curMonth.getFullYear() + '年' + (curMonth.getMonth()+1) + '月';
+  callGas({ mode:'calendar.get', month: monthStr(curMonth) }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    calData = res;
+    renderCalendar();
+  });
+}
+
+function daysInMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
+
+function renderCalendar(){
+  var n = daysInMonth(curMonth);
+  var y = curMonth.getFullYear(), m = curMonth.getMonth();
+  var table = $('cal-table');
+  var html = '<tr><th class="name-col">調査員</th>';
+  for (var d=1; d<=n; d++){
+    var wd = new Date(y,m,d).getDay();
+    html += '<th class="day-col'+(wd===0||wd===6?' weekend':'')+'">'+d+'</th>';
+  }
+  html += '</tr>';
+
+  var companies = calData.companies.slice().sort(function(a,b){
+    if (a.companyId === session.companyId) return -1;
+    if (b.companyId === session.companyId) return 1;
+    return 0;
+  });
+
+  companies.forEach(function(c){
+    html += '<tr class="company-row"><td colspan="'+(n+1)+'">'+c.companyName+'</td></tr>';
+    c.investigators.forEach(function(inv){
+      html += '<tr><td class="name-col">'+inv.name+'</td>';
+      for (var d=1; d<=n; d++){
+        var dk = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var day = inv.days[dk];
+        var st = day ? day.status : '';
+        var wd = new Date(y,m,d).getDay();
+        html += '<td class="cell st-'+st+(wd===0||wd===6&&!st?' weekend':'')+'" data-inv="'+inv.investigatorId+'" data-date="'+dk+'" data-status="'+st+'" data-memo="'+(day&&day.memo?day.memo.replace(/"/g,'&quot;'):'')+'">'
+          + (day && day.memo ? '<span class="memo-dot"></span>' : '') + '</td>';
+      }
+      html += '</tr>';
+    });
+  });
+  table.innerHTML = html;
+
+  var pressTimer = null;
+  table.querySelectorAll('.cell').forEach(function(cell){
+    cell.addEventListener('click', function(){ cycleCell(cell); });
+    cell.addEventListener('dblclick', function(e){ e.preventDefault(); memoCell(cell); });
+    cell.addEventListener('touchstart', function(){
+      pressTimer = setTimeout(function(){ memoCell(cell); }, 600);
+    });
+    cell.addEventListener('touchend', function(){ clearTimeout(pressTimer); });
+  });
+}
+
+var STATES = ['', '空き', '確定', '不可'];
+function cycleCell(cell){
+  var cur = cell.getAttribute('data-status') || '';
+  var next = STATES[(STATES.indexOf(cur)+1) % STATES.length];
+  updateCell(cell, next, cell.getAttribute('data-memo') || '');
+}
+function memoCell(cell){
+  var memo = prompt('メモを入力', cell.getAttribute('data-memo') || '');
+  if (memo === null) return;
+  updateCell(cell, cell.getAttribute('data-status') || '空き', memo);
+}
+function updateCell(cell, status, memo){
+  var prevClass = cell.className, prevStatus = cell.getAttribute('data-status'), prevMemo = cell.getAttribute('data-memo');
+  cell.className = 'cell' + (status ? ' st-'+status : '');
+  cell.setAttribute('data-status', status);
+  cell.setAttribute('data-memo', memo);
+  cell.innerHTML = memo ? '<span class="memo-dot"></span>' : '';
+
+  callGas({
+    mode:'schedule.set', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    targetInvestigatorId: cell.getAttribute('data-inv'), date: cell.getAttribute('data-date'),
+    status: status, memo: memo,
+  }).then(function(res){
+    if (!res.ok){
+      cell.className = prevClass; cell.setAttribute('data-status', prevStatus); cell.setAttribute('data-memo', prevMemo);
+      alert(res.error || '更新に失敗しました');
+    }
+  });
+}
+
+// ---- LINE連携 ----
+$('line-link-btn').onclick = openLineLink;
+function openLineLink(){
+  callGas({ mode:'line.linkStart', investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    $('line-code').textContent = res.code;
+    $('line-add-friend').onclick = function(){ window.open(res.addFriendUrl || 'https://line.me/', '_blank'); };
+    showScreen('line-screen');
+    pollLineStatus();
+  });
+}
+var linePoll = null;
+function pollLineStatus(){
+  var tries = 0;
+  clearInterval(linePoll);
+  linePoll = setInterval(function(){
+    tries++;
+    callGas({ mode:'line.linkStatus', investigatorId: session.investigatorId }).then(function(res){
+      if (res.ok && res.linked){
+        clearInterval(linePoll);
+        $('line-status').textContent = '連携できました！';
+        session.lineLinked = true; setSession(session);
+        setTimeout(function(){ showScreen('cal-screen'); $('line-banner').style.display='none'; }, 1200);
+      } else if (tries > 24){
+        clearInterval(linePoll);
+        $('line-status').textContent = '時間切れです。もう一度お試しください。';
+      }
+    });
+  }, 5000);
+}
+$('line-back').onclick = function(){ clearInterval(linePoll); showScreen('cal-screen'); };
+
+// ---- ホーム画面に追加(PWA) ----
+(function initInstallBanner(){
+  var DISMISS_KEY = 'schedshare_install_dismissed';
+  if (localStorage.getItem(DISMISS_KEY)) return;
+
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (standalone) return;
+
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  var banner = $('install-banner');
+  var deferredPrompt = null;
+
+  $('install-close').onclick = function(){
+    banner.classList.remove('show');
+    localStorage.setItem(DISMISS_KEY, '1');
+  };
+
+  if (isIOS){
+    $('install-text').textContent = 'ホーム画面に追加: 共有ボタン(□と↑)から「ホーム画面に追加」を選んでください。';
+    banner.classList.add('show');
+  } else {
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      $('install-text').textContent = 'ホーム画面に追加すると、アプリのように使えます。';
+      $('install-ok').style.display = 'inline-block';
+      banner.classList.add('show');
+    });
+    $('install-ok').onclick = function(){
+      if (deferredPrompt) deferredPrompt.prompt();
+      banner.classList.remove('show');
+      localStorage.setItem(DISMISS_KEY, '1');
+    };
+  }
+})();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(e){ console.log('sw register failed: ' + e); });
+  });
+}
+
+// ---- 初期化 ----
+(function init(){
+  var s = getSession();
+  if (s && s.investigatorId){ session = s; enterCalendar(); }
+})();
+</script>
+</body>
+</html>
