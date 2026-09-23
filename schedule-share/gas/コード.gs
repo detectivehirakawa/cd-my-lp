@@ -32,9 +32,9 @@ function doPost(e) {
     'subject.save': idempotent_('subj', subjectSave_),
     'vehicle.add': idempotent_('veh', vehicleAdd_),
     'vehicle.remove': vehicleRemove_,
-    'member.requestCode': memberRequestCode_,
-    'member.verify': memberVerify_,
-    'member.completeRegistration': memberCompleteRegistration_,
+    'member.requestCode': idempotent_('mreq', memberRequestCode_),
+    'member.verify': idempotent_('mver', memberVerify_),
+    'member.completeRegistration': idempotent_('mreg', memberCompleteRegistration_),
     'member.getProfile': memberGetProfile_,
     'member.updateProfile': memberUpdateProfile_,
     'member.avatarChoices': avatarChoices_,
@@ -82,16 +82,19 @@ function throttleOk_() {
   return n <= 10; // 1秒あたり10リクエストまで
 }
 
-// submitIdがあれば21600秒だけ結果をキャッシュし、二重送信を無害化する
+// submitIdがあれば21600秒だけ「実際のレスポンス内容」をキャッシュし、二重送信を無害化する。
+// 通信が不安定でクライアントが再送しても、1回目と同じ結果(id等の中身も含めて)を返す。
 function idempotent_(prefix, fn) {
   return function (body) {
     var submitId = String(body.submitId || '');
     if (!submitId) return fn(body);
     var cache = CacheService.getScriptCache();
     var cacheKey = prefix + ':' + submitId;
-    if (cache.get(cacheKey)) return json_({ ok: true, dedup: true });
-    cache.put(cacheKey, '1', 21600);
-    return fn(body);
+    var cached = cache.get(cacheKey);
+    if (cached) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+    var result = fn(body);
+    try { cache.put(cacheKey, result.getContent(), 21600); } catch (e) {}
+    return result;
   };
 }
 

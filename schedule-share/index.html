@@ -573,14 +573,15 @@ function fmtDate(s){
   return (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 
+var CALLGAS_MAX_RETRY = 6;
 function callGas(body, retry){
   retry = retry || 0;
   body.key = GAS_KEY;
   return fetch(GAS_URL, { method:'POST', body: JSON.stringify(body) })
     .then(function(r){ return r.json(); })
     .catch(function(err){
-      if (retry < 3) return new Promise(function(res){ setTimeout(res, 900*(retry+1)); }).then(function(){ return callGas(body, retry+1); });
-      return { ok:false, error:'通信に失敗しました: ' + err };
+      if (retry < CALLGAS_MAX_RETRY) return new Promise(function(res){ setTimeout(res, 1000*(retry+1)); }).then(function(){ return callGas(body, retry+1); });
+      return { ok:false, error:'通信が不安定です。少し待ってからもう一度お試しください。' };
     });
 }
 
@@ -632,9 +633,10 @@ $('email-submit').onclick = function(){
   var err = $('email-error');
   err.style.display = 'none';
   if (!email){ err.textContent = 'メールアドレスを入力してください'; err.style.display='block'; return; }
-  $('email-submit').disabled = true;
-  callGas({ mode:'member.requestCode', email: email }).then(function(res){
-    $('email-submit').disabled = false;
+  var btn = $('email-submit');
+  btn.disabled = true; btn.textContent = '送信中…';
+  callGas({ mode:'member.requestCode', email: email, submitId: newId() }).then(function(res){
+    btn.disabled = false; btn.textContent = '確認コードを送る';
     if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
     pendingEmail = email;
     $('email-code-input').value = '';
@@ -644,7 +646,10 @@ $('email-submit').onclick = function(){
 };
 $('email-code-resend').onclick = function(){
   if (!pendingEmail) return;
-  callGas({ mode:'member.requestCode', email: pendingEmail }).then(function(res){
+  var btn = $('email-code-resend');
+  btn.disabled = true; btn.textContent = '送信中…';
+  callGas({ mode:'member.requestCode', email: pendingEmail, submitId: newId() }).then(function(res){
+    btn.disabled = false; btn.textContent = 'コードを再送する';
     if (!res.ok){ alert(res.error); return; }
     alert('コードを再送しました');
   });
@@ -654,7 +659,10 @@ $('email-code-submit').onclick = function(){
   var err = $('email-code-error');
   err.style.display = 'none';
   if (!pendingEmail || !code){ err.textContent = 'コードを入力してください'; err.style.display='block'; return; }
-  callGas({ mode:'member.verify', email: pendingEmail, code: code }).then(function(res){
+  var btn = $('email-code-submit');
+  btn.disabled = true; btn.textContent = '確認中…';
+  callGas({ mode:'member.verify', email: pendingEmail, code: code, submitId: newId() }).then(function(res){
+    btn.disabled = false; btn.textContent = '確認する';
     if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
     var member = { memberId: res.memberId, email: pendingEmail, name: res.name || '' };
     setMember(member);
@@ -674,10 +682,13 @@ $('member-name-submit').onclick = function(){
     err.textContent = 'すべての項目を入力してください'; err.style.display='block'; return;
   }
   var member = getMember();
+  var btn = $('member-name-submit');
+  btn.disabled = true; btn.textContent = '登録中…';
   callGas({
-    mode:'member.completeRegistration', memberId: member.memberId,
+    mode:'member.completeRegistration', memberId: member.memberId, submitId: newId(),
     name: name, agencyName: agencyName, experience: experience, equipment: equipment, license: license,
   }).then(function(res){
+    btn.disabled = false; btn.textContent = '登録してマイページを作る';
     if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
     member.name = res.name; member.agencyName = res.agencyName;
     setMember(member);
