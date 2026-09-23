@@ -1,11 +1,11 @@
 // スケジュール.gs — カレンダー取得・更新・リマインド
 
+// 会員(MEMBER)の事務所名を「会社」としてグルーピングする。会社コード方式は廃止済み。
 function calendarGet_(body) {
   var month = String(body.month || '');
   if (!/^\d{4}-\d{2}$/.test(month)) return json_({ ok: false, error: 'monthは YYYY-MM 形式で指定してください' });
 
-  var companies = readRows_('COMPANY').filter(function (c) { return c['状態'] !== '停止'; });
-  var users = readRows_('USER').filter(function (u) { return u['状態'] !== '退職'; });
+  var members = readRows_('MEMBER').filter(function (m) { return m['氏名']; });
   var schedules = readRows_('SCHEDULE').filter(function (s) { return dateKey_(s['日付']).slice(0, 7) === month; });
 
   var byUser = {};
@@ -19,14 +19,21 @@ function calendarGet_(body) {
     };
   });
 
-  var result = companies.map(function (c) {
+  var byAgency = {};
+  members.forEach(function (m) {
+    var agency = m['事務所名'] || '(所属未設定)';
+    byAgency[agency] = byAgency[agency] || [];
+    byAgency[agency].push(m);
+  });
+
+  var result = Object.keys(byAgency).map(function (agency) {
     return {
-      companyId: c['会社ID'],
-      companyName: c['会社名'],
-      investigators: users.filter(function (u) { return u['会社ID'] === c['会社ID']; }).map(function (u) {
+      companyId: agency,
+      companyName: agency,
+      investigators: byAgency[agency].map(function (m) {
         return {
-          investigatorId: u['調査員ID'], name: u['氏名'],
-          lineLinked: !!u['LINEユーザーID'], days: byUser[u['調査員ID']] || {},
+          investigatorId: m['会員ID'], name: m['氏名'],
+          lineLinked: false, days: byUser[m['会員ID']] || {},
         };
       }),
     };
@@ -34,9 +41,10 @@ function calendarGet_(body) {
   return json_({ ok: true, month: month, companies: result });
 }
 
+// body.companyCode に会員のメールアドレス、body.investigatorId に会員IDを乗せて呼ぶ（旧フィールド名を流用）
 function scheduleSet_(body) {
-  var auth = verifyCompanyCode_(body.companyCode, body.investigatorId);
-  if (!auth) return json_({ ok: false, error: '会社コードが確認できません' });
+  var auth = verifyMemberForWork_(body.companyCode, body.investigatorId);
+  if (!auth) return json_({ ok: false, error: '本人確認できませんでした' });
 
   var targetId = String(body.targetInvestigatorId || body.investigatorId);
   var date = String(body.date || '');
@@ -45,7 +53,7 @@ function scheduleSet_(body) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json_({ ok: false, error: 'dateは YYYY-MM-DD 形式で指定してください' });
   if (['空き', '確定', '不可', ''].indexOf(status) === -1) return json_({ ok: false, error: 'statusが不正です' });
 
-  var targetUser = readRows_('USER').filter(function (u) { return u['調査員ID'] === targetId; })[0];
+  var targetUser = readRows_('MEMBER').filter(function (m) { return m['会員ID'] === targetId; })[0];
   if (!targetUser) return json_({ ok: false, error: '対象の調査員が見つかりません' });
 
   var rows = readRows_('SCHEDULE');
@@ -62,9 +70,6 @@ function scheduleSet_(body) {
   }
   logHistory_(body.investigatorId, 'schedule.set', targetId, before, { status: status, memo: memo });
 
-  if (status === '確定' && body.investigatorId !== targetId && targetUser['LINEユーザーID']) {
-    notifyConfirm_(targetUser, date, memo, auth.user['氏名'], auth.company['会社名']);
-  }
   return json_({ ok: true, date: date, status: status, memo: memo });
 }
 

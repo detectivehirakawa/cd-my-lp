@@ -59,19 +59,59 @@ function memberVerify_(body) {
     return json_({ ok: true, memberId: newId, name: '', isNew: true });
   }
   updateRow_('MEMBER', member._row, { '最終ログイン日時': now });
-  return json_({ ok: true, memberId: member['会員ID'], name: member['氏名'] || '', isNew: !member['氏名'] });
+  return json_({ ok: true, memberId: member['会員ID'], name: member['氏名'] || '', isNew: registrationIncomplete_(member) });
 }
 
-function memberSetName_(body) {
+function registrationIncomplete_(m) {
+  return !m['氏名'] || !m['事務所名'] || !m['探偵歴'] || !m['使用可能機材'] || !m['届出番号'];
+}
+
+// memberId と email の組が正当かを確認する（パスワードは無いので簡易な本人確認）
+function verifyMember_(memberId, email) {
+  var m = readRows_('MEMBER').filter(function (r) {
+    return r['会員ID'] === String(memberId) && r['メールアドレス'] === String(email || '').trim().toLowerCase();
+  })[0];
+  return m || null;
+}
+
+// カレンダー・案件機能から使う。会社コード方式は廃止したので、会員の事務所名を「会社」として扱う。
+// 旧フィールド名を流用: email→companyCode / memberId→investigatorId で呼ばれる。
+function verifyMemberForWork_(email, memberId) {
+  var m = verifyMember_(memberId, email);
+  if (!m) return null;
+  var agency = m['事務所名'] || '(所属未設定)';
+  return {
+    company: { '会社ID': agency, '会社名': agency },
+    user: { '調査員ID': m['会員ID'], '会社ID': agency, '氏名': m['氏名'] },
+  };
+}
+
+function memberCompleteRegistration_(body) {
   var memberId = String(body.memberId || '');
   var name = String(body.name || '').trim();
+  var agencyName = String(body.agencyName || '').trim();
+  var experience = String(body.experience || '').trim();
+  var equipment = String(body.equipment || '').trim();
+  var license = String(body.license || '').trim();
+
   if (!name) return json_({ ok: false, error: '氏名を入力してください' });
+  if (!agencyName) return json_({ ok: false, error: '探偵事務所名を入力してください' });
+  if (!experience) return json_({ ok: false, error: '探偵歴を入力してください' });
+  if (!equipment) return json_({ ok: false, error: '使用可能機材を入力してください' });
+  if (!license) return json_({ ok: false, error: '届出番号を入力してください' });
   if (name.length > 40) return json_({ ok: false, error: '氏名は40文字以内にしてください' });
+  if (agencyName.length > 60) return json_({ ok: false, error: '事務所名は60文字以内にしてください' });
+  if (experience.length > 20) return json_({ ok: false, error: '探偵歴は20文字以内にしてください' });
+  if (equipment.length > 200) return json_({ ok: false, error: '使用可能機材は200文字以内にしてください' });
+  if (license.length > 60) return json_({ ok: false, error: '届出番号は60文字以内にしてください' });
 
   var rows = readRows_('MEMBER');
   var m = rows.filter(function (r) { return r['会員ID'] === memberId; })[0];
   if (!m) return json_({ ok: false, error: '会員情報が見つかりません' });
 
-  updateRow_('MEMBER', m._row, { '氏名': name });
-  return json_({ ok: true, memberId: memberId, name: name });
+  updateRow_('MEMBER', m._row, {
+    '氏名': name, '事務所名': agencyName, '探偵歴': experience,
+    '使用可能機材': equipment, '届出番号': license,
+  });
+  return json_({ ok: true, memberId: memberId, name: name, agencyName: agencyName, experience: experience, equipment: equipment, license: license });
 }

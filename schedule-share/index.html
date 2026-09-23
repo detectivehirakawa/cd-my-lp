@@ -19,7 +19,8 @@
     --link:#1a56db;
   }
   *{box-sizing:border-box;}
-  body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);}
+  body{margin:0;font-family:"MS PGothic","MS UI Gothic","Osaka","Hiragino Kaku Gothic Pro",sans-serif;
+    background:var(--bg);color:var(--ink);font-weight:700;-webkit-font-smoothing:none;}
   .screen{display:none;max-width:520px;margin:0 auto;padding-bottom:40px;}
   .screen.active{display:block;}
   a{color:var(--link);}
@@ -159,25 +160,23 @@
   </div>
 </div>
 
-<!-- 1. 会社コード入力 -->
-<div class="screen active" id="code-screen">
-  <div class="promo-strip">たんてい業をもっと便利に、みんなでつながる情報共有サイト</div>
-  <div class="town-logo">
-    <div class="bubble"><span>タ</span><span>ン</span><span>テ</span><span>ー</span><span>T</span><span>O</span><span>W</span><span>N</span></div>
-    <div class="sub">detective-town</div>
-  </div>
+<!-- 1. 会社コード入力(廃止・休止中。データ/コードは残すがUIから外す) -->
+<div class="screen" id="code-screen">
   <div class="card">
     <h1>会社コードを入力してください</h1>
     <div class="msg-error" id="code-error" style="display:none;"></div>
     <input type="text" id="code-input" placeholder="会社コード" inputmode="latin" autocomplete="off">
     <button class="btn-primary" id="code-submit">つぎへ ▶</button>
-    <div style="text-align:center;margin-top:10px;"><a href="#" data-go="email-screen">メールアドレスで会員登録する場合はこちら</a></div>
   </div>
 </div>
 
-<!-- 会員登録: メールアドレス入力 -->
-<div class="screen" id="email-screen">
-  <div class="subhead"><button class="home-btn" data-go="code-screen">◀ 戻る</button><span class="title">メールアドレスで登録</span></div>
+<!-- 会員登録: メールアドレス入力(アプリの入口) -->
+<div class="screen active" id="email-screen">
+  <div class="promo-strip">たんてい業をもっと便利に、みんなでつながる情報共有サイト</div>
+  <div class="town-logo">
+    <div class="bubble"><span>タ</span><span>ン</span><span>テ</span><span>ー</span><span>T</span><span>O</span><span>W</span><span>N</span></div>
+    <div class="sub">detective-town</div>
+  </div>
   <div class="card">
     <h1>メールアドレスを入力してください</h1>
     <div class="msg-error" id="email-error" style="display:none;"></div>
@@ -200,23 +199,16 @@
 
 <!-- 会員登録: 氏名入力(初回のみ) -->
 <div class="screen" id="member-name-screen">
-  <div class="subhead"><span class="title">お名前を入力してください</span></div>
+  <div class="subhead"><span class="title">探偵登録カード</span></div>
   <div class="card">
+    <p class="msg-info" style="padding:0 0 10px;">タンテーTOWNは探偵専用のSNSです。以下の項目はすべて必須です。</p>
     <div class="msg-error" id="member-name-error" style="display:none;"></div>
     <input type="text" id="member-name-input" placeholder="氏名" autocomplete="off">
-    <button class="btn-primary" id="member-name-submit">マイページを作る</button>
-  </div>
-</div>
-
-<!-- 会員マイページ(たたき台) -->
-<div class="screen" id="member-home-screen">
-  <div class="myp-topbar"><span>タンテーTOWN マイページ</span><span id="member-logout-link" style="cursor:pointer;text-decoration:underline;">ログアウト</span></div>
-  <div class="myp-profile">
-    <div class="myp-avatar">🕵️</div>
-    <div class="myp-name"><span id="member-home-name"></span><small id="member-home-email"></small></div>
-  </div>
-  <div class="card">
-    <p style="font-size:13px;color:#777;">ようこそ！これは会員登録のたたき台です。会社・案件・カレンダーとの連携は今後追加していきます。</p>
+    <input type="text" id="member-agency-input" placeholder="探偵事務所名" autocomplete="off">
+    <input type="text" id="member-experience-input" placeholder="探偵歴（例：5年）" autocomplete="off">
+    <textarea id="member-equipment-input" rows="2" placeholder="使用可能機材（例：望遠カメラ、GPS発信機、変装道具）"></textarea>
+    <input type="text" id="member-license-input" placeholder="届出番号（例：埼玉県公安委員会第12345号）" autocomplete="off">
+    <button class="btn-primary" id="member-name-submit">登録してマイページを作る</button>
   </div>
 </div>
 
@@ -258,6 +250,9 @@
   <div class="band c-social">🤝 つながろう</div>
   <div class="row-list">
     <div class="row-item link" data-go="feed-screen"><span class="ico">📢</span><span class="lbl">お知らせ</span></div>
+    <div class="row-item link" data-go="dm-list-screen"><span class="ico">💌</span><span class="lbl">ミニメ</span></div>
+    <div class="row-item link" data-go="circle-list-screen"><span class="ico">👥</span><span class="lbl">サークル</span></div>
+    <div class="row-item link" data-go="friend-list-screen"><span class="ico">👫</span><span class="lbl">友達</span></div>
     <div class="row-item link" data-go="mypage-screen"><span class="ico">👤</span><span class="lbl">マイページ</span></div>
   </div>
 </div>
@@ -313,14 +308,18 @@
 <div class="screen" id="mypage-screen">
   <div class="myp-topbar"><span>タンテーTOWN マイページ</span><span id="myp-switch-link" style="cursor:pointer;text-decoration:underline;">切り替え</span></div>
   <div class="myp-profile">
-    <div class="myp-avatar">🕵️</div>
-    <div class="myp-name"><span id="myp-name"></span><small id="myp-company"></small></div>
+    <div class="myp-avatar" id="myp-avatar-display">🕵️</div>
+    <div class="myp-name">
+      <span id="myp-name"></span>
+      <small id="myp-company"></small>
+      <small id="myp-statusmsg" style="color:#2f6fd6;"></small>
+    </div>
   </div>
   <div class="myp-grid">
-    <button data-go="cal-screen"><span class="ico">📅</span>カレンダー</button>
-    <button data-go="case-list-screen"><span class="ico">📁</span>案件一覧</button>
-    <button data-go="feed-screen"><span class="ico">📢</span>お知らせ</button>
-    <button id="myp-switch-btn"><span class="ico">🔁</span>切り替え</button>
+    <button data-go="profile-edit-screen"><span class="ico">✏️</span>プロフィール編集</button>
+    <button data-go="friend-list-screen"><span class="ico">👫</span>友達</button>
+    <button data-go="dm-list-screen"><span class="ico">💌</span>ミニメ</button>
+    <button data-go="circle-list-screen"><span class="ico">👥</span>サークル</button>
   </div>
   <div class="myp-callout">
     今月の予定：
@@ -332,6 +331,76 @@
   <div class="row-list" id="myp-recent-cases"></div>
   <div style="text-align:center;padding:16px;">
     <button class="home-btn" data-go="home-screen" style="background:#5fb4ff;color:#fff;">🏠 トップへ戻る</button>
+  </div>
+</div>
+
+<!-- プロフィール編集 -->
+<div class="screen" id="profile-edit-screen">
+  <div class="subhead"><button class="home-btn" data-go="mypage-screen">◀ 戻る</button><span class="title">プロフィール編集</span></div>
+  <div class="card">
+    <p class="msg-info" style="padding:0 0 6px;">アバターを選ぶ</p>
+    <div id="avatar-picker" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+    <input type="text" id="profile-name-input" placeholder="氏名">
+    <input type="text" id="profile-agency-input" placeholder="探偵事務所名">
+    <input type="text" id="profile-experience-input" placeholder="探偵歴">
+    <textarea id="profile-equipment-input" rows="2" placeholder="使用可能機材"></textarea>
+    <input type="text" id="profile-license-input" placeholder="届出番号">
+    <input type="text" id="profile-statusmsg-input" placeholder="ひとこと（40文字以内）" maxlength="40">
+    <textarea id="profile-bio-input" rows="4" placeholder="自己紹介（500文字以内）" maxlength="500"></textarea>
+    <div class="msg-error" id="profile-edit-error" style="display:none;"></div>
+    <button class="btn-primary" id="profile-save-btn">保存する</button>
+  </div>
+</div>
+
+<!-- 友達 -->
+<div class="screen" id="friend-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">👫 友達</span></div>
+  <div id="friend-pending-wrap">
+    <div class="band c-info">🔔 申請が来ています</div>
+    <div class="row-list" id="friend-pending-list"></div>
+  </div>
+  <div class="band c-social">👫 友達一覧</div>
+  <div class="row-list" id="friend-list"></div>
+  <div class="band c-work">🔍 探偵をさがす</div>
+  <div class="row-list" id="member-browse-list"></div>
+</div>
+
+<!-- ミニメ 会話一覧 -->
+<div class="screen" id="dm-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">💌 ミニメ</span></div>
+  <div class="row-list" id="dm-list"></div>
+  <div class="band c-work">🔍 友達にミニメを送る</div>
+  <div class="row-list" id="dm-friend-picker"></div>
+</div>
+
+<!-- ミニメ スレッド -->
+<div class="screen" id="dm-thread-screen">
+  <div class="subhead"><button class="home-btn" data-go="dm-list-screen">◀ 戻る</button><span class="title" id="dm-thread-title">ミニメ</span></div>
+  <div id="dm-messages"></div>
+  <div style="height:60px;"></div>
+  <div class="composer">
+    <textarea id="dm-msg-input" placeholder="ミニメを入力"></textarea>
+    <button class="btn-primary" id="dm-msg-send" style="width:auto;">送信</button>
+  </div>
+</div>
+
+<!-- サークル一覧 -->
+<div class="screen" id="circle-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">👥 サークル</span></div>
+  <div class="row-list" id="circle-list"></div>
+  <button class="fab" id="circle-new-btn">＋</button>
+</div>
+
+<!-- サークル詳細 -->
+<div class="screen" id="circle-detail-screen">
+  <div class="subhead"><button class="home-btn" data-go="circle-list-screen">◀ 戻る</button><span class="title" id="circle-detail-title">サークル</span></div>
+  <div style="background:#fff;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;" id="circle-detail-desc"></div>
+  <button class="btn-primary" id="circle-join-btn" style="margin:10px 14px;width:calc(100% - 28px);display:none;">このサークルに参加する</button>
+  <div id="circle-posts"></div>
+  <div style="height:60px;"></div>
+  <div class="composer" id="circle-composer" style="display:none;">
+    <textarea id="circle-post-input" placeholder="サークルに投稿"></textarea>
+    <button class="btn-primary" id="circle-post-send" style="width:auto;">投稿</button>
   </div>
 </div>
 
@@ -392,6 +461,10 @@ document.querySelectorAll('[data-go]').forEach(function(el){
     if (target === 'mypage-screen') loadMyPage();
     if (target === 'cal-screen') loadMonth();
     if (target === 'home-screen') loadHomeFeedPreview();
+    if (target === 'profile-edit-screen') loadProfileEdit();
+    if (target === 'friend-list-screen') loadFriendList();
+    if (target === 'dm-list-screen') loadDmList();
+    if (target === 'circle-list-screen') loadCircleList();
   });
 });
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
@@ -492,29 +565,42 @@ $('email-code-submit').onclick = function(){
     if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
     var member = { memberId: res.memberId, email: pendingEmail, name: res.name || '' };
     setMember(member);
-    if (res.isNew || !res.name){ showScreen('member-name-screen'); }
-    else { enterMemberHome(member); }
+    if (res.isNew){ showScreen('member-name-screen'); }
+    else { enterApp(); }
   });
 };
 $('member-name-submit').onclick = function(){
   var name = $('member-name-input').value.trim();
+  var agencyName = $('member-agency-input').value.trim();
+  var experience = $('member-experience-input').value.trim();
+  var equipment = $('member-equipment-input').value.trim();
+  var license = $('member-license-input').value.trim();
   var err = $('member-name-error');
   err.style.display = 'none';
-  if (!name){ err.textContent = '氏名を入力してください'; err.style.display='block'; return; }
+  if (!name || !agencyName || !experience || !equipment || !license){
+    err.textContent = 'すべての項目を入力してください'; err.style.display='block'; return;
+  }
   var member = getMember();
-  callGas({ mode:'member.setName', memberId: member.memberId, name: name }).then(function(res){
+  callGas({
+    mode:'member.completeRegistration', memberId: member.memberId,
+    name: name, agencyName: agencyName, experience: experience, equipment: equipment, license: license,
+  }).then(function(res){
     if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
-    member.name = res.name;
+    member.name = res.name; member.agencyName = res.agencyName;
     setMember(member);
-    enterMemberHome(member);
+    enterApp();
   });
 };
-function enterMemberHome(member){
-  $('member-home-name').textContent = member.name + ' さん';
-  $('member-home-email').textContent = member.email;
-  showScreen('member-home-screen');
+
+// カレンダー/案件機能は会社コード方式のまま実装されているため、会員情報を同じ形にブリッジして再利用する。
+// companyCode←メール / investigatorId←会員ID / companyId,companyName←事務所名
+function bridgeSessionFromMember(member){
+  session = {
+    companyCode: member.email, investigatorId: member.memberId,
+    companyId: member.agencyName || '', companyName: member.agencyName || '',
+    name: member.name, lineLinked: false,
+  };
 }
-$('member-logout-link').onclick = function(){ clearMember(); showScreen('code-screen'); };
 
 // ---- 2. 氏名選択 ----
 function pickName(name){
@@ -545,13 +631,16 @@ $('name-submit').onclick = function(){
 
 // ---- 3. トップページ ----
 function enterApp(){
+  var member = getMember();
+  if (!member || !member.memberId) { showScreen('email-screen'); return; }
+  bridgeSessionFromMember(member);
   showScreen('home-screen');
   loadMonth(); // calDataを裏で先読み(案件作成の相手会社リスト等で使う)
   loadHomeFeedPreview();
   loadHomeAlerts();
 }
-$('myp-switch-link').onclick = function(){ clearSession(); showScreen('code-screen'); };
-$('myp-switch-btn').onclick = function(){ clearSession(); showScreen('code-screen'); };
+function logout(){ clearMember(); clearSession(); showScreen('email-screen'); }
+$('myp-switch-link').onclick = logout;
 
 function loadHomeAlerts(){
   callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
@@ -716,9 +805,17 @@ function loadFeed(){
 }
 
 // ---- 8. マイページ ----
+var myProfileCache = null;
 function loadMyPage(){
   $('myp-name').textContent = session.name;
   $('myp-company').textContent = session.companyName;
+  var member = getMember();
+  callGas({ mode:'member.getProfile', targetMemberId: member.memberId }).then(function(res){
+    if (!res.ok) return;
+    myProfileCache = res;
+    $('myp-avatar-display').textContent = res.avatar || '🕵️';
+    $('myp-statusmsg').textContent = res.statusMsg || '';
+  });
   if (calData) fillMyPageSummary(); else loadMonth().then ? null : null;
   callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
     var box = $('myp-recent-cases');
@@ -750,6 +847,217 @@ function fillMyPageSummary(){
   $('myp-fixed').textContent = counts['確定'];
   $('myp-busy').textContent = counts['不可'];
 }
+
+// ---- プロフィール編集 ----
+var selectedAvatar = '🕵️';
+function loadProfileEdit(){
+  var member = getMember();
+  callGas({ mode:'member.getProfile', targetMemberId: member.memberId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    selectedAvatar = res.avatar || '🕵️';
+    $('profile-name-input').value = res.name || '';
+    $('profile-agency-input').value = res.agencyName || '';
+    $('profile-experience-input').value = res.experience || '';
+    $('profile-equipment-input').value = res.equipment || '';
+    $('profile-license-input').value = res.license || '';
+    $('profile-statusmsg-input').value = res.statusMsg || '';
+    $('profile-bio-input').value = res.bio || '';
+    renderAvatarPicker();
+  });
+}
+function renderAvatarPicker(){
+  callGas({ mode:'member.avatarChoices' }).then(function(res){
+    var box = $('avatar-picker');
+    if (!res.ok) return;
+    box.innerHTML = res.avatars.map(function(a){
+      return '<button data-avatar="'+a+'" style="font-size:22px;padding:6px 10px;border:2px solid '+(a===selectedAvatar?'var(--link)':'var(--line)')+';background:#fff;">'+a+'</button>';
+    }).join('');
+    box.querySelectorAll('[data-avatar]').forEach(function(btn){
+      btn.onclick = function(){ selectedAvatar = btn.getAttribute('data-avatar'); renderAvatarPicker(); };
+    });
+  });
+}
+$('profile-save-btn').onclick = function(){
+  var member = getMember();
+  var err = $('profile-edit-error');
+  err.style.display = 'none';
+  var name = $('profile-name-input').value.trim();
+  var agencyName = $('profile-agency-input').value.trim();
+  if (!name || !agencyName){ err.textContent = '氏名と事務所名は必須です'; err.style.display='block'; return; }
+  callGas({
+    mode:'member.updateProfile', memberId: member.memberId, email: member.email,
+    name: name, avatar: selectedAvatar,
+    statusMsg: $('profile-statusmsg-input').value.trim(),
+    bio: $('profile-bio-input').value.trim(),
+  }).then(function(res){
+    if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
+    member.name = name; setMember(member);
+    session.name = name; session.companyId = agencyName; session.companyName = agencyName;
+    showScreen('mypage-screen'); loadMyPage();
+  });
+};
+
+// ---- 友達 ----
+function loadFriendList(){
+  var member = getMember();
+  callGas({ mode:'friend.list', memberId: member.memberId, email: member.email }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    var pendingWrap = $('friend-pending-wrap');
+    pendingWrap.style.display = res.pending.length ? 'block' : 'none';
+    $('friend-pending-list').innerHTML = res.pending.map(function(p){
+      return '<div class="row-item"><span class="ico">'+p.avatar+'</span><span class="lbl">'+escapeHtml(p.name)+'</span>'
+        + '<button data-accept="'+p.requestId+'" style="background:#2f6fd6;color:#fff;margin-right:4px;">承認</button>'
+        + '<button data-reject="'+p.requestId+'" style="background:#eee;">拒否</button></div>';
+    }).join('');
+    $('friend-pending-list').querySelectorAll('[data-accept]').forEach(function(b){
+      b.onclick = function(){ respondFriend(b.getAttribute('data-accept'), true); };
+    });
+    $('friend-pending-list').querySelectorAll('[data-reject]').forEach(function(b){
+      b.onclick = function(){ respondFriend(b.getAttribute('data-reject'), false); };
+    });
+
+    $('friend-list').innerHTML = res.friends.length ? res.friends.map(function(f){
+      return '<div class="row-item"><span class="ico">'+f.avatar+'</span><span class="lbl">'+escapeHtml(f.name)+(f.agencyName?'<br><span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(f.agencyName)+'</span>':'')+'</span></div>';
+    }).join('') : '<p class="msg-info">まだ友達がいません</p>';
+
+    var sentIds = {}; res.sent.forEach(function(s){ sentIds[s.memberId] = true; });
+    var friendIds = {}; res.friends.forEach(function(f){ friendIds[f.memberId] = true; });
+    callGas({ mode:'member.listPublic', memberId: member.memberId, email: member.email }).then(function(res2){
+      if (!res2.ok) return;
+      var box = $('member-browse-list');
+      box.innerHTML = res2.members.map(function(m){
+        var btn = friendIds[m.memberId] ? '<span class="sub">友達</span>' :
+          sentIds[m.memberId] ? '<span class="sub">申請中</span>' :
+          '<button data-req="'+m.memberId+'" style="background:#2f6fd6;color:#fff;">申請</button>';
+        return '<div class="row-item"><span class="ico">'+m.avatar+'</span><span class="lbl">'+escapeHtml(m.name)+(m.agencyName?'<br><span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(m.agencyName)+'</span>':'')+'</span>'+btn+'</div>';
+      }).join('') || '<p class="msg-info">他の会員がいません</p>';
+      box.querySelectorAll('[data-req]').forEach(function(b){
+        b.onclick = function(){
+          callGas({ mode:'friend.request', memberId: member.memberId, email: member.email, targetMemberId: b.getAttribute('data-req') })
+            .then(function(r){ if (r.ok) loadFriendList(); else alert(r.error); });
+        };
+      });
+    });
+  });
+}
+function respondFriend(requestId, accept){
+  var member = getMember();
+  callGas({ mode:'friend.respond', memberId: member.memberId, email: member.email, requestId: requestId, accept: accept })
+    .then(function(res){ if (res.ok) loadFriendList(); else alert(res.error); });
+}
+
+// ---- ミニメ ----
+var currentDmPartner = null;
+function loadDmList(){
+  var member = getMember();
+  callGas({ mode:'dm.conversations', memberId: member.memberId, email: member.email }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    var list = $('dm-list');
+    list.innerHTML = res.conversations.length ? res.conversations.map(function(c){
+      return '<div class="row-item link" data-partner="'+c.partnerId+'" data-name="'+escapeHtml(c.partnerName)+'"><span class="ico">'+c.partnerAvatar+'</span>'
+        + '<span class="lbl">'+(c.unread?'📩 ':'')+escapeHtml(c.partnerName)+'<br><span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(c.lastBody)+'</span></span>'
+        + '<span class="sub">'+fmtDate(c.lastAt)+'</span></div>';
+    }).join('') : '<p class="msg-info">まだミニメはありません</p>';
+    list.querySelectorAll('[data-partner]').forEach(function(el){
+      el.onclick = function(){ showScreen('dm-thread-screen'); openDmThread(el.getAttribute('data-partner'), el.getAttribute('data-name')); };
+    });
+  });
+  callGas({ mode:'friend.list', memberId: member.memberId, email: member.email }).then(function(res){
+    if (!res.ok) return;
+    var box = $('dm-friend-picker');
+    box.innerHTML = res.friends.length ? res.friends.map(function(f){
+      return '<div class="row-item link" data-partner="'+f.memberId+'" data-name="'+escapeHtml(f.name)+'"><span class="ico">'+f.avatar+'</span><span class="lbl">'+escapeHtml(f.name)+'</span></div>';
+    }).join('') : '<p class="msg-info">友達になるとミニメが送れます</p>';
+    box.querySelectorAll('[data-partner]').forEach(function(el){
+      el.onclick = function(){ showScreen('dm-thread-screen'); openDmThread(el.getAttribute('data-partner'), el.getAttribute('data-name')); };
+    });
+  });
+}
+function openDmThread(partnerId, partnerName){
+  currentDmPartner = partnerId;
+  $('dm-thread-title').textContent = '💌 ' + partnerName;
+  var member = getMember();
+  callGas({ mode:'dm.thread', memberId: member.memberId, email: member.email, partnerId: partnerId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    var box = $('dm-messages');
+    box.innerHTML = res.messages.length ? res.messages.map(function(m){
+      return '<div class="msg-bubble'+(m.mine?' mine':'')+'"><div class="msg-meta">'+fmtDate(m.sentAt)+'</div><div class="msg-body">'+escapeHtml(m.body)+'</div></div>';
+    }).join('') : '<p class="msg-info">まだメッセージはありません</p>';
+  });
+}
+$('dm-msg-send').onclick = function(){
+  var input = $('dm-msg-input');
+  var text = input.value.trim();
+  if (!text || !currentDmPartner) return;
+  var member = getMember();
+  callGas({ mode:'dm.send', submitId: newId(), memberId: member.memberId, email: member.email, partnerId: currentDmPartner, body: text })
+    .then(function(res){
+      if (!res.ok){ alert(res.error); return; }
+      input.value = '';
+      openDmThread(currentDmPartner, $('dm-thread-title').textContent.replace('💌 ',''));
+    });
+};
+
+// ---- サークル ----
+var currentCircleId = null;
+function loadCircleList(){
+  var member = getMember();
+  callGas({ mode:'circle.list', memberId: member.memberId, email: member.email }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    var list = $('circle-list');
+    list.innerHTML = res.circles.length ? res.circles.map(function(c){
+      return '<div class="row-item link" data-id="'+c.id+'"><span class="ico">👥</span>'
+        + '<span class="lbl">'+escapeHtml(c.name)+(c.joined?' <span class="sub">参加中</span>':'')+'<br><span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(c.description)+'</span></span>'
+        + '<span class="sub">'+c.memberCount+'人</span></div>';
+    }).join('') : '<p class="msg-info">まだサークルはありません。右下の＋から作れます。</p>';
+    list.querySelectorAll('[data-id]').forEach(function(el){
+      el.onclick = function(){ showScreen('circle-detail-screen'); openCircleDetail(el.getAttribute('data-id')); };
+    });
+  });
+}
+$('circle-new-btn').onclick = function(){
+  var name = prompt('サークル名を入力してください');
+  if (!name) return;
+  var description = prompt('説明（任意）') || '';
+  var member = getMember();
+  callGas({ mode:'circle.create', submitId: newId(), memberId: member.memberId, email: member.email, name: name, description: description })
+    .then(function(res){
+      if (!res.ok){ alert(res.error); return; }
+      showScreen('circle-detail-screen'); openCircleDetail(res.id);
+    });
+};
+function openCircleDetail(circleId){
+  currentCircleId = circleId;
+  var member = getMember();
+  callGas({ mode:'circle.get', circleId: circleId, memberId: member.memberId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    $('circle-detail-title').textContent = '👥 ' + res.name;
+    $('circle-detail-desc').textContent = res.description + '（' + res.members.length + '人参加）';
+    $('circle-join-btn').style.display = res.joined ? 'none' : 'block';
+    $('circle-composer').style.display = res.joined ? 'flex' : 'none';
+    var box = $('circle-posts');
+    box.innerHTML = res.posts.length ? res.posts.map(function(p){
+      return '<div class="msg-bubble"><div class="msg-meta">'+p.posterAvatar+' '+escapeHtml(p.posterName)+' / '+fmtDate(p.postedAt)+'</div><div class="msg-body">'+escapeHtml(p.body)+'</div></div>';
+    }).join('') : '<p class="msg-info">まだ投稿はありません</p>';
+  });
+}
+$('circle-join-btn').onclick = function(){
+  var member = getMember();
+  callGas({ mode:'circle.join', memberId: member.memberId, email: member.email, circleId: currentCircleId })
+    .then(function(res){ if (res.ok) openCircleDetail(currentCircleId); else alert(res.error); });
+};
+$('circle-post-send').onclick = function(){
+  var input = $('circle-post-input');
+  var text = input.value.trim();
+  if (!text) return;
+  var member = getMember();
+  callGas({ mode:'circle.post', submitId: newId(), memberId: member.memberId, email: member.email, circleId: currentCircleId, body: text })
+    .then(function(res){
+      if (!res.ok){ alert(res.error); return; }
+      input.value = '';
+      openCircleDetail(currentCircleId);
+    });
+};
 
 // ---- 9. カレンダー ----
 function monthStr(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
@@ -920,10 +1228,8 @@ if ('serviceWorker' in navigator) {
 
 // ---- 初期化 ----
 (function init(){
-  var s = getSession();
-  if (s && s.investigatorId){ session = s; enterApp(); return; }
   var m = getMember();
-  if (m && m.memberId && m.name){ enterMemberHome(m); }
+  if (m && m.memberId && m.name){ enterApp(); }
 })();
 </script>
 </body>
