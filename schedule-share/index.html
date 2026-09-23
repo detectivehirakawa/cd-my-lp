@@ -140,6 +140,7 @@
 <script>
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWZ8nWjJ7JSP8s77qgDD08yEJw0O1gDfScvI3b6jYj2MMWha9OW-0Oosj9YC7Xd2Va/exec';
 var GAS_KEY = 'schedshare';
+var LINE_ENABLED = false; // LINE公式アカウント未設定のため一旦無効化(準備できたらtrueに)
 var STORAGE_KEY = 'schedshare_session';
 
 function $(id){ return document.getElementById(id); }
@@ -221,7 +222,7 @@ $('name-submit').onclick = function(){
 // ---- 3. カレンダー ----
 function enterCalendar(){
   $('cur-user').textContent = session.companyName + ' / ' + session.name;
-  $('line-banner').style.display = session.lineLinked ? 'none' : 'flex';
+  $('line-banner').style.display = (LINE_ENABLED && !session.lineLinked) ? 'flex' : 'none';
   showScreen('cal-screen');
   loadMonth();
 }
