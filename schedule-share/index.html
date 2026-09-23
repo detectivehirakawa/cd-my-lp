@@ -11,6 +11,9 @@
 <meta property="og:url" content="https://lp.exeresearch.jp/schedule-share/">
 <meta property="og:image" content="https://lp.exeresearch.jp/schedule-share/icons/icon-512.png">
 <meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff4fae">
 <meta name="mobile-web-app-capable" content="yes">
@@ -24,9 +27,9 @@
     --free:#d9f2df; --fixed:#dbe9fb; --busy:#eceff1;
     --link:#1a56db;
   }
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:"MS PGothic","MS UI Gothic","Osaka","Hiragino Kaku Gothic Pro",sans-serif;
-    background:var(--bg);color:var(--ink);font-weight:700;-webkit-font-smoothing:none;}
+  *{box-sizing:border-box;font-family:inherit;}
+  body{margin:0;font-family:"DotGothic16","MS PGothic","MS UI Gothic","Osaka",sans-serif;
+    background:var(--bg);color:var(--ink);font-weight:400;-webkit-font-smoothing:none;letter-spacing:0.5px;}
   .screen{display:none;max-width:520px;margin:0 auto;padding-bottom:40px;}
   .screen.active{display:block;}
   a{color:var(--link);}
