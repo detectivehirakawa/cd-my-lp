@@ -61,6 +61,32 @@
   .switch-user{text-align:center;padding:16px;font-size:13px;color:#555;}
   .switch-user a{color:var(--accent);}
 
+  /* 共通ナビ */
+  #app-nav{display:none;position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid var(--line);}
+  #app-nav.show{display:flex;}
+  #app-nav button{flex:1;background:#fff;border:none;border-radius:0;padding:12px 0;font-weight:600;color:#888;position:relative;}
+  #app-nav button.active{color:var(--accent);}
+  #app-nav button.active::after{content:'';position:absolute;left:20%;right:20%;bottom:0;height:3px;background:var(--accent);border-radius:2px;}
+  #app-nav .badge{display:inline-block;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#c0392b;color:#fff;font-size:10px;line-height:16px;margin-left:4px;}
+
+  /* お知らせ画面 */
+  #notice-screen{max-width:520px;}
+  .notice-card{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .notice-card.pinned{border-left:4px solid #e8a92a;}
+  .notice-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .notice-title{font-weight:700;font-size:15px;margin:0 0 4px;}
+  .notice-meta{font-size:12px;color:#888;margin-bottom:8px;}
+  .notice-target{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#eef1f5;color:#555;margin-right:6px;}
+  .notice-target.private{background:#fdecea;color:#c0392b;}
+  .notice-body{font-size:14px;white-space:pre-wrap;line-height:1.5;}
+  .notice-pin-btn{background:none;border:none;font-size:18px;padding:2px 4px;color:#ccc;}
+  .notice-pin-btn.pinned{color:#e8a92a;}
+  .notice-fab{position:fixed;right:16px;bottom:70px;width:52px;height:52px;border-radius:50%;background:var(--accent);
+    color:#fff;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.25);z-index:20;}
+  textarea{width:100%;padding:12px;font-size:15px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;
+    font-family:inherit;resize:vertical;}
+  select{width:100%;padding:12px;font-size:15px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;}
+
   #install-banner{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid var(--line);
     border-radius:12px;padding:12px 14px;box-shadow:0 4px 14px rgba(0,0,0,.15);font-size:13px;z-index:50;display:none;}
   #install-banner.show{display:block;}
@@ -78,6 +104,12 @@
     <button class="install-ok" id="install-ok" style="display:none;">追加</button>
     <button class="install-close" id="install-close">×</button>
   </div>
+</div>
+
+<!-- 共通ナビ(ログイン後に表示) -->
+<div id="app-nav">
+  <button data-nav="cal-screen" class="active">📅 カレンダー</button>
+  <button data-nav="notice-screen">📢 お知らせ<span class="badge" id="notice-badge" style="display:none;"></span></button>
 </div>
 
 <!-- 1. 会社コード入力 -->
@@ -125,6 +157,29 @@
   <div class="switch-user">現在: <b id="cur-user"></b> / <a href="#" id="switch-user">別の人に切り替える</a></div>
 </div>
 
+<!-- 4. お知らせ一覧 -->
+<div class="screen" id="notice-screen">
+  <div style="padding:14px 4px 4px;">
+    <div id="notice-list"></div>
+  </div>
+  <button class="notice-fab" id="notice-new-btn">＋</button>
+</div>
+
+<!-- お知らせ投稿フォーム -->
+<div class="screen" id="notice-form-screen">
+  <div class="card">
+    <h1>お知らせを投稿</h1>
+    <select id="notice-target">
+      <option value="全社">全社宛</option>
+    </select>
+    <input type="text" id="notice-title" placeholder="タイトル（80文字以内）" autocomplete="off">
+    <textarea id="notice-body" rows="6" placeholder="本文（2000文字以内）"></textarea>
+    <div class="msg-error" id="notice-error" style="display:none;"></div>
+    <button class="btn-main" id="notice-post-btn">投稿する</button>
+    <button id="notice-cancel-btn" style="width:100%;margin-top:8px;background:#fff;border:1px solid var(--line);">キャンセル</button>
+  </div>
+</div>
+
 <!-- LINE連携コード表示 -->
 <div class="screen" id="line-screen">
   <div class="card">
@@ -144,10 +199,24 @@ var LINE_ENABLED = false; // LINE公式アカウント未設定のため一旦�
 var STORAGE_KEY = 'schedshare_session';
 
 function $(id){ return document.getElementById(id); }
+var NAV_SCREENS = ['cal-screen', 'notice-screen'];
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   $(id).classList.add('active');
+  var nav = $('app-nav');
+  if (NAV_SCREENS.indexOf(id) === -1){ nav.classList.remove('show'); return; }
+  nav.classList.add('show');
+  nav.querySelectorAll('button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-nav') === id);
+  });
 }
+document.querySelectorAll('#app-nav button').forEach(function(b){
+  b.onclick = function(){
+    var target = b.getAttribute('data-nav');
+    showScreen(target);
+    if (target === 'notice-screen') openNoticeScreen();
+  };
+});
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
 function callGas(body, retry){
@@ -225,6 +294,7 @@ function enterCalendar(){
   $('line-banner').style.display = (LINE_ENABLED && !session.lineLinked) ? 'flex' : 'none';
   showScreen('cal-screen');
   loadMonth();
+  checkNoticeBadge();
 }
 $('switch-user').onclick = function(e){
   e.preventDefault();
@@ -322,6 +392,109 @@ function updateCell(cell, status, memo){
     }
   });
 }
+
+// ---- お知らせ ----
+var LAST_SEEN_KEY = 'schedshare_notice_lastseen';
+var noticeCache = [];
+
+function checkNoticeBadge(){
+  callGas({ mode:'notice.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok) return;
+    noticeCache = res.notices;
+    var lastSeen = localStorage.getItem(LAST_SEEN_KEY) || '1970-01-01';
+    var unread = res.notices.filter(function(n){ return n.postedAt && new Date(n.postedAt) > new Date(lastSeen); }).length;
+    var badge = $('notice-badge');
+    if (unread > 0){ badge.textContent = unread > 9 ? '9+' : String(unread); badge.style.display = 'inline-block'; }
+    else { badge.style.display = 'none'; }
+  });
+}
+
+function openNoticeScreen(){
+  localStorage.setItem(LAST_SEEN_KEY, new Date().toISOString());
+  $('notice-badge').style.display = 'none';
+  loadNotices();
+}
+
+function loadNotices(){
+  var list = $('notice-list');
+  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
+  callGas({ mode:'notice.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok){ list.innerHTML = '<p class="msg-error">' + res.error + '</p>'; return; }
+    noticeCache = res.notices;
+    renderNotices();
+  });
+}
+
+function fmtDate(s){
+  if (!s) return '';
+  var d = new Date(s);
+  if (isNaN(d)) return s;
+  return (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+function renderNotices(){
+  var list = $('notice-list');
+  if (noticeCache.length === 0){ list.innerHTML = '<p class="msg-info">まだお知らせはありません。右下の＋から投稿できます。</p>'; return; }
+  list.innerHTML = noticeCache.map(function(n){
+    var targetBadge = n.targetCompanyId === '全社'
+      ? '<span class="notice-target">全社宛</span>'
+      : '<span class="notice-target private">'+n.targetName+'宛(個別)</span>';
+    return '<div class="notice-card'+(n.pinned?' pinned':'')+'">'
+      + '<div class="notice-top">'
+      +   '<div>' + targetBadge + '</div>'
+      +   '<button class="notice-pin-btn'+(n.pinned?' pinned':'')+'" data-id="'+n.id+'" title="固定表示切替">📌</button>'
+      + '</div>'
+      + '<p class="notice-title">'+escapeHtml(n.title)+'</p>'
+      + '<div class="notice-meta">'+escapeHtml(n.posterCompanyName)+' '+escapeHtml(n.posterName)+' / '+fmtDate(n.postedAt)+'</div>'
+      + '<div class="notice-body">'+escapeHtml(n.body)+'</div>'
+      + '</div>';
+  }).join('');
+
+  list.querySelectorAll('.notice-pin-btn').forEach(function(btn){
+    btn.onclick = function(){
+      callGas({ mode:'notice.pin', companyCode: session.companyCode, investigatorId: session.investigatorId, id: btn.getAttribute('data-id') })
+        .then(function(res){ if (res.ok) loadNotices(); else alert(res.error || '失敗しました'); });
+    };
+  });
+}
+
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+$('notice-new-btn').onclick = function(){
+  var sel = $('notice-target');
+  sel.innerHTML = '<option value="全社">全社宛</option>';
+  (calData ? calData.companies : []).forEach(function(c){
+    if (c.companyId === session.companyId) return;
+    var opt = document.createElement('option');
+    opt.value = c.companyId; opt.textContent = c.companyName + ' 宛（個別）';
+    sel.appendChild(opt);
+  });
+  $('notice-title').value = ''; $('notice-body').value = '';
+  $('notice-error').style.display = 'none';
+  showScreen('notice-form-screen');
+};
+$('notice-cancel-btn').onclick = function(){ showScreen('notice-screen'); };
+$('notice-post-btn').onclick = function(){
+  var title = $('notice-title').value.trim();
+  var text = $('notice-body').value.trim();
+  var target = $('notice-target').value;
+  var err = $('notice-error');
+  err.style.display = 'none';
+  if (!title || !text){ err.textContent = 'タイトルと本文を入力してください'; err.style.display='block'; return; }
+  callGas({
+    mode:'notice.post', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    targetCompanyId: target, title: title, body: text,
+  }).then(function(res){
+    if (!res.ok){ err.textContent = res.error || '投稿に失敗しました'; err.style.display='block'; return; }
+    showScreen('notice-screen');
+    loadNotices();
+  });
+};
 
 // ---- LINE連携 ----
 $('line-link-btn').onclick = openLineLink;

@@ -19,6 +19,9 @@ function doPost(e) {
     'schedule.set': scheduleSetIdempotent_,
     'line.linkStart': lineLinkStart_,
     'line.linkStatus': lineLinkStatus_,
+    'notice.list': noticeList_,
+    'notice.post': noticePostIdempotent_,
+    'notice.pin': noticeTogglePin_,
     'admin.setProp': adminSetProp_,
     'admin.getProps': adminGetProps_,
   };
@@ -60,6 +63,17 @@ function scheduleSetIdempotent_(body) {
     cache.put(cacheKey, '1', 21600);
   }
   return scheduleSet_(body);
+}
+
+function noticePostIdempotent_(body) {
+  var submitId = String(body.submitId || '');
+  if (submitId) {
+    var cache = CacheService.getScriptCache();
+    var cacheKey = 'notice:' + submitId;
+    if (cache.get(cacheKey)) return json_({ ok: true, dedup: true });
+    cache.put(cacheKey, '1', 21600);
+  }
+  return noticePost_(body);
 }
 
 function selfTest_() {

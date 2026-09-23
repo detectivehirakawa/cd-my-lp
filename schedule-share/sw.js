@@ -1,5 +1,5 @@
 // 最低限のオフラインシェル用サービスワーカー。GASへのAPI通信はキャッシュしない。
-const CACHE = 'schedshare-v1';
+const CACHE = 'schedshare-v2';
 const SHELL = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
