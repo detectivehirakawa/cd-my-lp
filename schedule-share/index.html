@@ -290,11 +290,86 @@
       <option value="完了">完了</option>
     </select>
   </div>
+  <div class="band c-work">🧑 対象者</div>
+  <div class="row-list" id="subject-list"></div>
+  <button class="btn-flat" id="subject-add-btn" style="margin:8px 14px;width:calc(100% - 28px);">＋ 対象者を追加</button>
+
+  <div class="band c-social">💬 やりとり</div>
   <div id="case-messages"></div>
   <div style="height:60px;"></div>
   <div class="composer">
     <textarea id="case-msg-input" placeholder="メッセージを入力"></textarea>
     <button class="btn-primary" id="case-msg-send" style="width:auto;">送信</button>
+  </div>
+</div>
+
+<!-- 対象者カルテ(表示) -->
+<div class="screen" id="subject-detail-screen">
+  <div class="subhead"><button class="home-btn" id="subject-detail-back">◀ 戻る</button><span class="title" id="subject-detail-title">対象者情報</span></div>
+  <div id="subject-detail-body"></div>
+  <div style="text-align:center;padding:14px;"><button id="subject-edit-btn" style="background:#5fb4ff;color:#fff;">✏️ 編集する</button></div>
+</div>
+
+<!-- 対象者カルテ(編集フォーム) -->
+<div class="screen" id="subject-form-screen">
+  <div class="subhead"><button class="home-btn" id="subject-form-back">◀ 戻る</button><span class="title">対象者情報の入力</span></div>
+  <div class="card">
+    <p class="msg-info" style="padding:0 0 6px;font-weight:700;">基本情報</p>
+    <input type="text" id="sf-氏名" placeholder="氏名（必須）">
+    <input type="text" id="sf-続柄" placeholder="続柄（ご依頼者様との関係性）">
+    <input type="text" id="sf-生年月日" placeholder="生年月日">
+    <input type="text" id="sf-年齢" placeholder="年齢">
+    <input type="text" id="sf-婚姻期間" placeholder="婚姻期間">
+    <select id="sf-居住状況">
+      <option value="">居住状況を選択</option>
+      <option value="同居">同居</option>
+      <option value="別居">別居</option>
+    </select>
+
+    <p class="msg-info" style="padding:6px 0;font-weight:700;">住所・家族</p>
+    <input type="text" id="sf-自宅住所" placeholder="自宅住所">
+    <input type="text" id="sf-別居先住所" placeholder="別居先住所">
+    <input type="text" id="sf-実家住所" placeholder="実家住所">
+    <input type="text" id="sf-家族構成" placeholder="家族構成">
+    <input type="text" id="sf-自宅駐車場" placeholder="自宅駐車場">
+
+    <p class="msg-info" style="padding:6px 0;font-weight:700;">勤務先</p>
+    <input type="text" id="sf-勤務先名称" placeholder="勤務先名称">
+    <input type="text" id="sf-勤務先業種" placeholder="勤務先業種">
+    <input type="text" id="sf-役職" placeholder="役職">
+    <input type="text" id="sf-勤務先住所" placeholder="勤務先住所">
+    <input type="text" id="sf-勤務先駐車場" placeholder="勤務先駐車場">
+    <input type="text" id="sf-通勤手段" placeholder="通勤手段">
+
+    <p class="msg-info" style="padding:6px 0;font-weight:700;">移動手段</p>
+    <input type="text" id="sf-普段の移動手段" placeholder="普段の移動手段">
+    <input type="text" id="sf-自転車情報" placeholder="自転車情報">
+    <input type="text" id="sf-バイク情報" placeholder="バイク情報">
+    <div id="vehicle-list"></div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;">
+      <input type="text" id="veh-maker" placeholder="メーカー" style="margin-bottom:0;">
+      <input type="text" id="veh-model" placeholder="車種" style="margin-bottom:0;">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <input type="text" id="veh-color" placeholder="色" style="margin-bottom:0;">
+      <input type="text" id="veh-plate" placeholder="ナンバー" style="margin-bottom:0;">
+    </div>
+    <button class="btn-flat" id="veh-add-btn" style="margin-bottom:12px;">＋ 車両を追加（複数台登録可）</button>
+
+    <p class="msg-info" style="padding:6px 0;font-weight:700;">身体的特徴</p>
+    <input type="text" id="sf-身長" placeholder="身長">
+    <input type="text" id="sf-体型" placeholder="体型">
+    <input type="text" id="sf-髪型" placeholder="髪型">
+    <input type="text" id="sf-メガネ" placeholder="メガネ（あり/なし）">
+    <input type="text" id="sf-マスク" placeholder="マスク（あり/なし）">
+    <input type="text" id="sf-帽子" placeholder="帽子（あり/なし）">
+    <input type="text" id="sf-喫煙" placeholder="喫煙の有無">
+    <input type="text" id="sf-指輪" placeholder="指輪の有無">
+    <input type="text" id="sf-携帯色" placeholder="携帯色">
+    <textarea id="sf-その他情報" rows="3" placeholder="その他情報"></textarea>
+
+    <div class="msg-error" id="subject-form-error" style="display:none;"></div>
+    <button class="btn-primary" id="subject-save-btn">保存する</button>
   </div>
 </div>
 
@@ -753,6 +828,7 @@ function openCaseDetail(caseId){
     $('case-status-select').value = res.status;
     renderCaseMessages(res.messages);
   });
+  loadSubjectList(caseId);
 }
 function renderCaseMessages(messages){
   var box = $('case-messages');
@@ -781,6 +857,132 @@ $('case-msg-send').onclick = function(){
     if (!res.ok){ alert(res.error || '送信に失敗しました'); return; }
     input.value = '';
     openCaseDetail(currentCaseId);
+  });
+};
+
+// ---- 対象者カルテ ----
+var SUBJECT_FIELDS = [
+  '氏名','生年月日','年齢','婚姻期間','居住状況','続柄',
+  '自宅住所','家族構成','自宅駐車場','別居先住所',
+  '勤務先名称','勤務先業種','役職','勤務先住所','勤務先駐車場','通勤手段',
+  '自転車情報','バイク情報','普段の移動手段','実家住所',
+  '身長','体型','髪型','メガネ','マスク','帽子','喫煙','指輪','携帯色','その他情報',
+];
+var ADDRESS_FIELDS = ['自宅住所','別居先住所','実家住所','勤務先住所'];
+var currentSubjectId = null;
+
+function mapLink(address){
+  if (!address) return '';
+  return ' <a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(address)+'" target="_blank">📍地図で見る</a>';
+}
+
+function loadSubjectList(caseId){
+  callGas({ mode:'subject.list', companyCode: session.companyCode, investigatorId: session.investigatorId, caseId: caseId }).then(function(res){
+    var box = $('subject-list');
+    if (!res.ok){ box.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    box.innerHTML = res.subjects.length ? res.subjects.map(function(s){
+      var label = s.order === 1 ? '第一対象者' : '第' + (s.order===2?'二':s.order===3?'三':s.order) + '対象者';
+      return '<div class="row-item link" data-id="'+s.id+'"><span class="ico">🧑</span>'
+        + '<span class="lbl">'+label+'：'+escapeHtml(s['氏名'])+(s['続柄']?'（'+escapeHtml(s['続柄'])+'）':'')+'</span></div>';
+    }).join('') : '<p class="msg-info">まだ対象者は登録されていません</p>';
+    box.querySelectorAll('[data-id]').forEach(function(el){
+      el.onclick = function(){ showScreen('subject-detail-screen'); openSubjectDetail(el.getAttribute('data-id')); };
+    });
+  });
+}
+$('subject-add-btn').onclick = function(){
+  currentSubjectId = null;
+  SUBJECT_FIELDS.forEach(function(f){ var el = $('sf-'+f); if (el) el.value = ''; });
+  $('vehicle-list').innerHTML = '<p class="msg-info">対象者を保存すると車両を追加できます</p>';
+  $('subject-form-error').style.display = 'none';
+  $('subject-form-back').onclick = function(){ showScreen('case-detail-screen'); };
+  showScreen('subject-form-screen');
+};
+
+function openSubjectDetail(subjectId){
+  callGas({ mode:'subject.get', companyCode: session.companyCode, investigatorId: session.investigatorId, subjectId: subjectId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    currentSubjectId = subjectId;
+    $('subject-detail-title').textContent = escapeHtml(res['氏名']) + 'さんの情報';
+    var rows = SUBJECT_FIELDS.map(function(f){
+      if (!res[f]) return '';
+      var val = escapeHtml(res[f]) + (ADDRESS_FIELDS.indexOf(f) !== -1 ? mapLink(res[f]) : '');
+      return '<div class="row-item"><span class="lbl" style="flex:none;width:110px;color:#888;">'+f+'</span><span class="lbl">'+val+'</span></div>';
+    }).join('');
+    var vehicles = res.vehicles.length ? res.vehicles.map(function(v){
+      return '<div class="row-item"><span class="ico">🚗</span><span class="lbl">'+escapeHtml(v.maker)+' '+escapeHtml(v.model)+' '+escapeHtml(v.color)+' '+escapeHtml(v.plate)+'</span>'
+        + '<button data-vehremove="'+v.id+'" style="background:#eee;">削除</button></div>';
+    }).join('') : '';
+    $('subject-detail-body').innerHTML = '<div class="row-list">' + rows + '</div>'
+      + (vehicles ? '<div class="band c-work">🚗 車両</div><div class="row-list">'+vehicles+'</div>' : '');
+    $('subject-detail-body').querySelectorAll('[data-vehremove]').forEach(function(b){
+      b.onclick = function(){
+        callGas({ mode:'vehicle.remove', companyCode: session.companyCode, investigatorId: session.investigatorId, vehicleId: b.getAttribute('data-vehremove') })
+          .then(function(r){ if (r.ok) openSubjectDetail(subjectId); else alert(r.error); });
+      };
+    });
+  });
+}
+$('subject-detail-back').onclick = function(){ showScreen('case-detail-screen'); loadSubjectList(currentCaseId); };
+$('subject-edit-btn').onclick = function(){
+  callGas({ mode:'subject.get', companyCode: session.companyCode, investigatorId: session.investigatorId, subjectId: currentSubjectId }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    SUBJECT_FIELDS.forEach(function(f){ var el = $('sf-'+f); if (el) el.value = res[f] || ''; });
+    renderVehiclePicker(res.vehicles);
+    $('subject-form-error').style.display = 'none';
+    $('subject-form-back').onclick = function(){ showScreen('subject-detail-screen'); openSubjectDetail(currentSubjectId); };
+    showScreen('subject-form-screen');
+  });
+};
+function renderVehiclePicker(vehicles){
+  var box = $('vehicle-list');
+  box.innerHTML = (vehicles && vehicles.length) ? vehicles.map(function(v){
+    return '<div class="row-item"><span class="ico">🚗</span><span class="lbl">'+escapeHtml(v.maker)+' '+escapeHtml(v.model)+' '+escapeHtml(v.color)+' '+escapeHtml(v.plate)+'</span>'
+      + '<button data-vehremove2="'+v.id+'" style="background:#eee;">削除</button></div>';
+  }).join('') : '<p class="msg-info">まだ車両は登録されていません</p>';
+  box.querySelectorAll('[data-vehremove2]').forEach(function(b){
+    b.onclick = function(){
+      callGas({ mode:'vehicle.remove', companyCode: session.companyCode, investigatorId: session.investigatorId, vehicleId: b.getAttribute('data-vehremove2') })
+        .then(function(r){ if (r.ok) refreshVehiclePicker(); else alert(r.error); });
+    };
+  });
+}
+function refreshVehiclePicker(){
+  if (!currentSubjectId) return;
+  callGas({ mode:'subject.get', companyCode: session.companyCode, investigatorId: session.investigatorId, subjectId: currentSubjectId })
+    .then(function(res){ if (res.ok) renderVehiclePicker(res.vehicles); });
+}
+$('veh-add-btn').onclick = function(){
+  if (!currentSubjectId){ alert('先に「保存する」を押して対象者を登録してください'); return; }
+  var maker = $('veh-maker').value.trim(), model = $('veh-model').value.trim();
+  if (!maker && !model){ alert('メーカーか車種を入力してください'); return; }
+  callGas({
+    mode:'vehicle.add', submitId: newId(), companyCode: session.companyCode, investigatorId: session.investigatorId,
+    subjectId: currentSubjectId, maker: maker, model: model,
+    color: $('veh-color').value.trim(), plate: $('veh-plate').value.trim(),
+  }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    $('veh-maker').value=''; $('veh-model').value=''; $('veh-color').value=''; $('veh-plate').value='';
+    refreshVehiclePicker();
+  });
+};
+$('subject-save-btn').onclick = function(){
+  var err = $('subject-form-error');
+  err.style.display = 'none';
+  var name = $('sf-氏名').value.trim();
+  if (!name){ err.textContent = '氏名を入力してください'; err.style.display='block'; return; }
+  var payload = {
+    mode:'subject.save', submitId: newId(), companyCode: session.companyCode, investigatorId: session.investigatorId,
+    caseId: currentCaseId, subjectId: currentSubjectId || undefined,
+  };
+  SUBJECT_FIELDS.forEach(function(f){ var el = $('sf-'+f); if (el) payload[f] = el.value.trim(); });
+  callGas(payload).then(function(res){
+    if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
+    var isNewSubject = !currentSubjectId;
+    currentSubjectId = res.id;
+    if (isNewSubject) renderVehiclePicker([]);
+    alert('保存しました');
+    loadSubjectList(currentCaseId);
   });
 };
 
