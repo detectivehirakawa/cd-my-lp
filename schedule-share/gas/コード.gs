@@ -1,7 +1,7 @@
 // コード.gs — doGet/doPostの入口・ルーティング
 
 var SHARED_KEY = 'schedshare';
-var VERSION = '2026-09-23a';
+var VERSION = '2026-09-24a';
 
 function doPost(e) {
   var body = {};
@@ -16,12 +16,20 @@ function doPost(e) {
     'session.start': sessionStart_,
     'session.pickName': sessionPickName_,
     'calendar.get': calendarGet_,
-    'schedule.set': scheduleSetIdempotent_,
+    'schedule.set': idempotent_('sched', scheduleSet_),
     'line.linkStart': lineLinkStart_,
     'line.linkStatus': lineLinkStatus_,
-    'notice.list': noticeList_,
-    'notice.post': noticePostIdempotent_,
-    'notice.pin': noticeTogglePin_,
+    'case.list': caseList_,
+    'case.create': idempotent_('case', caseCreate_),
+    'case.claim': caseClaim_,
+    'case.get': caseGet_,
+    'case.message.post': idempotent_('cmsg', caseMessagePost_),
+    'case.updateStatus': caseUpdateStatus_,
+    'case.expenseSubmitted': caseMarkExpenseSubmitted_,
+    'feed.recent': feedRecent_,
+    'member.requestCode': memberRequestCode_,
+    'member.verify': memberVerify_,
+    'member.setName': memberSetName_,
     'admin.setProp': adminSetProp_,
     'admin.getProps': adminGetProps_,
   };
@@ -54,26 +62,17 @@ function throttleOk_() {
   return n <= 10; // 1秒あたり10リクエストまで
 }
 
-function scheduleSetIdempotent_(body) {
-  var submitId = String(body.submitId || '');
-  if (submitId) {
+// submitIdがあれば21600秒だけ結果をキャッシュし、二重送信を無害化する
+function idempotent_(prefix, fn) {
+  return function (body) {
+    var submitId = String(body.submitId || '');
+    if (!submitId) return fn(body);
     var cache = CacheService.getScriptCache();
-    var cacheKey = 'sched:' + submitId;
+    var cacheKey = prefix + ':' + submitId;
     if (cache.get(cacheKey)) return json_({ ok: true, dedup: true });
     cache.put(cacheKey, '1', 21600);
-  }
-  return scheduleSet_(body);
-}
-
-function noticePostIdempotent_(body) {
-  var submitId = String(body.submitId || '');
-  if (submitId) {
-    var cache = CacheService.getScriptCache();
-    var cacheKey = 'notice:' + submitId;
-    if (cache.get(cacheKey)) return json_({ ok: true, dedup: true });
-    cache.put(cacheKey, '1', 21600);
-  }
-  return noticePost_(body);
+    return fn(body);
+  };
 }
 
 function selfTest_() {

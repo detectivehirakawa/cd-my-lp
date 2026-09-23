@@ -4,94 +4,147 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>調査員スケジュール共有</title>
+<title>タンテーTOWN</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f6fd6">
+<meta name="theme-color" content="#ff4fae">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="スケジュール共有">
+<meta name="apple-mobile-web-app-title" content="タンテーTOWN">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
   :root{
-    --bg:#f4f6f8; --ink:#1f2937; --line:#d6dbe1;
-    --free:#d9f2df; --free-b:#34a35a;
-    --fixed:#dbe9fb; --fixed-b:#2f6fd6;
-    --busy:#eceff1; --busy-b:#8a95a1;
-    --accent:#2f6fd6;
+    --bg:#e7edf6; --ink:#1f2937; --line:#cdd7e6;
+    --free:#d9f2df; --fixed:#dbe9fb; --busy:#eceff1;
+    --link:#1a56db;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);}
-  .screen{display:none;padding:20px 16px 80px;max-width:480px;margin:0 auto;}
+  .screen{display:none;max-width:520px;margin:0 auto;padding-bottom:40px;}
   .screen.active{display:block;}
-  h1{font-size:18px;margin:8px 0 20px;}
-  .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
-  input[type=text]{width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;}
-  button{font-size:15px;padding:12px 16px;border-radius:8px;border:none;cursor:pointer;}
-  .btn-main{background:var(--accent);color:#fff;width:100%;}
-  .btn-main:disabled{opacity:.5;}
-  .btn-list{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);margin-bottom:8px;}
-  .btn-list:active{background:#eef2f7;}
-  .msg-error{color:#c0392b;font-size:13px;margin:-4px 0 12px;}
-  .msg-info{color:#555;font-size:13px;margin-top:8px;}
+  a{color:var(--link);}
+  button{font-size:14px;padding:10px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;}
 
-  /* カレンダー画面 */
-  #cal-screen{max-width:100%;padding:0;}
-  .cal-header{position:sticky;top:0;background:var(--bg);z-index:5;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);}
-  .cal-header button{background:#fff;border:1px solid var(--line);padding:6px 10px;}
-  .line-banner{background:#fff6e0;border:1px solid #e8c766;border-radius:8px;margin:10px 12px;padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
-  .line-banner button{background:#06c755;color:#fff;white-space:nowrap;}
-  .cal-scroll{overflow-x:auto;padding:0 12px 20px;}
-  .cal-grid{border-collapse:collapse;font-size:12px;background:#fff;}
+  /* ---- レトロ共通パーツ ---- */
+  .promo-strip{background:linear-gradient(90deg,#ff7ec9,#ff4fae);color:#fff;font-size:11px;text-align:center;padding:4px 6px;}
+  .town-logo{text-align:center;padding:16px 0 4px;background:#fff;}
+  .town-logo .bubble{font-size:32px;font-weight:900;letter-spacing:1px;}
+  .town-logo .bubble span{display:inline-block;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff,2px 3px 0 rgba(0,0,0,.18);}
+  .town-logo .bubble span:nth-child(1){color:#ff4fae;}
+  .town-logo .bubble span:nth-child(2){color:#ff9a3d;}
+  .town-logo .bubble span:nth-child(3){color:#3dbb6a;}
+  .town-logo .bubble span:nth-child(4){color:#3d9bff;}
+  .town-logo .bubble span:nth-child(5){color:#a35fff;}
+  .town-logo .bubble span:nth-child(6){color:#ff4fae;}
+  .town-logo .bubble span:nth-child(7){color:#ff9a3d;}
+  .town-logo .bubble span:nth-child(8){color:#3dbb6a;}
+  .town-logo .sub{font-size:11px;color:#999;margin-top:4px;}
+  .logo-links{display:flex;justify-content:center;gap:18px;padding:8px 0 12px;background:#fff;font-size:12px;border-bottom:3px solid #dde4ee;}
+  .logo-links a{text-decoration:none;font-weight:600;}
+
+  .band{color:#fff;font-weight:700;font-size:13px;padding:8px 16px;margin:14px 0 0;
+    text-shadow:0 1px 1px rgba(0,0,0,.25);clip-path:polygon(0 0,100% 0,98% 100%,2% 100%);}
+  .band.c-info{background:linear-gradient(#ff9a4d,#ff5e2d);}
+  .band.c-work{background:linear-gradient(#5fb4ff,#2f6fd6);}
+  .band.c-social{background:linear-gradient(#6fd68a,#2e9e5b);}
+  .band.c-setting{background:linear-gradient(#ff9ecf,#ff5fae);}
+
+  .row-list{background:#fff;}
+  .row-item{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px dotted var(--line);font-size:13px;}
+  .row-item:nth-child(even){background:#f5f9fd;}
+  .row-item .ico{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+  .row-item .lbl{color:var(--link);font-weight:700;text-decoration:none;flex:1;}
+  .row-item .sub{color:#999;font-size:11px;white-space:nowrap;}
+  .row-item.link{cursor:pointer;}
+  .row-item.link:active{background:#e9f0fb;}
+  .more-link{display:block;text-align:right;padding:8px 16px;background:#fff;font-size:12px;border-top:1px dotted var(--line);}
+
+  .subhead{display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff;font-weight:700;font-size:14px;
+    background:linear-gradient(#5fb4ff,#2f6fd6);text-shadow:0 1px 1px rgba(0,0,0,.25);position:sticky;top:0;z-index:5;}
+  .subhead button.home-btn{background:rgba(255,255,255,.25);color:#fff;padding:4px 10px;font-size:13px;border:1px solid rgba(255,255,255,.5);}
+  .subhead .title{flex:1;}
+
+  .card{background:#fff;margin:14px;border:1px solid var(--line);border-radius:8px;padding:16px;}
+  h1{font-size:16px;margin:0 0 14px;}
+  input[type=text],textarea,select{width:100%;padding:10px;font-size:14px;border:1px solid #a9b8cc;border-radius:4px;
+    background:#fff;box-shadow:inset 0 1px 2px rgba(0,0,0,.08);margin-bottom:12px;font-family:inherit;}
+  textarea{resize:vertical;}
+  .btn-primary{background:linear-gradient(#ff8a3d,#ff6a1f);color:#fff;border:1px solid #d9531a;border-radius:6px;
+    font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.25);box-shadow:0 2px 0 #c94d16;width:100%;padding:12px;}
+  .btn-primary:active{box-shadow:none;transform:translateY(2px);}
+  .btn-flat{width:100%;background:#fff;border:1px solid var(--line);margin-top:8px;padding:10px;}
+  .btn-list{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);margin-bottom:6px;padding:10px;}
+  .btn-list:active{background:#eef2f7;}
+  .msg-error{color:#c0392b;font-size:12px;margin:-4px 0 12px;}
+  .msg-info{color:#777;font-size:12px;padding:14px;}
+
+  /* ---- マイページ ---- */
+  .myp-topbar{background:linear-gradient(#1a2c52,#0d1b3e);color:#fff;padding:10px 14px;font-size:11px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .myp-profile{background:#fff;padding:16px;display:flex;gap:14px;align-items:center;border-bottom:3px solid #dde4ee;}
+  .myp-avatar{font-size:42px;}
+  .myp-name{font-weight:700;font-size:15px;}
+  .myp-name small{display:block;color:#888;font-weight:400;font-size:11px;margin-top:2px;}
+  .myp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#dbe3ee;}
+  .myp-grid button{background:#fff;border:none;padding:16px 12px;text-align:left;font-size:13px;color:var(--link);
+    font-weight:700;display:flex;align-items:center;gap:8px;border-radius:0;}
+  .myp-grid button .ico{font-size:20px;}
+  .myp-callout{margin:14px;background:#fff9e0;border:1px solid #f0d878;border-radius:6px;padding:12px 14px;font-size:12px;}
+  .myp-callout .num{font-weight:700;font-size:15px;}
+
+  /* ---- 案件・お知らせ ---- */
+  .case-status{display:inline-block;font-size:10px;padding:2px 7px;border-radius:9px;color:#fff;margin-left:6px;}
+  .case-status.募集中{background:#e0303f;}
+  .case-status.進行中{background:#2f6fd6;}
+  .case-status.完了{background:#8a95a1;}
+  .case-status.保留{background:#e8a92a;}
+  .claim-btn{width:100%;background:linear-gradient(#ff5a5a,#e0303f);color:#fff;border:1px solid #b91f2c;
+    border-radius:6px;font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.25);box-shadow:0 2px 0 #9c1a25;padding:10px;margin:10px 14px;}
+  .claim-btn:active{box-shadow:none;transform:translateY(2px);}
+  .home-alert{margin:12px 14px 0;padding:10px 12px;border-radius:8px;font-size:12px;font-weight:700;color:#fff;
+    background:linear-gradient(#ff6a6a,#e0303f);box-shadow:0 2px 4px rgba(0,0,0,.15);}
+  .home-alert.info{background:linear-gradient(#5fb4ff,#2f6fd6);}
+  .home-alert.warn{background:linear-gradient(#ffb84d,#e88a1f);}
+  .msg-bubble{margin:10px 14px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+  .msg-bubble.mine{background:#eaf3ff;}
+  .msg-meta{font-size:11px;color:#888;margin-bottom:4px;}
+  .msg-body{font-size:14px;white-space:pre-wrap;line-height:1.5;}
+  .composer{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:8px;display:flex;gap:6px;}
+  .composer textarea{flex:1;margin-bottom:0;height:38px;}
+  .composer button{flex-shrink:0;}
+  .fab{position:fixed;right:16px;bottom:16px;width:52px;height:52px;border-radius:50%;
+    background:linear-gradient(#ff8a3d,#ff6a1f);color:#fff;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.25);z-index:20;
+    border:1px solid #d9531a;}
+
+  /* ---- カレンダー ---- */
+  .cal-monthbar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line);}
+  .cal-monthbar button{background:#eef1f5;border:1px solid var(--line);padding:5px 10px;}
+  .cal-scroll{overflow-x:auto;padding:0 0 20px;}
+  .cal-grid{border-collapse:collapse;font-size:12px;background:#fff;width:100%;}
   .cal-grid th,.cal-grid td{border:1px solid var(--line);padding:0;text-align:center;}
   .cal-grid th{background:#eef1f5;padding:6px 2px;font-weight:600;position:sticky;top:0;}
-  .name-col{position:sticky;left:0;background:#fff;z-index:2;text-align:left;padding:6px 8px;white-space:nowrap;min-width:110px;}
+  .name-col{position:sticky;left:0;background:#fff;z-index:2;text-align:left;padding:6px 8px;white-space:nowrap;min-width:100px;}
   th.name-col{background:#eef1f5;z-index:6;}
-  .company-row td{background:#e3ebf7;font-weight:700;text-align:left;padding:6px 8px;}
-  .day-col{width:34px;height:34px;}
-  .cell{width:34px;height:34px;cursor:pointer;position:relative;}
+  .company-row td{background:#dfe9f8;font-weight:700;text-align:left;padding:5px 8px;font-size:11px;}
+  .day-col{width:32px;height:32px;}
+  .cell{width:32px;height:32px;cursor:pointer;position:relative;}
   .cell.st-空き{background:var(--free);}
   .cell.st-確定{background:var(--fixed);}
   .cell.st-不可{background:var(--busy);}
   .cell .memo-dot{position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:#c0392b;}
   .weekend{background:#fbeaea;}
-  .legend{display:flex;gap:14px;padding:0 12px 10px;font-size:12px;flex-wrap:wrap;}
+  .legend{display:flex;gap:10px;padding:8px 12px;font-size:11px;flex-wrap:wrap;background:#fff;}
   .legend span{display:inline-flex;align-items:center;gap:4px;}
-  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
-  .switch-user{text-align:center;padding:16px;font-size:13px;color:#555;}
-  .switch-user a{color:var(--accent);}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block;}
 
-  /* 共通ナビ */
-  #app-nav{display:none;position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid var(--line);}
-  #app-nav.show{display:flex;}
-  #app-nav button{flex:1;background:#fff;border:none;border-radius:0;padding:12px 0;font-weight:600;color:#888;position:relative;}
-  #app-nav button.active{color:var(--accent);}
-  #app-nav button.active::after{content:'';position:absolute;left:20%;right:20%;bottom:0;height:3px;background:var(--accent);border-radius:2px;}
-  #app-nav .badge{display:inline-block;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#c0392b;color:#fff;font-size:10px;line-height:16px;margin-left:4px;}
-
-  /* お知らせ画面 */
-  #notice-screen{max-width:520px;}
-  .notice-card{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-  .notice-card.pinned{border-left:4px solid #e8a92a;}
-  .notice-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
-  .notice-title{font-weight:700;font-size:15px;margin:0 0 4px;}
-  .notice-meta{font-size:12px;color:#888;margin-bottom:8px;}
-  .notice-target{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#eef1f5;color:#555;margin-right:6px;}
-  .notice-target.private{background:#fdecea;color:#c0392b;}
-  .notice-body{font-size:14px;white-space:pre-wrap;line-height:1.5;}
-  .notice-pin-btn{background:none;border:none;font-size:18px;padding:2px 4px;color:#ccc;}
-  .notice-pin-btn.pinned{color:#e8a92a;}
-  .notice-fab{position:fixed;right:16px;bottom:70px;width:52px;height:52px;border-radius:50%;background:var(--accent);
-    color:#fff;font-size:26px;box-shadow:0 4px 10px rgba(0,0,0,.25);z-index:20;}
-  textarea{width:100%;padding:12px;font-size:15px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;
-    font-family:inherit;resize:vertical;}
-  select{width:100%;padding:12px;font-size:15px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;}
+  .line-banner{background:#fff6e0;border:1px solid #e8c766;border-radius:8px;margin:10px 12px;padding:10px 12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .line-banner button{background:#06c755;color:#fff;white-space:nowrap;}
 
   #install-banner{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid var(--line);
     border-radius:12px;padding:12px 14px;box-shadow:0 4px 14px rgba(0,0,0,.15);font-size:13px;z-index:50;display:none;}
   #install-banner.show{display:block;}
   #install-banner .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  #install-banner button.install-ok{background:var(--accent);color:#fff;white-space:nowrap;}
+  #install-banner button.install-ok{background:var(--link);color:#fff;white-space:nowrap;}
   #install-banner button.install-close{background:none;border:none;color:#888;font-size:18px;padding:0 4px;}
 </style>
 </head>
@@ -106,89 +159,214 @@
   </div>
 </div>
 
-<!-- 共通ナビ(ログイン後に表示) -->
-<div id="app-nav">
-  <button data-nav="cal-screen" class="active">📅 カレンダー</button>
-  <button data-nav="notice-screen">📢 お知らせ<span class="badge" id="notice-badge" style="display:none;"></span></button>
-</div>
-
 <!-- 1. 会社コード入力 -->
 <div class="screen active" id="code-screen">
+  <div class="promo-strip">たんてい業をもっと便利に、みんなでつながる情報共有サイト</div>
+  <div class="town-logo">
+    <div class="bubble"><span>タ</span><span>ン</span><span>テ</span><span>ー</span><span>T</span><span>O</span><span>W</span><span>N</span></div>
+    <div class="sub">detective-town</div>
+  </div>
   <div class="card">
-    <h1>調査員スケジュール共有</h1>
+    <h1>会社コードを入力してください</h1>
     <div class="msg-error" id="code-error" style="display:none;"></div>
-    <input type="text" id="code-input" placeholder="会社コードを入力" inputmode="latin" autocomplete="off">
-    <button class="btn-main" id="code-submit">進む</button>
+    <input type="text" id="code-input" placeholder="会社コード" inputmode="latin" autocomplete="off">
+    <button class="btn-primary" id="code-submit">つぎへ ▶</button>
+    <div style="text-align:center;margin-top:10px;"><a href="#" data-go="email-screen">メールアドレスで会員登録する場合はこちら</a></div>
+  </div>
+</div>
+
+<!-- 会員登録: メールアドレス入力 -->
+<div class="screen" id="email-screen">
+  <div class="subhead"><button class="home-btn" data-go="code-screen">◀ 戻る</button><span class="title">メールアドレスで登録</span></div>
+  <div class="card">
+    <h1>メールアドレスを入力してください</h1>
+    <div class="msg-error" id="email-error" style="display:none;"></div>
+    <input type="text" id="email-input" placeholder="メールアドレス" autocomplete="off" inputmode="email">
+    <button class="btn-primary" id="email-submit">確認コードを送る</button>
+  </div>
+</div>
+
+<!-- 会員登録: 確認コード入力 -->
+<div class="screen" id="email-code-screen">
+  <div class="subhead"><button class="home-btn" data-go="email-screen">◀ 戻る</button><span class="title">確認コード入力</span></div>
+  <div class="card">
+    <h1>メールに送った6桁のコードを入力してください</h1>
+    <div class="msg-error" id="email-code-error" style="display:none;"></div>
+    <input type="text" id="email-code-input" placeholder="確認コード（6桁）" autocomplete="off" inputmode="numeric">
+    <button class="btn-primary" id="email-code-submit">確認する</button>
+    <button class="btn-flat" id="email-code-resend">コードを再送する</button>
+  </div>
+</div>
+
+<!-- 会員登録: 氏名入力(初回のみ) -->
+<div class="screen" id="member-name-screen">
+  <div class="subhead"><span class="title">お名前を入力してください</span></div>
+  <div class="card">
+    <div class="msg-error" id="member-name-error" style="display:none;"></div>
+    <input type="text" id="member-name-input" placeholder="氏名" autocomplete="off">
+    <button class="btn-primary" id="member-name-submit">マイページを作る</button>
+  </div>
+</div>
+
+<!-- 会員マイページ(たたき台) -->
+<div class="screen" id="member-home-screen">
+  <div class="myp-topbar"><span>タンテーTOWN マイページ</span><span id="member-logout-link" style="cursor:pointer;text-decoration:underline;">ログアウト</span></div>
+  <div class="myp-profile">
+    <div class="myp-avatar">🕵️</div>
+    <div class="myp-name"><span id="member-home-name"></span><small id="member-home-email"></small></div>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;color:#777;">ようこそ！これは会員登録のたたき台です。会社・案件・カレンダーとの連携は今後追加していきます。</p>
   </div>
 </div>
 
 <!-- 2. 氏名選択 -->
 <div class="screen" id="name-screen">
+  <div class="subhead"><span class="title" id="name-company"></span></div>
   <div class="card">
-    <h1 id="name-company"></h1>
+    <h1>あなたの名前を選んでください</h1>
     <div id="name-list"></div>
-    <div class="msg-info">名前が無い場合は、下に入力して登録してください。</div>
-    <input type="text" id="name-input" placeholder="氏名を入力" autocomplete="off" style="margin-top:8px;">
-    <button class="btn-main" id="name-submit">この名前で始める</button>
+    <div class="msg-info" style="padding:8px 0;">名前が無い場合は、下に入力して登録してください。</div>
+    <input type="text" id="name-input" placeholder="氏名を入力" autocomplete="off">
+    <button class="btn-primary" id="name-submit">この名前で始める</button>
     <div class="msg-error" id="name-error" style="display:none;"></div>
   </div>
 </div>
 
-<!-- 3. カレンダー -->
-<div class="screen" id="cal-screen">
-  <div class="cal-header">
-    <button id="prev-month">◀ 前月</button>
-    <div id="month-label" style="font-weight:700;"></div>
-    <button id="next-month">次月 ▶</button>
+<!-- 3. トップページ -->
+<div class="screen" id="home-screen">
+  <div class="promo-strip" id="home-promo">タンテーTOWNへようこそ</div>
+  <div class="town-logo">
+    <div class="bubble"><span>タ</span><span>ン</span><span>テ</span><span>ー</span><span>T</span><span>O</span><span>W</span><span>N</span></div>
   </div>
+  <div class="logo-links">
+    <a href="#" data-go="mypage-screen">🏠マイページへ</a>
+  </div>
+
+  <div id="home-alerts"></div>
+
+  <div class="band c-info">📌 新着情報</div>
+  <div class="row-list" id="home-feed-list"></div>
+  <div class="more-link"><a href="#" data-go="feed-screen">お知らせ一覧 ▶</a></div>
+
+  <div class="band c-work">💼 しごとをする</div>
+  <div class="row-list">
+    <div class="row-item link" data-go="case-list-screen"><span class="ico">📁</span><span class="lbl">案件一覧</span></div>
+    <div class="row-item link" data-go="cal-screen"><span class="ico">📅</span><span class="lbl">スケジュールカレンダー</span></div>
+  </div>
+
+  <div class="band c-social">🤝 つながろう</div>
+  <div class="row-list">
+    <div class="row-item link" data-go="feed-screen"><span class="ico">📢</span><span class="lbl">お知らせ</span></div>
+    <div class="row-item link" data-go="mypage-screen"><span class="ico">👤</span><span class="lbl">マイページ</span></div>
+  </div>
+</div>
+
+<!-- 4. 案件一覧 -->
+<div class="screen" id="case-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">📁 案件一覧</span></div>
+  <div class="row-list" id="case-list"></div>
+  <button class="fab" id="case-new-btn">＋</button>
+</div>
+
+<!-- 5. 案件作成 -->
+<div class="screen" id="case-form-screen">
+  <div class="subhead"><button class="home-btn" data-go="case-list-screen">◀ 戻る</button><span class="title">案件を作成</span></div>
+  <div class="card">
+    <input type="text" id="case-title" placeholder="案件名（80文字以内）" autocomplete="off">
+    <select id="case-partner"></select>
+    <textarea id="case-memo" rows="3" placeholder="備考（任意）"></textarea>
+    <div class="msg-error" id="case-form-error" style="display:none;"></div>
+    <button class="btn-primary" id="case-create-btn">作成する</button>
+  </div>
+</div>
+
+<!-- 6. 案件詳細 -->
+<div class="screen" id="case-detail-screen">
+  <div class="subhead">
+    <button class="home-btn" data-go="case-list-screen">◀ 戻る</button>
+    <span class="title" id="case-detail-title"></span>
+  </div>
+  <div style="background:#fff;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;display:flex;align-items:center;gap:8px;">
+    相手会社: <b id="case-detail-partner"></b>
+    <select id="case-status-select" style="width:auto;margin:0 0 0 auto;padding:4px 8px;">
+      <option value="進行中">進行中</option>
+      <option value="保留">保留</option>
+      <option value="完了">完了</option>
+    </select>
+  </div>
+  <div id="case-messages"></div>
+  <div style="height:60px;"></div>
+  <div class="composer">
+    <textarea id="case-msg-input" placeholder="メッセージを入力"></textarea>
+    <button class="btn-primary" id="case-msg-send" style="width:auto;">送信</button>
+  </div>
+</div>
+
+<!-- 7. お知らせ一覧 -->
+<div class="screen" id="feed-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">📢 お知らせ</span></div>
+  <div class="row-list" id="feed-list"></div>
+</div>
+
+<!-- 8. マイページ -->
+<div class="screen" id="mypage-screen">
+  <div class="myp-topbar"><span>タンテーTOWN マイページ</span><span id="myp-switch-link" style="cursor:pointer;text-decoration:underline;">切り替え</span></div>
+  <div class="myp-profile">
+    <div class="myp-avatar">🕵️</div>
+    <div class="myp-name"><span id="myp-name"></span><small id="myp-company"></small></div>
+  </div>
+  <div class="myp-grid">
+    <button data-go="cal-screen"><span class="ico">📅</span>カレンダー</button>
+    <button data-go="case-list-screen"><span class="ico">📁</span>案件一覧</button>
+    <button data-go="feed-screen"><span class="ico">📢</span>お知らせ</button>
+    <button id="myp-switch-btn"><span class="ico">🔁</span>切り替え</button>
+  </div>
+  <div class="myp-callout">
+    今月の予定：
+    <span class="num" id="myp-free">0</span>空き /
+    <span class="num" id="myp-fixed">0</span>確定 /
+    <span class="num" id="myp-busy">0</span>不可
+  </div>
+  <div class="band c-info">💼 最近の案件</div>
+  <div class="row-list" id="myp-recent-cases"></div>
+  <div style="text-align:center;padding:16px;">
+    <button class="home-btn" data-go="home-screen" style="background:#5fb4ff;color:#fff;">🏠 トップへ戻る</button>
+  </div>
+</div>
+
+<!-- 9. カレンダー -->
+<div class="screen" id="cal-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">📅 スケジュールカレンダー</span></div>
   <div class="line-banner" id="line-banner" style="display:none;">
     <span>LINE通知を受け取ると予定確定をすぐ確認できます</span>
     <button id="line-link-btn">LINE連携する</button>
+  </div>
+  <div class="cal-monthbar">
+    <button id="prev-month">◀ 前月</button>
+    <div id="month-label" style="font-weight:700;font-size:13px;"></div>
+    <button id="next-month">次月 ▶</button>
   </div>
   <div class="legend">
     <span><i style="background:var(--free);"></i>空き</span>
     <span><i style="background:var(--fixed);"></i>確定</span>
     <span><i style="background:var(--busy);"></i>不可</span>
-    <span>セルをタップで状態を切替、長押し/ダブルタップでメモ</span>
+    <span>セルをタップで切替 / 長押しでメモ</span>
   </div>
   <div class="cal-scroll">
     <table class="cal-grid" id="cal-table"></table>
-  </div>
-  <div class="switch-user">現在: <b id="cur-user"></b> / <a href="#" id="switch-user">別の人に切り替える</a></div>
-</div>
-
-<!-- 4. お知らせ一覧 -->
-<div class="screen" id="notice-screen">
-  <div style="padding:14px 4px 4px;">
-    <div id="notice-list"></div>
-  </div>
-  <button class="notice-fab" id="notice-new-btn">＋</button>
-</div>
-
-<!-- お知らせ投稿フォーム -->
-<div class="screen" id="notice-form-screen">
-  <div class="card">
-    <h1>お知らせを投稿</h1>
-    <select id="notice-target">
-      <option value="全社">全社宛</option>
-    </select>
-    <input type="text" id="notice-title" placeholder="タイトル（80文字以内）" autocomplete="off">
-    <textarea id="notice-body" rows="6" placeholder="本文（2000文字以内）"></textarea>
-    <div class="msg-error" id="notice-error" style="display:none;"></div>
-    <button class="btn-main" id="notice-post-btn">投稿する</button>
-    <button id="notice-cancel-btn" style="width:100%;margin-top:8px;background:#fff;border:1px solid var(--line);">キャンセル</button>
   </div>
 </div>
 
 <!-- LINE連携コード表示 -->
 <div class="screen" id="line-screen">
+  <div class="subhead"><button class="home-btn" data-go="cal-screen">◀ 戻る</button><span class="title">LINE連携</span></div>
   <div class="card">
-    <h1>LINE連携</h1>
     <p style="font-size:14px;">下のボタンで公式アカウントを友だち追加し、表示された6桁のコードをLINEのトークに送ってください。</p>
     <div style="font-size:32px;font-weight:800;text-align:center;letter-spacing:4px;margin:16px 0;" id="line-code"></div>
-    <button class="btn-main" id="line-add-friend">友だち追加してLINEを開く</button>
+    <button class="btn-primary" id="line-add-friend">友だち追加してLINEを開く</button>
     <p class="msg-info" id="line-status">連携待ち…（このコードは10分間有効です）</p>
-    <button id="line-back" style="width:100%;margin-top:8px;background:#fff;border:1px solid var(--line);">カレンダーに戻る</button>
+    <button class="btn-flat" id="line-back">カレンダーに戻る</button>
   </div>
 </div>
 
@@ -199,25 +377,35 @@ var LINE_ENABLED = false; // LINE公式アカウント未設定のため一旦�
 var STORAGE_KEY = 'schedshare_session';
 
 function $(id){ return document.getElementById(id); }
-var NAV_SCREENS = ['cal-screen', 'notice-screen'];
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   $(id).classList.add('active');
-  var nav = $('app-nav');
-  if (NAV_SCREENS.indexOf(id) === -1){ nav.classList.remove('show'); return; }
-  nav.classList.add('show');
-  nav.querySelectorAll('button').forEach(function(b){
-    b.classList.toggle('active', b.getAttribute('data-nav') === id);
-  });
+  window.scrollTo(0, 0);
 }
-document.querySelectorAll('#app-nav button').forEach(function(b){
-  b.onclick = function(){
-    var target = b.getAttribute('data-nav');
+document.querySelectorAll('[data-go]').forEach(function(el){
+  el.addEventListener('click', function(e){
+    e.preventDefault();
+    var target = el.getAttribute('data-go');
     showScreen(target);
-    if (target === 'notice-screen') openNoticeScreen();
-  };
+    if (target === 'case-list-screen') loadCaseList();
+    if (target === 'feed-screen') loadFeed();
+    if (target === 'mypage-screen') loadMyPage();
+    if (target === 'cal-screen') loadMonth();
+    if (target === 'home-screen') loadHomeFeedPreview();
+  });
 });
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+function fmtDate(s){
+  if (!s) return '';
+  var d = new Date(s);
+  if (isNaN(d)) return s;
+  return (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
 
 function callGas(body, retry){
   retry = retry || 0;
@@ -239,6 +427,8 @@ function clearSession(){ localStorage.removeItem(STORAGE_KEY); }
 var session = null;
 var curMonth = new Date();
 var calData = null;
+var caseListCache = [];
+var currentCaseId = null;
 
 // ---- 1. 会社コード ----
 $('code-submit').onclick = function(){
@@ -249,7 +439,7 @@ $('code-submit').onclick = function(){
     if (!res.ok){ $('code-error').textContent = res.error; $('code-error').style.display='block'; return; }
     window._pendingCode = code;
     window._pendingCompany = { id: res.companyId, name: res.companyName };
-    $('name-company').textContent = res.companyName + ' の調査員を選択';
+    $('name-company').textContent = res.companyName;
     var list = $('name-list'); list.innerHTML = '';
     res.investigators.forEach(function(inv){
       var b = document.createElement('button');
@@ -260,6 +450,71 @@ $('code-submit').onclick = function(){
     showScreen('name-screen');
   });
 };
+
+// ---- 会員登録(メールアドレス、たたき台) ----
+var MEMBER_STORAGE_KEY = 'schedshare_member';
+var pendingEmail = null;
+
+function getMember(){
+  try { return JSON.parse(localStorage.getItem(MEMBER_STORAGE_KEY) || 'null'); } catch(e){ return null; }
+}
+function setMember(m){ localStorage.setItem(MEMBER_STORAGE_KEY, JSON.stringify(m)); }
+function clearMember(){ localStorage.removeItem(MEMBER_STORAGE_KEY); }
+
+$('email-submit').onclick = function(){
+  var email = $('email-input').value.trim();
+  var err = $('email-error');
+  err.style.display = 'none';
+  if (!email){ err.textContent = 'メールアドレスを入力してください'; err.style.display='block'; return; }
+  $('email-submit').disabled = true;
+  callGas({ mode:'member.requestCode', email: email }).then(function(res){
+    $('email-submit').disabled = false;
+    if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
+    pendingEmail = email;
+    $('email-code-input').value = '';
+    $('email-code-error').style.display = 'none';
+    showScreen('email-code-screen');
+  });
+};
+$('email-code-resend').onclick = function(){
+  if (!pendingEmail) return;
+  callGas({ mode:'member.requestCode', email: pendingEmail }).then(function(res){
+    if (!res.ok){ alert(res.error); return; }
+    alert('コードを再送しました');
+  });
+};
+$('email-code-submit').onclick = function(){
+  var code = $('email-code-input').value.trim();
+  var err = $('email-code-error');
+  err.style.display = 'none';
+  if (!pendingEmail || !code){ err.textContent = 'コードを入力してください'; err.style.display='block'; return; }
+  callGas({ mode:'member.verify', email: pendingEmail, code: code }).then(function(res){
+    if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
+    var member = { memberId: res.memberId, email: pendingEmail, name: res.name || '' };
+    setMember(member);
+    if (res.isNew || !res.name){ showScreen('member-name-screen'); }
+    else { enterMemberHome(member); }
+  });
+};
+$('member-name-submit').onclick = function(){
+  var name = $('member-name-input').value.trim();
+  var err = $('member-name-error');
+  err.style.display = 'none';
+  if (!name){ err.textContent = '氏名を入力してください'; err.style.display='block'; return; }
+  var member = getMember();
+  callGas({ mode:'member.setName', memberId: member.memberId, name: name }).then(function(res){
+    if (!res.ok){ err.textContent = res.error; err.style.display='block'; return; }
+    member.name = res.name;
+    setMember(member);
+    enterMemberHome(member);
+  });
+};
+function enterMemberHome(member){
+  $('member-home-name').textContent = member.name + ' さん';
+  $('member-home-email').textContent = member.email;
+  showScreen('member-home-screen');
+}
+$('member-logout-link').onclick = function(){ clearMember(); showScreen('code-screen'); };
 
 // ---- 2. 氏名選択 ----
 function pickName(name){
@@ -280,7 +535,7 @@ function pickName(name){
       lineLinked: res.lineLinked,
     };
     setSession(session);
-    enterCalendar();
+    enterApp();
   });
 }
 $('name-submit').onclick = function(){
@@ -288,30 +543,226 @@ $('name-submit').onclick = function(){
   if (name) pickName(name);
 };
 
-// ---- 3. カレンダー ----
-function enterCalendar(){
-  $('cur-user').textContent = session.companyName + ' / ' + session.name;
-  $('line-banner').style.display = (LINE_ENABLED && !session.lineLinked) ? 'flex' : 'none';
-  showScreen('cal-screen');
-  loadMonth();
-  checkNoticeBadge();
+// ---- 3. トップページ ----
+function enterApp(){
+  showScreen('home-screen');
+  loadMonth(); // calDataを裏で先読み(案件作成の相手会社リスト等で使う)
+  loadHomeFeedPreview();
+  loadHomeAlerts();
 }
-$('switch-user').onclick = function(e){
-  e.preventDefault();
-  clearSession();
-  showScreen('code-screen');
+$('myp-switch-link').onclick = function(){ clearSession(); showScreen('code-screen'); };
+$('myp-switch-btn').onclick = function(){ clearSession(); showScreen('code-screen'); };
+
+function loadHomeAlerts(){
+  callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    var box = $('home-alerts');
+    box.innerHTML = '';
+    if (!res.ok) return;
+    caseListCache = res.cases;
+    var claimable = res.cases.filter(function(c){ return c.claimable; }).length;
+    var ongoing = res.cases.filter(function(c){ return c.status === '進行中'; }).length;
+    var unpaidExpense = res.cases.filter(function(c){ return c.status === '完了' && c.expenseStatus === '未提出'; }).length;
+    var html = '';
+    if (claimable > 0) html += '<div class="home-alert link" data-go="case-list-screen">🆕 新しい依頼が'+claimable+'件来ています！早い者勝ちで受けよう</div>';
+    if (ongoing > 0) html += '<div class="home-alert info link" data-go="case-list-screen">💼 進行中の案件が'+ongoing+'件あります</div>';
+    if (unpaidExpense > 0) html += '<div class="home-alert warn link" data-go="case-list-screen">🧾 未完了の件があります（経費データ未提出：'+unpaidExpense+'件）</div>';
+    box.innerHTML = html;
+    box.querySelectorAll('[data-go]').forEach(function(el){
+      el.onclick = function(){ showScreen('case-list-screen'); loadCaseList(); };
+    });
+  });
+}
+
+function loadHomeFeedPreview(){
+  callGas({ mode:'feed.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    var list = $('home-feed-list');
+    if (!res.ok){ list.innerHTML = ''; return; }
+    var top = res.feed.slice(0, 3);
+    if (top.length === 0){ list.innerHTML = '<div class="row-item"><span class="lbl" style="color:#999;">まだお知らせはありません</span></div>'; return; }
+    list.innerHTML = top.map(function(n){
+      return '<div class="row-item link" data-case="'+n.caseId+'"><span class="ico">🆕</span>'
+        + '<span class="lbl">'+escapeHtml(n.caseTitle)+'：'+escapeHtml(n.body.slice(0,20))+'</span>'
+        + '<span class="sub">'+fmtDate(n.postedAt)+'</span></div>';
+    }).join('');
+    list.querySelectorAll('[data-case]').forEach(function(el){
+      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-case')); };
+    });
+  });
+}
+
+// ---- 4/5/6. 案件 ----
+function loadCaseList(){
+  var list = $('case-list');
+  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
+  callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok){ list.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    caseListCache = res.cases;
+    if (res.cases.length === 0){ list.innerHTML = '<p class="msg-info">まだ案件はありません。右下の＋から作成できます。</p>'; return; }
+    list.innerHTML = res.cases.map(function(c){
+      var row = '<div class="row-item link" data-id="'+c.id+'">'
+        + '<span class="ico">📁</span>'
+        + '<span class="lbl">'+escapeHtml(c.title)+'<span class="case-status '+c.status+'">'+c.status+'</span><br>'
+        + '<span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(c.partnerCompanyName)+(c.lastMessagePreview ? ' ・ '+escapeHtml(c.lastMessagePreview) : '')+'</span></span>'
+        + '<span class="sub">'+fmtDate(c.lastMessageAt)+'</span>'
+        + '</div>';
+      if (c.claimable) row += '<button class="claim-btn" data-claim="'+c.id+'">🆕 この案件を受ける（早い者勝ち）</button>';
+      return row;
+    }).join('');
+    list.querySelectorAll('[data-id]').forEach(function(el){
+      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-id')); };
+    });
+    list.querySelectorAll('[data-claim]').forEach(function(el){
+      el.onclick = function(e){ e.stopPropagation(); claimCase(el.getAttribute('data-claim'), loadCaseList); };
+    });
+  });
+}
+function claimCase(caseId, onDone){
+  callGas({ mode:'case.claim', companyCode: session.companyCode, investigatorId: session.investigatorId, caseId: caseId }).then(function(res){
+    if (!res.ok){ alert(res.error || '受任に失敗しました'); onDone(); return; }
+    alert('受任しました！');
+    onDone();
+  });
+}
+$('case-new-btn').onclick = function(){
+  var sel = $('case-partner'); sel.innerHTML = '';
+  (calData ? calData.companies : []).forEach(function(c){
+    if (c.companyId === session.companyId) return;
+    var opt = document.createElement('option');
+    opt.value = c.companyId; opt.textContent = c.companyName;
+    sel.appendChild(opt);
+  });
+  $('case-title').value = ''; $('case-memo').value = '';
+  $('case-form-error').style.display = 'none';
+  showScreen('case-form-screen');
+};
+$('case-create-btn').onclick = function(){
+  var title = $('case-title').value.trim();
+  var partner = $('case-partner').value;
+  var memo = $('case-memo').value.trim();
+  var err = $('case-form-error');
+  err.style.display = 'none';
+  if (!title || !partner){ err.textContent = '案件名と相手会社を入力してください'; err.style.display='block'; return; }
+  callGas({
+    mode:'case.create', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    title: title, partnerCompanyId: partner, memo: memo,
+  }).then(function(res){
+    if (!res.ok){ err.textContent = res.error || '作成に失敗しました'; err.style.display='block'; return; }
+    showScreen('case-detail-screen');
+    openCaseDetail(res.id);
+  });
 };
 
+function openCaseDetail(caseId){
+  currentCaseId = caseId;
+  $('case-detail-title').textContent = '読み込み中…';
+  $('case-messages').innerHTML = '';
+  callGas({ mode:'case.get', companyCode: session.companyCode, investigatorId: session.investigatorId, caseId: caseId }).then(function(res){
+    if (!res.ok){ $('case-detail-title').textContent = 'エラー'; $('case-messages').innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    $('case-detail-title').textContent = res.title;
+    $('case-detail-partner').textContent = res.partnerCompanyName;
+    $('case-status-select').value = res.status;
+    renderCaseMessages(res.messages);
+  });
+}
+function renderCaseMessages(messages){
+  var box = $('case-messages');
+  if (messages.length === 0){ box.innerHTML = '<p class="msg-info">まだメッセージはありません。下から送信できます。</p>'; return; }
+  box.innerHTML = messages.map(function(m){
+    return '<div class="msg-bubble'+(m.mine?' mine':'')+'">'
+      + '<div class="msg-meta">'+escapeHtml(m.posterCompanyName)+' '+escapeHtml(m.posterName)+' / '+fmtDate(m.postedAt)+'</div>'
+      + '<div class="msg-body">'+escapeHtml(m.body)+'</div></div>';
+  }).join('');
+}
+$('case-status-select').onchange = function(){
+  callGas({ mode:'case.updateStatus', companyCode: session.companyCode, investigatorId: session.investigatorId,
+    caseId: currentCaseId, status: $('case-status-select').value }).then(function(res){
+    if (!res.ok) alert(res.error || '更新に失敗しました');
+  });
+};
+$('case-msg-send').onclick = function(){
+  var input = $('case-msg-input');
+  var text = input.value.trim();
+  if (!text) return;
+  callGas({
+    mode:'case.message.post', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    caseId: currentCaseId, body: text,
+  }).then(function(res){
+    if (!res.ok){ alert(res.error || '送信に失敗しました'); return; }
+    input.value = '';
+    openCaseDetail(currentCaseId);
+  });
+};
+
+// ---- 7. お知らせ一覧 ----
+function loadFeed(){
+  var list = $('feed-list');
+  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
+  callGas({ mode:'feed.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok){ list.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    if (res.feed.length === 0){ list.innerHTML = '<p class="msg-info">まだお知らせはありません。</p>'; return; }
+    list.innerHTML = res.feed.map(function(n){
+      return '<div class="row-item link" data-case="'+n.caseId+'">'
+        + '<span class="ico">🆕</span>'
+        + '<span class="lbl">'+escapeHtml(n.caseTitle)+'<br><span style="color:#888;font-weight:400;font-size:11px;">'
+        + escapeHtml(n.posterCompanyName)+' '+escapeHtml(n.posterName)+'：'+escapeHtml(n.body.slice(0,30))+'</span></span>'
+        + '<span class="sub">'+fmtDate(n.postedAt)+'</span></div>';
+    }).join('');
+    list.querySelectorAll('[data-case]').forEach(function(el){
+      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-case')); };
+    });
+  });
+}
+
+// ---- 8. マイページ ----
+function loadMyPage(){
+  $('myp-name').textContent = session.name;
+  $('myp-company').textContent = session.companyName;
+  if (calData) fillMyPageSummary(); else loadMonth().then ? null : null;
+  callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    var box = $('myp-recent-cases');
+    if (!res.ok || res.cases.length === 0){ box.innerHTML = '<p class="msg-info">まだ案件はありません</p>'; return; }
+    box.innerHTML = res.cases.slice(0, 5).map(function(c){
+      return '<div class="row-item link" data-id="'+c.id+'"><span class="ico">📁</span>'
+        + '<span class="lbl">'+escapeHtml(c.title)+'<span class="case-status '+c.status+'">'+c.status+'</span></span>'
+        + '<span class="sub">'+fmtDate(c.lastMessageAt)+'</span></div>';
+    }).join('');
+    box.querySelectorAll('[data-id]').forEach(function(el){
+      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-id')); };
+    });
+  });
+  fillMyPageSummary();
+}
+function fillMyPageSummary(){
+  if (!calData) return;
+  var counts = { '空き':0, '確定':0, '不可':0 };
+  calData.companies.forEach(function(c){
+    c.investigators.forEach(function(inv){
+      if (inv.investigatorId !== session.investigatorId) return;
+      Object.keys(inv.days).forEach(function(d){
+        var st = inv.days[d].status;
+        if (counts[st] !== undefined) counts[st]++;
+      });
+    });
+  });
+  $('myp-free').textContent = counts['空き'];
+  $('myp-fixed').textContent = counts['確定'];
+  $('myp-busy').textContent = counts['不可'];
+}
+
+// ---- 9. カレンダー ----
 function monthStr(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
 $('prev-month').onclick = function(){ curMonth.setMonth(curMonth.getMonth()-1); loadMonth(); };
 $('next-month').onclick = function(){ curMonth.setMonth(curMonth.getMonth()+1); loadMonth(); };
 
 function loadMonth(){
   $('month-label').textContent = curMonth.getFullYear() + '年' + (curMonth.getMonth()+1) + '月';
-  callGas({ mode:'calendar.get', month: monthStr(curMonth) }).then(function(res){
+  return callGas({ mode:'calendar.get', month: monthStr(curMonth) }).then(function(res){
     if (!res.ok){ alert(res.error); return; }
     calData = res;
     renderCalendar();
+    if ($('mypage-screen').classList.contains('active')) fillMyPageSummary();
   });
 }
 
@@ -393,109 +844,6 @@ function updateCell(cell, status, memo){
   });
 }
 
-// ---- お知らせ ----
-var LAST_SEEN_KEY = 'schedshare_notice_lastseen';
-var noticeCache = [];
-
-function checkNoticeBadge(){
-  callGas({ mode:'notice.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
-    if (!res.ok) return;
-    noticeCache = res.notices;
-    var lastSeen = localStorage.getItem(LAST_SEEN_KEY) || '1970-01-01';
-    var unread = res.notices.filter(function(n){ return n.postedAt && new Date(n.postedAt) > new Date(lastSeen); }).length;
-    var badge = $('notice-badge');
-    if (unread > 0){ badge.textContent = unread > 9 ? '9+' : String(unread); badge.style.display = 'inline-block'; }
-    else { badge.style.display = 'none'; }
-  });
-}
-
-function openNoticeScreen(){
-  localStorage.setItem(LAST_SEEN_KEY, new Date().toISOString());
-  $('notice-badge').style.display = 'none';
-  loadNotices();
-}
-
-function loadNotices(){
-  var list = $('notice-list');
-  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
-  callGas({ mode:'notice.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
-    if (!res.ok){ list.innerHTML = '<p class="msg-error">' + res.error + '</p>'; return; }
-    noticeCache = res.notices;
-    renderNotices();
-  });
-}
-
-function fmtDate(s){
-  if (!s) return '';
-  var d = new Date(s);
-  if (isNaN(d)) return s;
-  return (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-}
-
-function renderNotices(){
-  var list = $('notice-list');
-  if (noticeCache.length === 0){ list.innerHTML = '<p class="msg-info">まだお知らせはありません。右下の＋から投稿できます。</p>'; return; }
-  list.innerHTML = noticeCache.map(function(n){
-    var targetBadge = n.targetCompanyId === '全社'
-      ? '<span class="notice-target">全社宛</span>'
-      : '<span class="notice-target private">'+n.targetName+'宛(個別)</span>';
-    return '<div class="notice-card'+(n.pinned?' pinned':'')+'">'
-      + '<div class="notice-top">'
-      +   '<div>' + targetBadge + '</div>'
-      +   '<button class="notice-pin-btn'+(n.pinned?' pinned':'')+'" data-id="'+n.id+'" title="固定表示切替">📌</button>'
-      + '</div>'
-      + '<p class="notice-title">'+escapeHtml(n.title)+'</p>'
-      + '<div class="notice-meta">'+escapeHtml(n.posterCompanyName)+' '+escapeHtml(n.posterName)+' / '+fmtDate(n.postedAt)+'</div>'
-      + '<div class="notice-body">'+escapeHtml(n.body)+'</div>'
-      + '</div>';
-  }).join('');
-
-  list.querySelectorAll('.notice-pin-btn').forEach(function(btn){
-    btn.onclick = function(){
-      callGas({ mode:'notice.pin', companyCode: session.companyCode, investigatorId: session.investigatorId, id: btn.getAttribute('data-id') })
-        .then(function(res){ if (res.ok) loadNotices(); else alert(res.error || '失敗しました'); });
-    };
-  });
-}
-
-function escapeHtml(s){
-  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
-    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
-  });
-}
-
-$('notice-new-btn').onclick = function(){
-  var sel = $('notice-target');
-  sel.innerHTML = '<option value="全社">全社宛</option>';
-  (calData ? calData.companies : []).forEach(function(c){
-    if (c.companyId === session.companyId) return;
-    var opt = document.createElement('option');
-    opt.value = c.companyId; opt.textContent = c.companyName + ' 宛（個別）';
-    sel.appendChild(opt);
-  });
-  $('notice-title').value = ''; $('notice-body').value = '';
-  $('notice-error').style.display = 'none';
-  showScreen('notice-form-screen');
-};
-$('notice-cancel-btn').onclick = function(){ showScreen('notice-screen'); };
-$('notice-post-btn').onclick = function(){
-  var title = $('notice-title').value.trim();
-  var text = $('notice-body').value.trim();
-  var target = $('notice-target').value;
-  var err = $('notice-error');
-  err.style.display = 'none';
-  if (!title || !text){ err.textContent = 'タイトルと本文を入力してください'; err.style.display='block'; return; }
-  callGas({
-    mode:'notice.post', submitId: newId(),
-    companyCode: session.companyCode, investigatorId: session.investigatorId,
-    targetCompanyId: target, title: title, body: text,
-  }).then(function(res){
-    if (!res.ok){ err.textContent = res.error || '投稿に失敗しました'; err.style.display='block'; return; }
-    showScreen('notice-screen');
-    loadNotices();
-  });
-};
-
 // ---- LINE連携 ----
 $('line-link-btn').onclick = openLineLink;
 function openLineLink(){
@@ -573,7 +921,9 @@ if ('serviceWorker' in navigator) {
 // ---- 初期化 ----
 (function init(){
   var s = getSession();
-  if (s && s.investigatorId){ session = s; enterCalendar(); }
+  if (s && s.investigatorId){ session = s; enterApp(); return; }
+  var m = getMember();
+  if (m && m.memberId && m.name){ enterMemberHome(m); }
 })();
 </script>
 </body>
