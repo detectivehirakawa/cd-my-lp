@@ -56,6 +56,12 @@ function doPost(e) {
     'admin.announcePost': adminAnnouncePost_,
     'game.submitScore': idempotent_('gscore', gameScoreSubmit_),
     'game.ranking': gameRankingGet_,
+    'novel.list': novelList_,
+    'novel.create': idempotent_('novel', novelCreate_),
+    'novel.get': novelGet_,
+    'novel.chapterGet': novelChapterGet_,
+    'novel.chapterPost': idempotent_('nch', novelChapterPost_),
+    'novel.updateStatus': novelUpdateStatus_,
   };
   var fn = routes[body.mode];
   if (!fn) return json_({ ok: false, error: 'modeが不正です' });

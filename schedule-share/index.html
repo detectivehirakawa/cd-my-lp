@@ -266,6 +266,13 @@
     <div class="row-item link" data-go="game-list-screen"><span class="ico">🎮</span><span class="lbl">ミニゲーム</span></div>
   </div>
 
+  <div class="band c-work">🔍 さがす</div>
+  <div class="row-list">
+    <a class="row-item link" href="https://lp.exeresearch.jp/tantei-portal/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+      <span class="ico">🔍</span><span class="lbl">探偵検索<br><span style="color:#888;font-weight:400;font-size:11px;">全国探偵ポータルで探偵業者を探す</span></span>
+    </a>
+  </div>
+
   <div class="band c-work">💼 しごとをする</div>
   <div class="row-list">
     <div class="row-item link" data-go="case-list-screen"><span class="ico">📁</span><span class="lbl">案件一覧</span></div>
@@ -279,6 +286,11 @@
     <div class="row-item link" data-go="circle-list-screen"><span class="ico">👥</span><span class="lbl">サークル</span></div>
     <div class="row-item link" data-go="friend-list-screen"><span class="ico">👫</span><span class="lbl">友達</span></div>
     <div class="row-item link" data-go="mypage-screen"><span class="ico">👤</span><span class="lbl">マイページ</span></div>
+  </div>
+
+  <div class="band c-social">📚 小説</div>
+  <div class="row-list">
+    <div class="row-item link" data-go="novel-list-screen"><span class="ico">📚</span><span class="lbl">小説投稿</span></div>
   </div>
 </div>
 
@@ -565,6 +577,64 @@
   <div class="row-list" id="game-rank-list"></div>
 </div>
 
+<!-- 小説 一覧 -->
+<div class="screen" id="novel-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">📚 小説</span></div>
+  <div class="row-list" id="novel-list"></div>
+  <button class="fab" id="novel-new-btn">＋</button>
+</div>
+
+<!-- 小説 新規作成 -->
+<div class="screen" id="novel-form-screen">
+  <div class="subhead"><button class="home-btn" id="novel-form-back">◀ 戻る</button><span class="title">小説を投稿する</span></div>
+  <div class="card">
+    <input type="text" id="novel-title" placeholder="タイトル（60文字以内）" autocomplete="off">
+    <textarea id="novel-synopsis" rows="4" placeholder="あらすじ（任意・500文字以内）"></textarea>
+    <div class="msg-error" id="novel-form-error" style="display:none;"></div>
+    <button class="btn-primary" id="novel-create-btn">作成する</button>
+  </div>
+</div>
+
+<!-- 小説 詳細 -->
+<div class="screen" id="novel-detail-screen">
+  <div class="subhead">
+    <button class="home-btn" data-go="novel-list-screen">◀ 一覧へ</button>
+    <span class="title" id="novel-detail-title"></span>
+  </div>
+  <div style="background:#fff;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;display:flex;align-items:center;gap:8px;">
+    作者: <b id="novel-detail-author"></b>
+    <span class="sub" id="novel-detail-status" style="margin-left:auto;"></span>
+  </div>
+  <div id="novel-detail-synopsis" style="background:#fff;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;color:#555;white-space:pre-wrap;"></div>
+  <div id="novel-detail-ownerbar" style="display:none;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);">
+    <button class="btn-flat" id="novel-status-toggle" style="margin:0;">連載中⇔完結を切り替える</button>
+  </div>
+  <div class="band c-work">📖 話一覧</div>
+  <div class="row-list" id="novel-chapter-list"></div>
+  <button class="fab" id="novel-chapter-new-btn" style="display:none;">＋</button>
+</div>
+
+<!-- 小説 話を投稿 -->
+<div class="screen" id="novel-chapter-form-screen">
+  <div class="subhead"><button class="home-btn" id="novel-chapter-form-back">◀ 戻る</button><span class="title">話を投稿する</span></div>
+  <div class="card">
+    <input type="text" id="novel-chapter-title" placeholder="話のタイトル（省略可。例: 第3話）" autocomplete="off">
+    <textarea id="novel-chapter-body" rows="16" placeholder="本文"></textarea>
+    <div class="msg-error" id="novel-chapter-form-error" style="display:none;"></div>
+    <button class="btn-primary" id="novel-chapter-post-btn">投稿する</button>
+  </div>
+</div>
+
+<!-- 小説 本文を読む -->
+<div class="screen" id="novel-reader-screen">
+  <div class="subhead"><button class="home-btn" id="novel-reader-back">◀ 戻る</button><span class="title" id="novel-reader-title"></span></div>
+  <div class="card" id="novel-reader-body" style="white-space:pre-wrap;line-height:1.8;"></div>
+  <div style="display:flex;gap:8px;padding:0 14px 20px;">
+    <button class="btn-flat" id="novel-reader-prev" style="margin:0;">◀ 前の話</button>
+    <button class="btn-flat" id="novel-reader-next" style="margin:0;">次の話 ▶</button>
+  </div>
+</div>
+
 <script>
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWZ8nWjJ7JSP8s77qgDD08yEJw0O1gDfScvI3b6jYj2MMWha9OW-0Oosj9YC7Xd2Va/exec';
 var GAS_KEY = 'schedshare';
@@ -600,6 +670,7 @@ document.querySelectorAll('[data-go]').forEach(function(el){
     if (target === 'dm-list-screen') loadDmList();
     if (target === 'circle-list-screen') loadCircleList();
     if (target === 'game-list-screen') loadGameList();
+    if (target === 'novel-list-screen') loadNovelList();
   });
 });
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
@@ -2015,6 +2086,119 @@ var GAME_IMPL = {
   tapchallenge: implTapchallenge, snake: implSnake, simon: implSimon, catchgame: implCatchgame,
   slidepuzzle: implSlidepuzzle, tailing: implTailing,
 };
+
+// ==================== 小説投稿 ====================
+var currentNovelId = null, currentNovelChapters = [], currentChapterIdx = -1;
+
+function loadNovelList(){
+  var list = $('novel-list');
+  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
+  callGas({ mode:'novel.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+    if (!res.ok){ list.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    if (res.novels.length === 0){ list.innerHTML = '<p class="msg-info">まだ小説はありません。右下の＋から投稿できます。</p>'; return; }
+    list.innerHTML = res.novels.map(function(n){
+      return '<div class="row-item link" data-id="'+n.id+'"><span class="ico">📖</span>'
+        + '<span class="lbl">'+escapeHtml(n.title)+'<span class="case-status '+(n.status==='完結'?'完了':'進行中')+'">'+n.status+'</span><br>'
+        + '<span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(n.authorName)+' ・ 全'+n.chapterCount+'話'+(n.mine?' ・ 自分の作品':'')+'</span></span></div>';
+    }).join('');
+    list.querySelectorAll('[data-id]').forEach(function(el){
+      el.onclick = function(){ showScreen('novel-detail-screen'); openNovelDetail(el.getAttribute('data-id')); };
+    });
+  });
+}
+$('novel-new-btn').onclick = function(){
+  $('novel-title').value = ''; $('novel-synopsis').value = '';
+  $('novel-form-error').style.display = 'none';
+  showScreen('novel-form-screen');
+};
+$('novel-form-back').onclick = function(){ showScreen('novel-list-screen'); };
+$('novel-create-btn').onclick = function(){
+  var title = $('novel-title').value.trim();
+  var synopsis = $('novel-synopsis').value.trim();
+  var err = $('novel-form-error');
+  err.style.display = 'none';
+  if (!title){ err.textContent = 'タイトルを入力してください'; err.style.display='block'; return; }
+  callGas({
+    mode:'novel.create', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    title: title, synopsis: synopsis,
+  }).then(function(res){
+    if (!res.ok){ err.textContent = res.error || '作成に失敗しました'; err.style.display='block'; return; }
+    showScreen('novel-detail-screen');
+    openNovelDetail(res.id);
+  });
+};
+
+function openNovelDetail(novelId){
+  currentNovelId = novelId;
+  $('novel-detail-title').textContent = '読み込み中…';
+  $('novel-chapter-list').innerHTML = '';
+  callGas({ mode:'novel.get', companyCode: session.companyCode, investigatorId: session.investigatorId, novelId: novelId }).then(function(res){
+    if (!res.ok){ $('novel-detail-title').textContent = 'エラー'; return; }
+    $('novel-detail-title').textContent = '📖 '+res.title;
+    $('novel-detail-author').textContent = res.authorName;
+    $('novel-detail-status').textContent = res.status;
+    $('novel-detail-synopsis').textContent = res.synopsis || '(あらすじなし)';
+    $('novel-detail-ownerbar').style.display = res.mine ? 'block' : 'none';
+    $('novel-chapter-new-btn').style.display = res.mine ? 'flex' : 'none';
+    currentNovelChapters = res.chapters;
+    var list = $('novel-chapter-list');
+    list.innerHTML = res.chapters.length ? res.chapters.map(function(c, idx){
+      return '<div class="row-item link" data-idx="'+idx+'"><span class="ico">📄</span>'
+        + '<span class="lbl">'+escapeHtml(c.title)+'</span><span class="sub">'+fmtDate(c.postedAt)+'</span></div>';
+    }).join('') : '<p class="msg-info">まだ話がありません。</p>';
+    list.querySelectorAll('[data-idx]').forEach(function(el){
+      el.onclick = function(){ showScreen('novel-reader-screen'); openNovelChapter(Number(el.getAttribute('data-idx'))); };
+    });
+  });
+}
+$('novel-status-toggle').onclick = function(){
+  callGas({
+    mode:'novel.updateStatus', companyCode: session.companyCode, investigatorId: session.investigatorId,
+    novelId: currentNovelId, status: $('novel-detail-status').textContent === '完結' ? '連載中' : '完結',
+  }).then(function(res){
+    if (!res.ok){ alert(res.error || '更新に失敗しました'); return; }
+    openNovelDetail(currentNovelId);
+  });
+};
+$('novel-chapter-new-btn').onclick = function(){
+  $('novel-chapter-title').value = ''; $('novel-chapter-body').value = '';
+  $('novel-chapter-form-error').style.display = 'none';
+  showScreen('novel-chapter-form-screen');
+};
+$('novel-chapter-form-back').onclick = function(){ showScreen('novel-detail-screen'); openNovelDetail(currentNovelId); };
+$('novel-chapter-post-btn').onclick = function(){
+  var title = $('novel-chapter-title').value.trim();
+  var body = $('novel-chapter-body').value.trim();
+  var err = $('novel-chapter-form-error');
+  err.style.display = 'none';
+  if (!body){ err.textContent = '本文を入力してください'; err.style.display='block'; return; }
+  callGas({
+    mode:'novel.chapterPost', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    novelId: currentNovelId, title: title, body: body,
+  }).then(function(res){
+    if (!res.ok){ err.textContent = res.error || '投稿に失敗しました'; err.style.display='block'; return; }
+    showScreen('novel-detail-screen');
+    openNovelDetail(currentNovelId);
+  });
+};
+
+function openNovelChapter(idx){
+  currentChapterIdx = idx;
+  var c = currentNovelChapters[idx];
+  $('novel-reader-title').textContent = c.title;
+  $('novel-reader-body').textContent = '読み込み中…';
+  $('novel-reader-prev').disabled = idx <= 0;
+  $('novel-reader-next').disabled = idx >= currentNovelChapters.length-1;
+  callGas({ mode:'novel.chapterGet', companyCode: session.companyCode, investigatorId: session.investigatorId, chapterId: c.id }).then(function(res){
+    if (!res.ok){ $('novel-reader-body').textContent = res.error; return; }
+    $('novel-reader-body').textContent = res.body;
+  });
+}
+$('novel-reader-back').onclick = function(){ showScreen('novel-detail-screen'); openNovelDetail(currentNovelId); };
+$('novel-reader-prev').onclick = function(){ if (currentChapterIdx > 0) openNovelChapter(currentChapterIdx-1); };
+$('novel-reader-next').onclick = function(){ if (currentChapterIdx < currentNovelChapters.length-1) openNovelChapter(currentChapterIdx+1); };
 
 // ---- 初期化 ----
 (function init(){
