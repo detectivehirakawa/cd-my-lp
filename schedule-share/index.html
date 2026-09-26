@@ -142,6 +142,7 @@
   .cell.st-空き{background:var(--free);}
   .cell.st-確定{background:var(--fixed);}
   .cell.st-不可{background:var(--busy);}
+  .cell.readonly{cursor:default;}
   .cell .memo-dot{position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:#c0392b;}
   .weekend{background:#fbeaea;}
   .legend{display:flex;gap:10px;padding:8px 12px;font-size:11px;flex-wrap:wrap;background:#fff;}
@@ -1063,7 +1064,7 @@ function loadMyPage(){
   $('myp-name').textContent = session.name;
   $('myp-company').textContent = session.companyName;
   var member = getMember();
-  callGas({ mode:'member.getProfile', targetMemberId: member.memberId }).then(function(res){
+  callGas({ mode:'member.getProfile', memberId: member.memberId, email: member.email, targetMemberId: member.memberId }).then(function(res){
     if (!res.ok) return;
     myProfileCache = res;
     $('myp-avatar-display').textContent = res.avatar || '🕵️';
@@ -1106,7 +1107,7 @@ function fillMyPageSummary(){
 var selectedAvatar = '🕵️';
 function loadProfileEdit(){
   var member = getMember();
-  callGas({ mode:'member.getProfile', targetMemberId: member.memberId }).then(function(res){
+  callGas({ mode:'member.getProfile', memberId: member.memberId, email: member.email, targetMemberId: member.memberId }).then(function(res){
     if (!res.ok){ alert(res.error); return; }
     selectedAvatar = res.avatar || '🕵️';
     $('profile-name-input').value = res.name || '';
@@ -1283,7 +1284,7 @@ $('circle-new-btn').onclick = function(){
 function openCircleDetail(circleId){
   currentCircleId = circleId;
   var member = getMember();
-  callGas({ mode:'circle.get', circleId: circleId, memberId: member.memberId }).then(function(res){
+  callGas({ mode:'circle.get', circleId: circleId, memberId: member.memberId, email: member.email }).then(function(res){
     if (!res.ok){ alert(res.error); return; }
     $('circle-detail-title').textContent = '👥 ' + res.name;
     $('circle-detail-desc').textContent = res.description + '（' + res.members.length + '人参加）';
@@ -1356,7 +1357,8 @@ function renderCalendar(){
         var day = inv.days[dk];
         var st = day ? day.status : '';
         var wd = new Date(y,m,d).getDay();
-        html += '<td class="cell st-'+st+(wd===0||wd===6&&!st?' weekend':'')+'" data-inv="'+inv.investigatorId+'" data-date="'+dk+'" data-status="'+st+'" data-memo="'+(day&&day.memo?day.memo.replace(/"/g,'&quot;'):'')+'">'
+        var mine = c.companyId === session.companyId;
+        html += '<td class="cell st-'+st+(mine?'':' readonly')+(wd===0||wd===6&&!st?' weekend':'')+'" data-inv="'+inv.investigatorId+'" data-date="'+dk+'" data-status="'+st+'" data-mine="'+(mine?'1':'0')+'" data-memo="'+(day&&day.memo?day.memo.replace(/"/g,'&quot;'):'')+'">'
           + (day && day.memo ? '<span class="memo-dot"></span>' : '') + '</td>';
       }
       html += '</tr>';
@@ -1377,11 +1379,13 @@ function renderCalendar(){
 
 var STATES = ['', '空き', '確定', '不可'];
 function cycleCell(cell){
+  if (cell.getAttribute('data-mine') !== '1'){ alert('他の事務所の予定は編集できません'); return; }
   var cur = cell.getAttribute('data-status') || '';
   var next = STATES[(STATES.indexOf(cur)+1) % STATES.length];
   updateCell(cell, next, cell.getAttribute('data-memo') || '');
 }
 function memoCell(cell){
+  if (cell.getAttribute('data-mine') !== '1'){ alert('他の事務所の予定は編集できません'); return; }
   var memo = prompt('メモを入力', cell.getAttribute('data-memo') || '');
   if (memo === null) return;
   updateCell(cell, cell.getAttribute('data-status') || '空き', memo);
