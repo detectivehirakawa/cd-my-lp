@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>安心して探偵が探せるサイト♡（暫定）| 全国探偵業者一覧</title>
+<title>全国探偵検索</title>
 <style>
 body{font-family:-apple-system,'Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif;margin:0;background:#f7f8fa;color:#222}
 header{background:#0f4fa8;color:#fff;padding:24px 16px;text-align:center}
@@ -40,10 +40,10 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 .mosaic{display:inline-block;filter:blur(3px);user-select:none;color:#555;background:#dfe2e7;padding:0 3px;border-radius:3px;letter-spacing:1px}
 .mosaic-note{font-size:.72em;color:#b23b3b;background:#fdecea;border:1px solid #f5c2c0;border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap;display:inline-block}
 </style></head><body>
-<header><h1>安心して探偵が探せるサイト♡</h1>
+<header><h1>全国探偵検索</h1>
 <p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7547件</p></header>
 <main>
-<div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。業者名・代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。</div>
+<div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。</div>
 <div class="search-box">
 <input type="text" id="q" placeholder="業者名で検索（例：ABC探偵事務所）">
 <select id="prefFilter"><option value="">都道府県を選択</option><option value="北海道">北海道</option>
@@ -165,9 +165,8 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
     results.innerHTML = hits.map(function(r){
-      var nameHtml = r.m ? '<span class="mosaic" aria-hidden="true">非非非非非非非非</span><span class="mosaic-note">掲載許可待ち</span>' : esc(r.n);
       return '<a class="result-item" href="./biz/'+r.i+'.html">'+
-        '<span class="r-name">'+nameHtml+'</span>'+
+        '<span class="r-name">'+esc(r.n)+'</span>'+
         '<span class="r-addr">'+esc(r.p)+' '+esc(r.a)+'</span></a>';
     }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
   }
