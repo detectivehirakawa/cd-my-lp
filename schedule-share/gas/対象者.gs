@@ -122,5 +122,6 @@ function vehicleRemove_(body) {
 
   var sh = ensureSheet_('VEHICLE');
   sh.deleteRow(v._row);
+  invalidateRows_('VEHICLE');
   return json_({ ok: true });
 }

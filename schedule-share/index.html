@@ -182,7 +182,7 @@
 </div>
 
 <!-- 会員登録: メールアドレス入力(アプリの入口) -->
-<div class="screen active" id="email-screen">
+<div class="screen" id="email-screen">
   <div class="promo-strip">たんてい業をもっと便利に、みんなでつながる情報共有サイト</div>
   <div class="town-logo" style="padding:0;">
     <img src="images/logo-town.jpg" alt="タンテーTOWN" style="width:100%;display:block;">
@@ -236,13 +236,17 @@
 </div>
 
 <!-- 3. トップページ -->
-<div class="screen" id="home-screen">
+<div class="screen active" id="home-screen">
   <div class="promo-strip" id="home-promo">タンテーTOWNへようこそ</div>
   <div class="town-logo" style="padding:0;">
     <img src="images/logo-town.jpg" alt="タンテーTOWN" style="width:100%;display:block;">
   </div>
   <div class="logo-links">
     <a href="#" data-go="mypage-screen">🏠マイページへ</a>
+  </div>
+
+  <div id="guest-cta" style="display:none;margin:12px 14px 0;">
+    <button class="btn-primary" data-go="email-screen">📝 会員登録してすべての機能を使う</button>
   </div>
 
   <a href="https://alaia-gps.com/" target="_blank" rel="noopener" style="display:block;margin:12px 14px 0;padding:14px;border-radius:10px;
@@ -256,6 +260,11 @@
   <div class="band c-info">📌 新着情報</div>
   <div class="row-list" id="home-feed-list"></div>
   <div class="more-link"><a href="#" data-go="feed-screen">お知らせ一覧 ▶</a></div>
+
+  <div class="band c-work">🎮 あそぶ</div>
+  <div class="row-list">
+    <div class="row-item link" data-go="game-list-screen"><span class="ico">🎮</span><span class="lbl">ミニゲーム</span></div>
+  </div>
 
   <div class="band c-work">💼 しごとをする</div>
   <div class="row-list">
@@ -534,6 +543,28 @@
   </div>
 </div>
 
+<!-- ミニゲーム一覧 -->
+<div class="screen" id="game-list-screen">
+  <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">🎮 ミニゲーム</span></div>
+  <div class="row-list" id="game-list"></div>
+</div>
+
+<!-- ミニゲーム プレイ画面 -->
+<div class="screen" id="game-screen">
+  <div class="subhead"><button class="home-btn" data-go="game-list-screen">◀ 一覧へ</button><span class="title" id="game-title"></span></div>
+  <div style="padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;">
+    <span id="game-status">準備中…</span>
+    <button id="game-rank-btn" style="background:#eef1f5;white-space:nowrap;">🏆 ランキング</button>
+  </div>
+  <div id="game-area" style="padding:14px;"></div>
+</div>
+
+<!-- ミニゲーム ランキング -->
+<div class="screen" id="game-rank-screen">
+  <div class="subhead"><button class="home-btn" id="game-rank-back">◀ 戻る</button><span class="title" id="game-rank-title">🏆 ランキング</span></div>
+  <div class="row-list" id="game-rank-list"></div>
+</div>
+
 <script>
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbyWZ8nWjJ7JSP8s77qgDD08yEJw0O1gDfScvI3b6jYj2MMWha9OW-0Oosj9YC7Xd2Va/exec';
 var GAS_KEY = 'schedshare';
@@ -546,10 +577,18 @@ function showScreen(id){
   $(id).classList.add('active');
   window.scrollTo(0, 0);
 }
+// 会員登録なしで開ける画面。それ以外はタップ時に登録を促す。
+var PUBLIC_SCREENS_ = { 'home-screen':1, 'email-screen':1, 'email-code-screen':1, 'member-name-screen':1 };
+function isLoggedIn(){ var m = getMember(); return !!(m && m.memberId && m.name); }
+function promptRegister(){
+  alert('この機能を使うには会員登録が必要です。続けて登録画面を開きます。');
+  showScreen('email-screen');
+}
 document.querySelectorAll('[data-go]').forEach(function(el){
   el.addEventListener('click', function(e){
     e.preventDefault();
     var target = el.getAttribute('data-go');
+    if (!PUBLIC_SCREENS_[target] && !isLoggedIn()){ promptRegister(); return; }
     showScreen(target);
     if (target === 'case-list-screen') loadCaseList();
     if (target === 'feed-screen') loadFeed();
@@ -560,6 +599,7 @@ document.querySelectorAll('[data-go]').forEach(function(el){
     if (target === 'friend-list-screen') loadFriendList();
     if (target === 'dm-list-screen') loadDmList();
     if (target === 'circle-list-screen') loadCircleList();
+    if (target === 'game-list-screen') loadGameList();
   });
 });
 function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
@@ -749,14 +789,23 @@ $('name-submit').onclick = function(){
 // ---- 3. トップページ ----
 function enterApp(){
   var member = getMember();
-  if (!member || !member.memberId) { showScreen('email-screen'); return; }
+  if (!member || !member.memberId) { renderGuestHome(); showScreen('home-screen'); return; }
   bridgeSessionFromMember(member);
+  $('guest-cta').style.display = 'none';
+  $('home-promo').textContent = 'タンテーTOWNへようこそ';
   showScreen('home-screen');
   loadMonth(); // calDataを裏で先読み(案件作成の相手会社リスト等で使う)
   loadHomeFeedPreview();
   loadHomeAlerts();
 }
-function logout(){ clearMember(); clearSession(); showScreen('email-screen'); }
+// 会員登録なしでも見られる、機能なしのトップページ表示
+function renderGuestHome(){
+  $('guest-cta').style.display = 'block';
+  $('home-promo').textContent = 'タンテーTOWNへようこそ（会員登録すると全機能が使えます）';
+  $('home-alerts').innerHTML = '';
+  $('home-feed-list').innerHTML = '<div class="row-item"><span class="lbl" style="color:#999;">会員登録すると表示されます</span></div>';
+}
+function logout(){ clearMember(); clearSession(); renderGuestHome(); showScreen('home-screen'); }
 $('myp-switch-link').onclick = logout;
 
 function loadHomeAlerts(){
@@ -1491,10 +1540,485 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// ==================== ミニゲーム ====================
+var GAMES = [
+  { id:'reaction',    icon:'⚡',  name:'反射神経テスト',   desc:'色が変わったら即タップ！',           unit:'ms' },
+  { id:'whackamole',  icon:'🔨',  name:'モグラたたき',     desc:'30秒で何匹たたける？',               unit:'匹' },
+  { id:'schulte',     icon:'🔢',  name:'数字タッチ',       desc:'1〜25を順番にタップ、タイムを競う',   unit:'秒' },
+  { id:'memory',      icon:'🃏',  name:'神経衰弱',         desc:'ペアを全部そろえよう',               unit:'秒' },
+  { id:'tapchallenge',icon:'👆',  name:'連打チャレンジ',   desc:'10秒で何回タップできる？',           unit:'回' },
+  { id:'snake',       icon:'🐍',  name:'ヘビゲーム',       desc:'エサを食べて伸びよう',               unit:'点' },
+  { id:'simon',       icon:'🎨',  name:'色シーケンス記憶', desc:'光る順番を覚えて再現しよう',         unit:'回' },
+  { id:'catchgame',   icon:'🎯',  name:'証拠品キャッチ',   desc:'落ちてくる証拠品をキャッチ',         unit:'点' },
+  { id:'slidepuzzle', icon:'🧩',  name:'スライドパズル',   desc:'最少手数で数字を揃えよう',           unit:'手' },
+  { id:'tailing',     icon:'🕵️', name:'尾行タイミング',   desc:'バレずに詰める！連続成功数を競う',   unit:'連続' },
+];
+function gameById(id){ return GAMES.filter(function(g){ return g.id === id; })[0]; }
+var currentGameId = null, currentGameCleanup = null;
+
+function loadGameList(){
+  $('game-list').innerHTML = GAMES.map(function(g){
+    return '<div class="row-item link" data-game="'+g.id+'"><span class="ico">'+g.icon+'</span>'
+      + '<span class="lbl">'+g.name+'<br><span style="color:#888;font-weight:400;font-size:11px;">'+g.desc+'</span></span></div>';
+  }).join('');
+  $('game-list').querySelectorAll('[data-game]').forEach(function(el){
+    el.onclick = function(){ openGame(el.getAttribute('data-game')); };
+  });
+}
+
+function openGame(id){
+  currentGameId = id;
+  var g = gameById(id);
+  $('game-title').textContent = g.icon+' '+g.name;
+  $('game-status').textContent = g.desc;
+  showScreen('game-screen');
+  if (currentGameCleanup){ currentGameCleanup(); currentGameCleanup = null; }
+  var area = $('game-area');
+  area.innerHTML = '';
+  currentGameCleanup = GAME_IMPL[id](area, function(score){ finishGame(id, score); });
+}
+function finishGame(gameId, score){
+  var g = gameById(gameId);
+  var shown = (Math.round(score*100)/100);
+  $('game-status').textContent = 'スコア: '+shown+g.unit+'（記録中…）';
+  callGas({
+    mode:'game.submitScore', submitId:newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    gameId: gameId, score: score,
+  }).then(function(res){
+    if (!res.ok){ $('game-status').textContent = 'スコア: '+shown+g.unit; return; }
+    $('game-status').textContent = 'スコア: '+shown+g.unit + (res.isNewBest ? '　🎉自己ベスト更新！' : '　(自己ベスト: '+res.best+g.unit+')');
+  });
+}
+$('game-rank-btn').onclick = function(){ if (currentGameId) openGameRanking(currentGameId); };
+$('game-rank-back').onclick = function(){ showScreen('game-screen'); };
+function openGameRanking(gameId){
+  var g = gameById(gameId);
+  $('game-rank-title').textContent = '🏆 '+g.name+' ランキング';
+  showScreen('game-rank-screen');
+  var list = $('game-rank-list');
+  list.innerHTML = '<p class="msg-info">読み込み中…</p>';
+  callGas({ mode:'game.ranking', companyCode: session.companyCode, investigatorId: session.investigatorId, gameId: gameId }).then(function(res){
+    if (!res.ok){ list.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
+    if (res.ranking.length === 0){ list.innerHTML = '<p class="msg-info">まだ記録がありません。一番乗りを目指そう！</p>'; return; }
+    list.innerHTML = res.ranking.map(function(r, i){
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+      return '<div class="row-item"><span class="ico">'+medal+'</span>'
+        + '<span class="lbl">'+r.avatar+' '+escapeHtml(r.name)+(r.agencyName?'<br><span style="color:#888;font-weight:400;font-size:11px;">'+escapeHtml(r.agencyName)+'</span>':'')+'</span>'
+        + '<span class="sub">'+r.score+g.unit+'</span></div>';
+    }).join('');
+  });
+}
+
+// ---- 1. 反射神経テスト ----
+function implReaction(area, onFinish){
+  var box = document.createElement('div');
+  box.style.cssText = 'height:220px;border-radius:12px;background:#8a95a1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;text-align:center;padding:20px;user-select:none;';
+  box.textContent = 'タップしてスタート';
+  area.appendChild(box);
+  var timer = null, state = 'idle', startT = 0;
+  function armRound(){
+    state = 'waiting'; box.style.background = '#8a95a1'; box.textContent = 'まだ待って…';
+    timer = setTimeout(function(){
+      state = 'go'; startT = Date.now();
+      box.style.background = '#2e9e5b'; box.textContent = '今だ！タップ！';
+    }, 1000 + Math.random()*2500);
+  }
+  box.onclick = function(){
+    if (state === 'idle'){ armRound(); return; }
+    if (state === 'waiting'){
+      clearTimeout(timer);
+      box.style.background = '#e0303f'; box.textContent = '早い！もう一度タップしてやり直し';
+      state = 'idle'; return;
+    }
+    if (state === 'go'){
+      var ms = Date.now() - startT;
+      box.style.background = '#2f6fd6'; box.textContent = ms+'ms！ もう一度タップして再挑戦';
+      state = 'done'; onFinish(ms); return;
+    }
+    if (state === 'done'){ armRound(); }
+  };
+  return function cleanup(){ clearTimeout(timer); };
+}
+
+// ---- 2. モグラたたき ----
+function implWhackamole(area, onFinish){
+  var score = 0, timeLeft = 30, activeIdx = -1;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">残り <span id="wm-time">30</span>秒 / スコア <span id="wm-score">0</span></div>'
+    + '<div id="wm-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>';
+  area.appendChild(wrap);
+  var grid = wrap.querySelector('#wm-grid'), holes = [];
+  for (var i=0;i<9;i++){
+    var h = document.createElement('div');
+    h.style.cssText = 'height:80px;border-radius:10px;background:#dde4ee;display:flex;align-items:center;justify-content:center;font-size:32px;';
+    (function(idx){
+      h.onclick = function(){
+        if (activeIdx === idx){
+          score++; wrap.querySelector('#wm-score').textContent = score;
+          h.style.background = '#dde4ee'; h.textContent = ''; activeIdx = -1;
+        }
+      };
+    })(i);
+    grid.appendChild(h); holes.push(h);
+  }
+  function popMole(){
+    if (activeIdx !== -1){ holes[activeIdx].style.background = '#dde4ee'; holes[activeIdx].textContent = ''; }
+    activeIdx = Math.floor(Math.random()*9);
+    holes[activeIdx].style.background = '#ff9a3d'; holes[activeIdx].textContent = '🦝';
+  }
+  var moleTimer = setInterval(popMole, 700);
+  var countdown = setInterval(function(){
+    timeLeft--; wrap.querySelector('#wm-time').textContent = timeLeft;
+    if (timeLeft <= 0){
+      clearInterval(moleTimer); clearInterval(countdown);
+      if (activeIdx !== -1) holes[activeIdx].textContent = '';
+      wrap.insertAdjacentHTML('beforeend', '<p style="text-align:center;font-weight:700;margin-top:10px;">終了！</p>');
+      onFinish(score);
+    }
+  }, 1000);
+  return function cleanup(){ clearInterval(moleTimer); clearInterval(countdown); };
+}
+
+// ---- 3. 数字タッチ(シュルテ表) ----
+function implSchulte(area, onFinish){
+  var nums = []; for (var i=1;i<=25;i++) nums.push(i);
+  for (i=nums.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=nums[i]; nums[i]=nums[j]; nums[j]=t; }
+  var next = 1, startT = Date.now(), timerDisplay;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">経過時間 <span id="sc-time">0.0</span>秒 / 次は <span id="sc-next">1</span></div>'
+    + '<div id="sc-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;"></div>';
+  area.appendChild(wrap);
+  var grid = wrap.querySelector('#sc-grid');
+  nums.forEach(function(n){
+    var c = document.createElement('div');
+    c.textContent = n;
+    c.style.cssText = 'aspect-ratio:1;background:#fff;border:1px solid #cdd7e6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;';
+    c.onclick = function(){
+      if (Number(c.textContent) !== next) return;
+      c.style.background = '#2e9e5b'; c.style.color = '#fff';
+      next++;
+      wrap.querySelector('#sc-next').textContent = next <= 25 ? next : '-';
+      if (next > 25){
+        clearInterval(timerDisplay);
+        var secs = (Date.now()-startT)/1000;
+        wrap.querySelector('#sc-time').textContent = secs.toFixed(1);
+        onFinish(Number(secs.toFixed(2)));
+      }
+    };
+    grid.appendChild(c);
+  });
+  timerDisplay = setInterval(function(){
+    wrap.querySelector('#sc-time').textContent = ((Date.now()-startT)/1000).toFixed(1);
+  }, 100);
+  return function cleanup(){ clearInterval(timerDisplay); };
+}
+
+// ---- 4. 神経衰弱 ----
+function implMemory(area, onFinish){
+  var icons = ['🕵️','🔍','📷','🧤','🚗','🔦','📇','🗝️'];
+  var cards = icons.concat(icons);
+  for (var i=cards.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=cards[i]; cards[i]=cards[j]; cards[j]=t; }
+  var flipped = [], matchedCount = 0, startT = Date.now(), locked = false, timerDisplay;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">経過時間 <span id="mm-time">0.0</span>秒</div>'
+    + '<div id="mm-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;"></div>';
+  area.appendChild(wrap);
+  var grid = wrap.querySelector('#mm-grid');
+  cards.forEach(function(icon){
+    var c = document.createElement('div');
+    c.style.cssText = 'aspect-ratio:1;background:#2f6fd6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;';
+    c.dataset.icon = icon; c.dataset.open = '0';
+    c.onclick = function(){
+      if (locked || c.dataset.open === '1' || flipped.indexOf(c) !== -1) return;
+      c.dataset.open = '1'; c.style.background = '#fff'; c.textContent = icon;
+      flipped.push(c);
+      if (flipped.length === 2){
+        if (flipped[0].dataset.icon === flipped[1].dataset.icon){
+          matchedCount++; flipped = [];
+          if (matchedCount === icons.length){
+            clearInterval(timerDisplay);
+            var secs = (Date.now()-startT)/1000;
+            wrap.querySelector('#mm-time').textContent = secs.toFixed(1);
+            onFinish(Number(secs.toFixed(2)));
+          }
+        } else {
+          locked = true;
+          setTimeout(function(){
+            flipped.forEach(function(fc){ fc.dataset.open = '0'; fc.style.background = '#2f6fd6'; fc.textContent = ''; });
+            flipped = []; locked = false;
+          }, 700);
+        }
+      }
+    };
+    grid.appendChild(c);
+  });
+  timerDisplay = setInterval(function(){ wrap.querySelector('#mm-time').textContent = ((Date.now()-startT)/1000).toFixed(1); }, 100);
+  return function cleanup(){ clearInterval(timerDisplay); };
+}
+
+// ---- 5. 連打チャレンジ ----
+function implTapchallenge(area, onFinish){
+  var count = 0, started = false, countdown, endT;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">残り <span id="tc-time">10.0</span>秒</div>'
+    + '<div id="tc-btn" style="height:220px;border-radius:16px;background:#ff6a1f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:800;user-select:none;">0</div>'
+    + '<p style="text-align:center;color:#888;font-size:12px;margin-top:8px;">連打ボタンをタップしてスタート</p>';
+  area.appendChild(wrap);
+  var btn = wrap.querySelector('#tc-btn');
+  btn.onclick = function(){
+    if (started && endT && Date.now() >= endT) return;
+    if (!started){
+      started = true; endT = Date.now()+10000;
+      countdown = setInterval(function(){
+        var rem = Math.max(0, (endT-Date.now())/1000);
+        wrap.querySelector('#tc-time').textContent = rem.toFixed(1);
+        if (rem <= 0){
+          clearInterval(countdown); btn.style.background = '#8a95a1';
+          onFinish(count);
+        }
+      }, 100);
+    }
+    count++; btn.textContent = count;
+  };
+  return function cleanup(){ clearInterval(countdown); };
+}
+
+// ---- 6. ヘビゲーム ----
+function implSnake(area, onFinish){
+  var cols = 15, rows = 15, cell = 16;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:8px;font-weight:700;">スコア <span id="sn-score">0</span></div>'
+    + '<canvas id="sn-canvas" width="'+(cols*cell)+'" height="'+(rows*cell)+'" style="display:block;margin:0 auto;background:#0d1b3e;border-radius:8px;"></canvas>'
+    + '<div style="display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,40px);gap:4px;justify-content:center;margin-top:10px;">'
+    + '<div></div><button id="sn-up" style="grid-column:2;">↑</button><div></div>'
+    + '<button id="sn-left">←</button><button id="sn-down">↓</button><button id="sn-right">→</button></div>';
+  area.appendChild(wrap);
+  var canvas = wrap.querySelector('#sn-canvas'), ctx = canvas.getContext('2d');
+  var snake = [{x:7,y:7}], dir = {x:1,y:0}, nextDir = dir, score = 0, over = false, food;
+  function spawnFood(){
+    var f;
+    do { f = { x: Math.floor(Math.random()*cols), y: Math.floor(Math.random()*rows) }; }
+    while (snake.some(function(s){ return s.x===f.x && s.y===f.y; }));
+    return f;
+  }
+  food = spawnFood();
+  function setDir(x,y){ if (x===-dir.x && y===-dir.y) return; nextDir = {x:x,y:y}; }
+  wrap.querySelector('#sn-up').onclick = function(){ setDir(0,-1); };
+  wrap.querySelector('#sn-down').onclick = function(){ setDir(0,1); };
+  wrap.querySelector('#sn-left').onclick = function(){ setDir(-1,0); };
+  wrap.querySelector('#sn-right').onclick = function(){ setDir(1,0); };
+  var touchStartX = 0, touchStartY = 0;
+  canvas.addEventListener('touchstart', function(e){ var t=e.touches[0]; touchStartX=t.clientX; touchStartY=t.clientY; }, {passive:true});
+  canvas.addEventListener('touchend', function(e){
+    var t = e.changedTouches[0], dx = t.clientX-touchStartX, dy = t.clientY-touchStartY;
+    if (Math.abs(dx) > Math.abs(dy)){ if (Math.abs(dx)>10) setDir(dx>0?1:-1,0); }
+    else { if (Math.abs(dy)>10) setDir(0,dy>0?1:-1); }
+  }, {passive:true});
+  function draw(){
+    ctx.fillStyle = '#0d1b3e'; ctx.fillRect(0,0,cols*cell,rows*cell);
+    ctx.fillStyle = '#ff5e2d'; ctx.fillRect(food.x*cell, food.y*cell, cell-2, cell-2);
+    snake.forEach(function(s,i){ ctx.fillStyle = i===0?'#6fd68a':'#3dbb6a'; ctx.fillRect(s.x*cell, s.y*cell, cell-2, cell-2); });
+  }
+  function step(){
+    if (over) return;
+    dir = nextDir;
+    var head = { x: snake[0].x+dir.x, y: snake[0].y+dir.y };
+    if (head.x<0 || head.x>=cols || head.y<0 || head.y>=rows || snake.some(function(s){ return s.x===head.x && s.y===head.y; })){
+      over = true; clearInterval(loop); onFinish(score); return;
+    }
+    snake.unshift(head);
+    if (head.x===food.x && head.y===food.y){ score++; wrap.querySelector('#sn-score').textContent = score; food = spawnFood(); }
+    else snake.pop();
+    draw();
+  }
+  draw();
+  var loop = setInterval(step, 160);
+  return function cleanup(){ clearInterval(loop); };
+}
+
+// ---- 7. 色シーケンス記憶 ----
+function implSimon(area, onFinish){
+  var colors = ['#e0303f','#2f6fd6','#e8a92a','#2e9e5b'];
+  var seq = [], userIdx = 0, round = 0, accepting = false, over = false, roundTimer = null;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;" id="sm-status">見て覚えてね…</div>'
+    + '<div id="sm-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:220px;margin:0 auto;"></div>';
+  area.appendChild(wrap);
+  var grid = wrap.querySelector('#sm-grid');
+  function flash(p){ p.style.opacity = 1; setTimeout(function(){ if (!over) p.style.opacity = .55; }, 220); }
+  var pads = colors.map(function(col, idx){
+    var p = document.createElement('div');
+    p.style.cssText = 'height:100px;border-radius:10px;background:'+col+';opacity:.55;';
+    p.onclick = function(){
+      if (!accepting || over) return;
+      flash(p);
+      if (seq[userIdx] !== idx){
+        accepting = false; over = true;
+        wrap.querySelector('#sm-status').textContent = 'ミス！記録: '+round+'回';
+        onFinish(round); return;
+      }
+      userIdx++;
+      if (userIdx === seq.length){
+        accepting = false; round++;
+        roundTimer = setTimeout(nextRound, 700);
+      }
+    };
+    grid.appendChild(p);
+    return p;
+  });
+  function nextRound(){
+    if (over) return;
+    seq.push(Math.floor(Math.random()*4));
+    userIdx = 0;
+    wrap.querySelector('#sm-status').textContent = '見て覚えてね…（'+seq.length+'手）';
+    var i = 0;
+    var t = setInterval(function(){
+      if (over){ clearInterval(t); return; }
+      flash(pads[seq[i]]); i++;
+      if (i >= seq.length){ clearInterval(t); accepting = true; wrap.querySelector('#sm-status').textContent = 'まねしてタップ！'; }
+    }, 650);
+  }
+  nextRound();
+  return function cleanup(){ over = true; clearTimeout(roundTimer); };
+}
+
+// ---- 8. 証拠品キャッチ ----
+function implCatchgame(area, onFinish){
+  var w = 260, h = 320, basketX = w/2, basketW = 60, score = 0, timeLeft = 30, items = [], over = false, raf = null;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:8px;font-weight:700;">残り <span id="cg-time">30</span>秒 / スコア <span id="cg-score">0</span></div>'
+    + '<canvas id="cg-canvas" width="'+w+'" height="'+h+'" style="display:block;margin:0 auto;background:#e7edf6;border-radius:8px;touch-action:none;"></canvas>';
+  area.appendChild(wrap);
+  var canvas = wrap.querySelector('#cg-canvas'), ctx = canvas.getContext('2d');
+  function spawn(){
+    items.push({ x: 20+Math.random()*(w-40), y: -20, v: 2+Math.random()*2, bad: Math.random()<0.2 });
+  }
+  canvas.addEventListener('touchmove', function(e){ e.preventDefault(); var r=canvas.getBoundingClientRect(); basketX = e.touches[0].clientX - r.left; }, {passive:false});
+  canvas.addEventListener('mousemove', function(e){ var r=canvas.getBoundingClientRect(); basketX = e.clientX - r.left; });
+  var spawnTimer = setInterval(spawn, 700);
+  var countdown = setInterval(function(){
+    timeLeft--; wrap.querySelector('#cg-time').textContent = timeLeft;
+    if (timeLeft <= 0){ over = true; clearInterval(spawnTimer); clearInterval(countdown); onFinish(score); }
+  }, 1000);
+  function step(){
+    if (over) return;
+    ctx.fillStyle = '#e7edf6'; ctx.fillRect(0,0,w,h);
+    ctx.font = '24px sans-serif';
+    items.forEach(function(it){ it.y += it.v; ctx.fillText(it.bad?'💣':'📷', it.x-12, it.y); });
+    items = items.filter(function(it){
+      if (it.y > h-40 && it.y < h-10 && Math.abs(it.x-basketX) < basketW/2){
+        score = it.bad ? Math.max(0, score-1) : score+1;
+        wrap.querySelector('#cg-score').textContent = score;
+        return false;
+      }
+      return it.y < h+20;
+    });
+    ctx.fillStyle = '#2f6fd6'; ctx.fillRect(basketX-basketW/2, h-16, basketW, 12);
+    raf = requestAnimationFrame(step);
+  }
+  raf = requestAnimationFrame(step);
+  return function cleanup(){ over = true; clearInterval(spawnTimer); clearInterval(countdown); if (raf) cancelAnimationFrame(raf); };
+}
+
+// ---- 9. スライドパズル ----
+function implSlidepuzzle(area, onFinish){
+  var n = 4, tiles = []; for (var i=1;i<n*n;i++) tiles.push(i); tiles.push(0);
+  function validMoves(blankIdx){
+    var r = Math.floor(blankIdx/n), c = blankIdx%n, res = [];
+    if (r>0) res.push(blankIdx-n);
+    if (r<n-1) res.push(blankIdx+n);
+    if (c>0) res.push(blankIdx-1);
+    if (c<n-1) res.push(blankIdx+1);
+    return res;
+  }
+  var blank = tiles.indexOf(0);
+  for (var s=0; s<200; s++){
+    var neighbors = validMoves(blank);
+    var pick = neighbors[Math.floor(Math.random()*neighbors.length)];
+    tiles[blank] = tiles[pick]; tiles[pick] = 0; blank = pick;
+  }
+  var moves = 0;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">手数 <span id="sp-moves">0</span></div>'
+    + '<div id="sp-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:240px;margin:0 auto;"></div>';
+  area.appendChild(wrap);
+  var grid = wrap.querySelector('#sp-grid');
+  function render(){
+    grid.innerHTML = '';
+    tiles.forEach(function(v, idx){
+      var c = document.createElement('div');
+      c.style.cssText = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;border-radius:6px;'
+        + (v===0 ? 'background:transparent;' : 'background:#5fb4ff;color:#fff;');
+      c.textContent = v===0 ? '' : v;
+      c.onclick = function(){
+        var b = tiles.indexOf(0);
+        if (v===0 || validMoves(b).indexOf(idx)===-1) return;
+        tiles[b] = tiles[idx]; tiles[idx] = 0; moves++;
+        wrap.querySelector('#sp-moves').textContent = moves;
+        render();
+        var solved = true;
+        for (var k=0;k<n*n-1;k++){ if (tiles[k]!==k+1){ solved=false; break; } }
+        if (solved && tiles[n*n-1]===0) onFinish(moves);
+      };
+      grid.appendChild(c);
+    });
+  }
+  render();
+  return function cleanup(){};
+}
+
+// ---- 10. 尾行タイミング ----
+function implTailing(area, onFinish){
+  var w = 260, streak = 0, pos = 0, dir = 1, speed = 3, zoneStart = 0, zoneW = 60, running = true, raf = null;
+  var wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="text-align:center;margin-bottom:10px;font-weight:700;">連続成功 <span id="tl-streak">0</span></div>'
+    + '<div style="position:relative;height:36px;background:#dde4ee;border-radius:8px;overflow:hidden;">'
+    + '<div id="tl-zone" style="position:absolute;top:0;bottom:0;background:#6fd68a;"></div>'
+    + '<div id="tl-marker" style="position:absolute;top:0;bottom:0;width:6px;background:#e0303f;"></div></div>'
+    + '<button class="btn-primary" id="tl-tap" style="margin-top:14px;">タップ！</button>'
+    + '<p style="text-align:center;color:#888;font-size:12px;margin-top:8px;" id="tl-msg">緑のゾーンでタップしよう</p>';
+  area.appendChild(wrap);
+  var zoneEl = wrap.querySelector('#tl-zone'), markerEl = wrap.querySelector('#tl-marker');
+  function newZone(){
+    zoneW = Math.max(24, 60 - streak*3);
+    zoneStart = Math.random()*(w-zoneW);
+    zoneEl.style.left = zoneStart+'px'; zoneEl.style.width = zoneW+'px';
+  }
+  newZone();
+  function loop(){
+    if (!running) return;
+    pos += dir*speed;
+    if (pos >= w-6 || pos <= 0) dir *= -1;
+    markerEl.style.left = pos+'px';
+    raf = requestAnimationFrame(loop);
+  }
+  raf = requestAnimationFrame(loop);
+  wrap.querySelector('#tl-tap').onclick = function(){
+    if (!running) return;
+    if (pos >= zoneStart && pos <= zoneStart+zoneW){
+      streak++; wrap.querySelector('#tl-streak').textContent = streak;
+      speed = Math.min(10, speed+0.4);
+      newZone();
+      wrap.querySelector('#tl-msg').textContent = 'ナイス！次はさらに難しくなるよ';
+    } else {
+      running = false;
+      wrap.querySelector('#tl-msg').textContent = 'バレた！記録: '+streak+'連続';
+      onFinish(streak);
+    }
+  };
+  return function cleanup(){ running = false; if (raf) cancelAnimationFrame(raf); };
+}
+
+var GAME_IMPL = {
+  reaction: implReaction, whackamole: implWhackamole, schulte: implSchulte, memory: implMemory,
+  tapchallenge: implTapchallenge, snake: implSnake, simon: implSimon, catchgame: implCatchgame,
+  slidepuzzle: implSlidepuzzle, tailing: implTailing,
+};
+
 // ---- 初期化 ----
 (function init(){
-  var m = getMember();
-  if (m && m.memberId && m.name){ enterApp(); }
+  enterApp(); // 未登録ならゲスト用トップページを表示する
 })();
 </script>
 </body>

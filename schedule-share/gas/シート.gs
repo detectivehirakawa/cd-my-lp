@@ -10,7 +10,7 @@ var SHEETS_ = {
   CASE:      { name: '案件',     header: ['案件ID','案件名','会社ID_A','会社ID_B','状態','担当者調査員ID','経費提出状態','作成者調査員ID','作成日時','備考','調査目的'] },
   CASEMSG:   { name: '案件メッセージ', header: ['メッセージID','案件ID','投稿者調査員ID','本文','投稿日時'] },
   // メール会員登録（たたき台。会社との紐付けは未実装）
-  MEMBER:    { name: '会員',     header: ['会員ID','メールアドレス','氏名','アバター','ひとこと','自己紹介','登録日時','最終ログイン日時','事務所名','探偵歴','使用可能機材','届出番号'] },
+  MEMBER:    { name: '会員',     header: ['会員ID','メールアドレス','氏名','アバター','ひとこと','自己紹介','登録日時','最終ログイン日時','事務所名','探偵歴','使用可能機材','届出番号','会員番号'] },
   MEMBERCODE:{ name: '会員確認コード', header: ['コード','メールアドレス','発行日時','有効期限','使用日時'] },
   DM:        { name: 'DM',       header: ['メッセージID','送信者会員ID','受信者会員ID','本文','送信日時','既読日時'] },
   CIRCLE:    { name: 'サークル', header: ['サークルID','サークル名','説明','作成者会員ID','作成日時'] },
@@ -26,17 +26,31 @@ var SHEETS_ = {
     '登録者会員ID','登録日時','更新日時',
   ] },
   VEHICLE:   { name: '車両',     header: ['車両ID','対象者ID','メーカー','車種','色','ナンバー','登録日時'] },
+  // お知らせ。対象範囲が「全社」なら運営からの全体アナウンス、会社ID（事務所名）ならその事務所内限定のお知らせ。
+  ANNOUNCE:  { name: 'お知らせ', header: ['お知らせID','対象範囲','タイトル','本文','投稿者調査員ID','投稿日時'] },
+  // ミニゲームの自己ベストスコア（ゲームID×会員IDで1行）
+  GAMESCORE: { name: 'ミニゲームスコア', header: ['ゲームID','会員ID','ベストスコア','更新日時'] },
   // 将来拡張用（今回はスキーマのみ作成、UI/APIは未実装）
   REPORT:    { name: '日報',     header: ['日報ID','調査員ID','対象日','案件名','稼働時間','経費合計','経費詳細JSON','報告本文','提出日時'] },
 };
 
+// 1回の doGet/doPost 実行内でだけ有効なキャッシュ。実行ごとにグローバルがリセットされるので安全。
+// これが無いと、1リクエストの中で同じシートを何度もSpreadsheetApp.openByIdし直す/読み直すことになり、
+// GASの応答が極端に遅くなる（体感の「動作が遅い」の主因）。
+var _ssCache_ = null;
+var _sheetCache_ = {};
+var _rowsCache_ = {};
+
 function masterSpreadsheet_() {
+  if (_ssCache_) return _ssCache_;
   var id = PropertiesService.getScriptProperties().getProperty('MASTER_SHEET_ID');
   if (!id) throw new Error('MASTER_SHEET_ID が未設定です');
-  return SpreadsheetApp.openById(id);
+  _ssCache_ = SpreadsheetApp.openById(id);
+  return _ssCache_;
 }
 
 function ensureSheet_(key) {
+  if (_sheetCache_[key]) return _sheetCache_[key];
   var def = SHEETS_[key];
   var ss = masterSpreadsheet_();
   var sh = ss.getSheetByName(def.name);
@@ -45,6 +59,7 @@ function ensureSheet_(key) {
     sh.getRange(1, 1, 1, def.header.length).setValues([def.header]);
     sh.setFrozenRows(1);
   }
+  _sheetCache_[key] = sh;
   return sh;
 }
 
@@ -52,18 +67,23 @@ function ensureAllSheets_() {
   Object.keys(SHEETS_).forEach(function (k) { ensureSheet_(k); });
 }
 
+function invalidateRows_(key) {
+  delete _rowsCache_[key];
+}
+
 function readRows_(key) {
+  if (_rowsCache_[key]) return _rowsCache_[key];
   var sh = ensureSheet_(key);
   var last = sh.getLastRow();
   var def = SHEETS_[key];
-  if (last < 2) return [];
-  var values = sh.getRange(2, 1, last - 1, def.header.length).getValues();
-  return values.map(function (row, i) {
+  var rows = last < 2 ? [] : sh.getRange(2, 1, last - 1, def.header.length).getValues().map(function (row, i) {
     var obj = {};
     def.header.forEach(function (h, idx) { obj[h] = row[idx]; });
     obj._row = i + 2;
     return obj;
   });
+  _rowsCache_[key] = rows;
+  return rows;
 }
 
 function appendRow_(key, obj) {
@@ -71,6 +91,7 @@ function appendRow_(key, obj) {
   var def = SHEETS_[key];
   var row = def.header.map(function (h) { return obj[h] !== undefined ? obj[h] : ''; });
   sh.appendRow(row);
+  invalidateRows_(key);
   return sh.getLastRow();
 }
 
@@ -80,6 +101,7 @@ function updateRow_(key, rowIndex, obj) {
   def.header.forEach(function (h, idx) {
     if (obj[h] !== undefined) sh.getRange(rowIndex, idx + 1).setValue(obj[h]);
   });
+  invalidateRows_(key);
 }
 
 function nextId_(prefix, digits, existingIds) {
@@ -92,6 +114,18 @@ function nextId_(prefix, digits, existingIds) {
   var s = String(n);
   while (s.length < digits) s = '0' + s;
   return prefix + s;
+}
+
+// 登録完了時に会員へ付与する、6桁ゼロ埋めの表示用会員番号（内部の会員ID=K00001等とは別）。
+function nextMemberNumber_(existingNumbers) {
+  var max = 0;
+  existingNumbers.forEach(function (n) {
+    var v = parseInt(String(n || ''), 10);
+    if (!isNaN(v)) max = Math.max(max, v);
+  });
+  var s = String(max + 1);
+  while (s.length < 6) s = '0' + s;
+  return s;
 }
 
 function dateKey_(v) {

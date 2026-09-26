@@ -1,11 +1,18 @@
 // 会員.gs — メールアドレスによる会員登録・ログイン（たたき台。会社との紐付けは未実装）
 
+// スマホの日本語入力で「@」「.」等が全角になってしまうことがあるため半角に正規化する
+function toHalfWidthEmail_(s) {
+  return String(s || '').replace(/[！-～]/g, function (c) {
+    return String.fromCharCode(c.charCodeAt(0) - 0xFEE0);
+  }).replace(/　/g, ' ');
+}
+
 function isValidEmail_(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s || ''));
 }
 
 function memberRequestCode_(body) {
-  var email = String(body.email || '').trim().toLowerCase();
+  var email = toHalfWidthEmail_(body.email).trim().toLowerCase();
   if (!isValidEmail_(email)) return json_({ ok: false, error: 'メールアドレスの形式が正しくありません' });
 
   if (!throttleEmailOk_(email)) return json_({ ok: false, error: '送信回数が多すぎます。しばらくしてからお試しください' });
@@ -38,7 +45,7 @@ function throttleEmailOk_(email) {
 }
 
 function memberVerify_(body) {
-  var email = String(body.email || '').trim().toLowerCase();
+  var email = toHalfWidthEmail_(body.email).trim().toLowerCase();
   var code = String(body.code || '').trim();
   if (!isValidEmail_(email)) return json_({ ok: false, error: 'メールアドレスの形式が正しくありません' });
 
@@ -109,9 +116,18 @@ function memberCompleteRegistration_(body) {
   var m = rows.filter(function (r) { return r['会員ID'] === memberId; })[0];
   if (!m) return json_({ ok: false, error: '会員情報が見つかりません' });
 
-  updateRow_('MEMBER', m._row, {
+  var patch = {
     '氏名': name, '事務所名': agencyName, '探偵歴': experience,
     '使用可能機材': equipment, '届出番号': license,
+  };
+  var memberNumber = m['会員番号'];
+  if (!memberNumber) {
+    memberNumber = nextMemberNumber_(rows.map(function (r) { return r['会員番号']; }));
+    patch['会員番号'] = memberNumber;
+  }
+  updateRow_('MEMBER', m._row, patch);
+  return json_({
+    ok: true, memberId: memberId, name: name, agencyName: agencyName,
+    experience: experience, equipment: equipment, license: license, memberNumber: memberNumber,
   });
-  return json_({ ok: true, memberId: memberId, name: name, agencyName: agencyName, experience: experience, equipment: equipment, license: license });
 }

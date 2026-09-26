@@ -26,7 +26,8 @@ function doPost(e) {
     'case.message.post': idempotent_('cmsg', caseMessagePost_),
     'case.updateStatus': caseUpdateStatus_,
     'case.expenseSubmitted': caseMarkExpenseSubmitted_,
-    'feed.recent': feedRecent_,
+    'announce.recent': announceRecent_,
+    'announce.post': idempotent_('ann', announcePost_),
     'subject.list': subjectList_,
     'subject.get': subjectGet_,
     'subject.save': idempotent_('subj', subjectSave_),
@@ -52,6 +53,9 @@ function doPost(e) {
     'circle.post': idempotent_('cpost', circlePost_),
     'admin.setProp': adminSetProp_,
     'admin.getProps': adminGetProps_,
+    'admin.announcePost': adminAnnouncePost_,
+    'game.submitScore': idempotent_('gscore', gameScoreSubmit_),
+    'game.ranking': gameRankingGet_,
   };
   var fn = routes[body.mode];
   if (!fn) return json_({ ok: false, error: 'modeが不正です' });

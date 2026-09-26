@@ -11,6 +11,8 @@ function memberBrief_(m) {
 
 // ---- プロフィール ----
 function memberGetProfile_(body) {
+  var me = verifyMember_(body.memberId, body.email);
+  if (!me) return json_({ ok: false, error: '本人確認できませんでした' });
   var target = String(body.targetMemberId || body.memberId || '');
   var m = readRows_('MEMBER').filter(function (r) { return r['会員ID'] === target; })[0];
   if (!m) return json_({ ok: false, error: '会員が見つかりません' });
@@ -18,6 +20,7 @@ function memberGetProfile_(body) {
     ok: true, memberId: m['会員ID'], name: m['氏名'] || '(名無し)', avatar: m['アバター'] || '🕵️',
     statusMsg: m['ひとこと'] || '', bio: m['自己紹介'] || '', joinedAt: m['登録日時'] ? String(m['登録日時']) : '',
     agencyName: m['事務所名'] || '', experience: m['探偵歴'] || '', equipment: m['使用可能機材'] || '', license: m['届出番号'] || '',
+    memberNumber: m['会員番号'] || '',
   });
 }
 
@@ -264,6 +267,8 @@ function circleJoin_(body) {
 }
 
 function circleGet_(body) {
+  var me = verifyMember_(body.memberId, body.email);
+  if (!me) return json_({ ok: false, error: '本人確認できませんでした' });
   var circleId = String(body.circleId || '');
   var circle = readRows_('CIRCLE').filter(function (c) { return c['サークルID'] === circleId; })[0];
   if (!circle) return json_({ ok: false, error: 'サークルが見つかりません' });
@@ -284,7 +289,7 @@ function circleGet_(body) {
   });
   posts.sort(function (a, b) { return new Date(a.postedAt) - new Date(b.postedAt); });
 
-  var joined = body.memberId ? readRows_('CIRCLEMEMBER').some(function (r) { return r['サークルID'] === circleId && r['会員ID'] === String(body.memberId); }) : false;
+  var joined = readRows_('CIRCLEMEMBER').some(function (r) { return r['サークルID'] === circleId && r['会員ID'] === me['会員ID']; });
 
   return json_({
     ok: true, id: circle['サークルID'], name: circle['サークル名'], description: circle['説明'] || '',

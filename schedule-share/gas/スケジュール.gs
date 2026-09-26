@@ -45,6 +45,7 @@ function calendarGet_(body) {
 function scheduleSet_(body) {
   var auth = verifyMemberForWork_(body.companyCode, body.investigatorId);
   if (!auth) return json_({ ok: false, error: '本人確認できませんでした' });
+  var myAgency = auth.user['会社ID'];
 
   var targetId = String(body.targetInvestigatorId || body.investigatorId);
   var date = String(body.date || '');
@@ -55,6 +56,8 @@ function scheduleSet_(body) {
 
   var targetUser = readRows_('MEMBER').filter(function (m) { return m['会員ID'] === targetId; })[0];
   if (!targetUser) return json_({ ok: false, error: '対象の調査員が見つかりません' });
+  var targetAgency = targetUser['事務所名'] || '(所属未設定)';
+  if (targetAgency !== myAgency) return json_({ ok: false, error: '他の事務所の予定は編集できません' });
 
   var rows = readRows_('SCHEDULE');
   var existing = rows.filter(function (r) {

@@ -214,26 +214,47 @@ function caseMarkExpenseSubmitted_(body) {
   return json_({ ok: true });
 }
 
-function feedRecent_(body) {
+// 対象範囲が「全社」（運営からのお知らせ。新機能リリース等）か、自分の事務所ID（事務所内限定のお知らせ）の
+// ものだけを表示する。案件情報とは無関係。
+function announceRecent_(body) {
   var auth = verifyMemberForWork_(body.companyCode, body.investigatorId);
   if (!auth) return json_({ ok: false, error: '本人確認できませんでした' });
   var myAgency = auth.user['会社ID'];
 
-  var myCases = {};
-  visibleCases_(myAgency).forEach(function (c) { myCases[c['案件ID']] = c; });
-
   var memberMap = {};
   readRows_('MEMBER').forEach(function (m) { memberMap[m['会員ID']] = m; });
 
-  var list = readRows_('CASEMSG').filter(function (m) { return myCases[m['案件ID']]; }).map(function (m) {
-    var poster = memberMap[m['投稿者調査員ID']] || {};
-    var c = myCases[m['案件ID']];
+  var list = readRows_('ANNOUNCE').filter(function (a) {
+    return a['対象範囲'] === '全社' || a['対象範囲'] === myAgency;
+  }).map(function (a) {
+    var poster = memberMap[a['投稿者調査員ID']] || {};
     return {
-      id: m['メッセージID'], caseId: m['案件ID'], caseTitle: c['案件名'],
-      body: m['本文'], posterName: poster['氏名'] || '', posterCompanyName: agencyOf_(poster),
-      postedAt: m['投稿日時'] ? String(m['投稿日時']) : '',
+      id: a['お知らせID'], scope: a['対象範囲'] === '全社' ? '全社' : '社内',
+      title: a['タイトル'] || '', body: a['本文'] || '',
+      posterName: poster['氏名'] || '', postedAt: a['投稿日時'] ? String(a['投稿日時']) : '',
     };
   });
   list.sort(function (a, b) { return new Date(b.postedAt) - new Date(a.postedAt); });
   return json_({ ok: true, feed: list.slice(0, 50) });
+}
+
+// 会員が自分の事務所内向けにお知らせを投稿する（対象範囲=自分の会社ID）。
+// 「全社」向けの運営アナウンスは admin.announcePost（運営専用）でのみ投稿できる。
+function announcePost_(body) {
+  var auth = verifyMemberForWork_(body.companyCode, body.investigatorId);
+  if (!auth) return json_({ ok: false, error: '本人確認できませんでした' });
+
+  var title = String(body.title || '').trim();
+  var text = String(body.body || '').trim();
+  if (!title) return json_({ ok: false, error: 'タイトルを入力してください' });
+  if (title.length > 60) return json_({ ok: false, error: 'タイトルは60文字以内にしてください' });
+  if (text.length > 1000) return json_({ ok: false, error: '本文は1000文字以内にしてください' });
+
+  var ids = readRows_('ANNOUNCE').map(function (a) { return a['お知らせID']; });
+  var newId = nextId_('N', 4, ids);
+  appendRow_('ANNOUNCE', {
+    'お知らせID': newId, '対象範囲': auth.user['会社ID'], 'タイトル': title, '本文': text,
+    '投稿者調査員ID': body.investigatorId, '投稿日時': new Date(),
+  });
+  return json_({ ok: true, id: newId });
 }
