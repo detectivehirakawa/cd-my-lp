@@ -394,6 +394,7 @@
 <div class="screen" id="feed-screen">
   <div class="subhead"><button class="home-btn" data-go="home-screen">🏠 TOP</button><span class="title">📢 お知らせ</span></div>
   <div class="row-list" id="feed-list"></div>
+  <button class="fab" id="feed-new-btn">＋</button>
 </div>
 
 <!-- 8. マイページ -->
@@ -403,6 +404,7 @@
     <div class="myp-avatar" id="myp-avatar-display">🕵️</div>
     <div class="myp-name">
       <span id="myp-name"></span>
+      <small id="myp-membernum" style="color:#999;"></small>
       <small id="myp-company"></small>
       <small id="myp-statusmsg" style="color:#2f6fd6;"></small>
     </div>
@@ -777,19 +779,16 @@ function loadHomeAlerts(){
 }
 
 function loadHomeFeedPreview(){
-  callGas({ mode:'feed.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+  callGas({ mode:'announce.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
     var list = $('home-feed-list');
     if (!res.ok){ list.innerHTML = ''; return; }
     var top = res.feed.slice(0, 3);
     if (top.length === 0){ list.innerHTML = '<div class="row-item"><span class="lbl" style="color:#999;">まだお知らせはありません</span></div>'; return; }
     list.innerHTML = top.map(function(n){
-      return '<div class="row-item link" data-case="'+n.caseId+'"><span class="ico">🆕</span>'
-        + '<span class="lbl">'+escapeHtml(n.caseTitle)+'：'+escapeHtml(n.body.slice(0,20))+'</span>'
+      return '<div class="row-item"><span class="ico">'+(n.scope==='全社'?'📣':'🏢')+'</span>'
+        + '<span class="lbl">'+escapeHtml(n.title)+'</span>'
         + '<span class="sub">'+fmtDate(n.postedAt)+'</span></div>';
     }).join('');
-    list.querySelectorAll('[data-case]').forEach(function(el){
-      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-case')); };
-    });
   });
 }
 
@@ -1027,25 +1026,36 @@ $('subject-save-btn').onclick = function(){
   });
 };
 
-// ---- 7. お知らせ一覧 ----
+// ---- 7. お知らせ一覧（運営からの全社アナウンス＋自分の事務所内のお知らせ） ----
 function loadFeed(){
   var list = $('feed-list');
   list.innerHTML = '<p class="msg-info">読み込み中…</p>';
-  callGas({ mode:'feed.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
+  callGas({ mode:'announce.recent', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
     if (!res.ok){ list.innerHTML = '<p class="msg-info">'+res.error+'</p>'; return; }
     if (res.feed.length === 0){ list.innerHTML = '<p class="msg-info">まだお知らせはありません。</p>'; return; }
     list.innerHTML = res.feed.map(function(n){
-      return '<div class="row-item link" data-case="'+n.caseId+'">'
-        + '<span class="ico">🆕</span>'
-        + '<span class="lbl">'+escapeHtml(n.caseTitle)+'<br><span style="color:#888;font-weight:400;font-size:11px;">'
-        + escapeHtml(n.posterCompanyName)+' '+escapeHtml(n.posterName)+'：'+escapeHtml(n.body.slice(0,30))+'</span></span>'
+      var meta = n.scope==='全社' ? '運営からのお知らせ' : ('事務所内お知らせ'+(n.posterName?'・'+escapeHtml(n.posterName):''));
+      return '<div class="row-item">'
+        + '<span class="ico">'+(n.scope==='全社'?'📣':'🏢')+'</span>'
+        + '<span class="lbl">'+escapeHtml(n.title)+'<br><span style="color:#888;font-weight:400;font-size:11px;">'+meta+'</span>'
+        + '<br><span style="color:#555;font-weight:400;font-size:12px;white-space:pre-wrap;">'+escapeHtml(n.body)+'</span></span>'
         + '<span class="sub">'+fmtDate(n.postedAt)+'</span></div>';
     }).join('');
-    list.querySelectorAll('[data-case]').forEach(function(el){
-      el.onclick = function(){ showScreen('case-detail-screen'); openCaseDetail(el.getAttribute('data-case')); };
-    });
   });
 }
+$('feed-new-btn').onclick = function(){
+  var title = prompt('お知らせのタイトルを入力してください（自分の事務所内のメンバーに表示されます）');
+  if (!title) return;
+  var body = prompt('本文（任意）') || '';
+  callGas({
+    mode:'announce.post', submitId: newId(),
+    companyCode: session.companyCode, investigatorId: session.investigatorId,
+    title: title, body: body,
+  }).then(function(res){
+    if (!res.ok){ alert(res.error || '投稿に失敗しました'); return; }
+    loadFeed();
+  });
+};
 
 // ---- 8. マイページ ----
 var myProfileCache = null;
@@ -1058,6 +1068,7 @@ function loadMyPage(){
     myProfileCache = res;
     $('myp-avatar-display').textContent = res.avatar || '🕵️';
     $('myp-statusmsg').textContent = res.statusMsg || '';
+    $('myp-membernum').textContent = res.memberNumber ? ('会員番号 No.'+res.memberNumber) : '';
   });
   if (calData) fillMyPageSummary(); else loadMonth().then ? null : null;
   callGas({ mode:'case.list', companyCode: session.companyCode, investigatorId: session.investigatorId }).then(function(res){
