@@ -40,6 +40,8 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 #results a.result-item:hover{background:#f5f9ff}
 #results .r-name{font-weight:bold;color:#0f4fa8}
 #results .r-addr{font-size:.85rem;color:#666;margin-top:2px}
+.mosaic{display:inline-block;filter:blur(3px);user-select:none;color:#555;background:#dfe2e7;padding:0 3px;border-radius:3px;letter-spacing:1px}
+.mosaic-note{font-size:.72em;color:#b23b3b;background:#fdecea;border:1px solid #f5c2c0;border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap;display:inline-block}
 
 main{max-width:none;padding:0}
 #map{width:100%;height:calc(100vh - 120px)}
@@ -48,7 +50,7 @@ main{max-width:none;padding:0}
 </style></head><body>
 <header><h1>地図から探す</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
-<div class="note map-note">住所から機械的に変換した位置情報のため、実際の地点と多少ずれる場合があります。地図データ: OpenStreetMap contributors。マーカーをクリックすると詳細ページへ移動できます。</div>
+<div class="note map-note">住所から機械的に変換した位置情報のため、実際の地点と多少ずれる場合があります。地図データ: OpenStreetMap contributors。マーカーをクリックすると詳細ページへ移動できます。業者名・住所の詳細は、掲載許可をいただくまでモザイク表示にしています。</div>
 <main><div id="map"></div></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -71,10 +73,12 @@ main{max-width:none;padding:0}
       var g = geoData[id], r = byId[id];
       if(!r) return;
       var marker = L.marker([g.lat, g.lng]);
+      var nameHtml = r.m ? '<span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非非非非非</span> <span style="font-size:11px;color:#b23b3b">掲載許可待ち</span>' : r.n;
+      var addrHtml = r.m ? (r.p + r.a + ' <span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非</span>') : (r.p + r.a);
       marker.bindPopup(
         '<div style="font-size:13px;max-width:220px">' +
-        '<b>' + r.n + '</b><br>' +
-        '<span style="color:#666">' + r.p + r.a + '</span><br>' +
+        '<b>' + nameHtml + '</b><br>' +
+        '<span style="color:#666">' + addrHtml + '</span><br>' +
         '<a href="./biz/' + id + '.html" target="_blank">詳細を見る →</a></div>'
       );
       cluster.addLayer(marker);

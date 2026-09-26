@@ -37,6 +37,8 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
 #results a.result-item:hover{background:#f5f9ff}
 #results .r-name{font-weight:bold;color:#0f4fa8}
 #results .r-addr{font-size:.85rem;color:#666;margin-top:2px}
+.mosaic{display:inline-block;filter:blur(3px);user-select:none;color:#555;background:#dfe2e7;padding:0 3px;border-radius:3px;letter-spacing:1px}
+.mosaic-note{font-size:.72em;color:#b23b3b;background:#fdecea;border:1px solid #f5c2c0;border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap;display:inline-block}
 
 .form-card{background:#fff;border:1px solid #e3e6ea;border-radius:8px;padding:20px}
 .form-card label{display:block;margin:14px 0 6px;font-size:.9rem;color:#444}
@@ -73,7 +75,15 @@ footer{text-align:center;color:#999;font-size:.75rem;padding:24px}
   var type = q.get('type') || 'upgrade';
   var isRemove = type === 'remove';
   document.getElementById('pageTitle').textContent = isRemove ? '掲載情報の削除に関するお問い合わせ' : '掲載ページ充実に関するお問い合わせ';
-  document.getElementById('targetNote').textContent = (name || id) ? ('対象：' + name + '（届出番号 ' + id + '）') : '対象の業者が指定されていません。届出番号がお分かりの場合はご記入内容に含めてください。';
+  var targetText;
+  if (name) {
+    targetText = '対象：' + name + '（届出番号 ' + id + '）';
+  } else if (id) {
+    targetText = '対象：届出番号 ' + id + '（業者名は非公開のため表示していません。ご自身の業者名はご記入内容に含めてください）';
+  } else {
+    targetText = '対象の業者が指定されていません。届出番号がお分かりの場合はご記入内容に含めてください。';
+  }
+  document.getElementById('targetNote').textContent = targetText;
 
   function mailFallback(nm, ct, msg){
     var subject = (isRemove ? '【探偵ポータル】掲載削除の希望：' : '【探偵ポータル】掲載ページ充実の希望：') + (name || '（業者名未指定）');
