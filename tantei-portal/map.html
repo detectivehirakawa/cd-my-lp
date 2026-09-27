@@ -77,6 +77,23 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
 .free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
 .free-banner .btn--solid{box-shadow:none}
+.stats-section{background:#fff;border:1px solid var(--line);padding:24px 20px;margin:28px 0}
+.stats-section h2{font-size:1.05rem;font-family:var(--serif);font-weight:700;color:var(--ink);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 6px}
+.stats-lead{font-size:.85rem;color:var(--body);line-height:1.8;margin:0 0 18px}
+.year-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.year-chart .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.year-chart .bar{width:100%;background:var(--accent);border-radius:2px 2px 0 0}
+.year-chart .bar.partial{background:var(--accent-2)}
+.year-chart .bar-count{font-size:.62rem;color:var(--body);margin-bottom:2px;white-space:nowrap}
+.year-chart .bar-label{font-size:.62rem;color:var(--body);margin-top:6px;writing-mode:vertical-rl;text-orientation:mixed;height:34px}
+.stats-foot{font-size:.75rem;color:var(--body);margin-top:14px;line-height:1.7}
+.pref-rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px}
+.pref-rank .rank-item{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-soft);padding:8px 12px;font-size:.85rem}
+.pref-rank .rank-num{color:var(--accent-ink);font-weight:700;margin-right:6px}
+.pref-rank .rank-count{color:var(--body);font-size:.78rem}
+.knowledge-grid{display:grid;gap:16px;margin-top:4px}
+.knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
+.knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
 
 main{max-width:none;padding:0}
 #map{width:100%;height:calc(100vh - 120px)}
@@ -85,7 +102,7 @@ main{max-width:none;padding:0}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>地図から探す</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
-<div class="note map-note">住所から機械的に変換した位置情報のため、実際の地点と多少ずれる場合があります。地図データ: OpenStreetMap contributors。マーカーをクリックすると詳細ページへ移動できます。業者名・住所の詳細は、掲載許可をいただくまでモザイク表示にしています。</div>
+<div class="note map-note">住所から機械的に変換した位置情報のため、実際の地点と多少ずれる場合があります。地図データ: OpenStreetMap contributors。マーカーをクリックすると詳細ページへ移動できます。<span style="display:inline-block;width:10px;height:10px;background:#d0392b;border-radius:50%;vertical-align:middle;margin:0 4px 0 8px"></span>赤色のマーカーは掲載許可済み（業者名・住所を実データで表示）の業者です。その他は、掲載許可をいただくまでモザイク表示にしています。</div>
 <main><div id="map"></div></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -96,6 +113,12 @@ main{max-width:none;padding:0}
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
+  var permittedIcon = L.divIcon({
+    className: 'pin-permitted',
+    html: '<div style="width:16px;height:16px;background:#d0392b;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+  });
   var cluster = L.markerClusterGroup();
   Promise.all([
     fetch('./geo.json').then(function(r){return r.json();}),
@@ -107,7 +130,7 @@ main{max-width:none;padding:0}
     Object.keys(geoData).forEach(function(id){
       var g = geoData[id], r = byId[id];
       if(!r) return;
-      var marker = L.marker([g.lat, g.lng]);
+      var marker = L.marker([g.lat, g.lng], r.m === 0 ? { icon: permittedIcon } : {});
       var nameHtml = r.m ? '<span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非非非非非</span> <span style="font-size:11px;color:#b23b3b">掲載許可待ち</span>' : r.n;
       var addrHtml = r.m ? (r.a + ' <span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非</span>') : r.a;
       marker.bindPopup(

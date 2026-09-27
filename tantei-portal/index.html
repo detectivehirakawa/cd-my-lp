@@ -74,6 +74,23 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
 .free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
 .free-banner .btn--solid{box-shadow:none}
+.stats-section{background:#fff;border:1px solid var(--line);padding:24px 20px;margin:28px 0}
+.stats-section h2{font-size:1.05rem;font-family:var(--serif);font-weight:700;color:var(--ink);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 6px}
+.stats-lead{font-size:.85rem;color:var(--body);line-height:1.8;margin:0 0 18px}
+.year-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.year-chart .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.year-chart .bar{width:100%;background:var(--accent);border-radius:2px 2px 0 0}
+.year-chart .bar.partial{background:var(--accent-2)}
+.year-chart .bar-count{font-size:.62rem;color:var(--body);margin-bottom:2px;white-space:nowrap}
+.year-chart .bar-label{font-size:.62rem;color:var(--body);margin-top:6px;writing-mode:vertical-rl;text-orientation:mixed;height:34px}
+.stats-foot{font-size:.75rem;color:var(--body);margin-top:14px;line-height:1.7}
+.pref-rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px}
+.pref-rank .rank-item{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-soft);padding:8px 12px;font-size:.85rem}
+.pref-rank .rank-num{color:var(--accent-ink);font-weight:700;margin-right:6px}
+.pref-rank .rank-count{color:var(--body);font-size:.78rem}
+.knowledge-grid{display:grid;gap:16px;margin-top:4px}
+.knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
+.knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>全国探偵検索</h1>
 <p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7554件</p></header>
@@ -88,7 +105,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 </div>
 <div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。届出番号（8桁）は、最初の2桁が届出先の都道府県番号、次の2桁が届出を行った年（西暦の下2桁）、最後の4桁がその年の届出順番を表しています。</div>
 <div class="search-box">
-<input type="text" id="q" placeholder="業者名で検索（例：ABC探偵事務所）">
+<input type="text" id="q" placeholder="業者名・届出番号で検索（例：ABC探偵事務所、30070034）">
 <select id="prefFilter"><option value="">都道府県を選択</option><option value="北海道">北海道</option>
 <option value="青森県">青森県</option>
 <option value="岩手県">岩手県</option>
@@ -187,6 +204,28 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <a href="./miyazaki.html">宮崎県<span>70件</span></a>
 <a href="./kagoshima.html">鹿児島県<span>79件</span></a>
 <a href="./okinawa.html">沖縄県<span>58件</span></a></div></section>
+
+<section class="stats-section">
+<h2>届出データから見る探偵業界の動向</h2>
+<p class="stats-lead">当サイトは、都道府県公安委員会への届出情報（合計7554件）を集計して作成しています。届出番号には届出を行った年が含まれているため、これを集計することで新規届出件数の推移がわかります。</p>
+<div class="year-chart"><div class="bar-wrap"><span class="bar-count">421</span><div class="bar" style="height:39%"></div><span class="bar-label">2007</span></div><div class="bar-wrap"><span class="bar-count">154</span><div class="bar" style="height:14%"></div><span class="bar-label">2008</span></div><div class="bar-wrap"><span class="bar-count">162</span><div class="bar" style="height:15%"></div><span class="bar-label">2009</span></div><div class="bar-wrap"><span class="bar-count">175</span><div class="bar" style="height:16%"></div><span class="bar-label">2010</span></div><div class="bar-wrap"><span class="bar-count">151</span><div class="bar" style="height:14%"></div><span class="bar-label">2011</span></div><div class="bar-wrap"><span class="bar-count">206</span><div class="bar" style="height:19%"></div><span class="bar-label">2012</span></div><div class="bar-wrap"><span class="bar-count">191</span><div class="bar" style="height:17%"></div><span class="bar-label">2013</span></div><div class="bar-wrap"><span class="bar-count">205</span><div class="bar" style="height:19%"></div><span class="bar-label">2014</span></div><div class="bar-wrap"><span class="bar-count">212</span><div class="bar" style="height:19%"></div><span class="bar-label">2015</span></div><div class="bar-wrap"><span class="bar-count">235</span><div class="bar" style="height:22%"></div><span class="bar-label">2016</span></div><div class="bar-wrap"><span class="bar-count">246</span><div class="bar" style="height:23%"></div><span class="bar-label">2017</span></div><div class="bar-wrap"><span class="bar-count">320</span><div class="bar" style="height:29%"></div><span class="bar-label">2018</span></div><div class="bar-wrap"><span class="bar-count">368</span><div class="bar" style="height:34%"></div><span class="bar-label">2019</span></div><div class="bar-wrap"><span class="bar-count">448</span><div class="bar" style="height:41%"></div><span class="bar-label">2020</span></div><div class="bar-wrap"><span class="bar-count">499</span><div class="bar" style="height:46%"></div><span class="bar-label">2021</span></div><div class="bar-wrap"><span class="bar-count">522</span><div class="bar" style="height:48%"></div><span class="bar-label">2022</span></div><div class="bar-wrap"><span class="bar-count">663</span><div class="bar" style="height:61%"></div><span class="bar-label">2023</span></div><div class="bar-wrap"><span class="bar-count">823</span><div class="bar" style="height:75%"></div><span class="bar-label">2024</span></div><div class="bar-wrap"><span class="bar-count">1092</span><div class="bar" style="height:100%"></div><span class="bar-label">2025</span></div><div class="bar-wrap"><span class="bar-count">461</span><div class="bar partial" style="height:42%"></div><span class="bar-label">2026</span></div></div>
+<div class="stats-foot">2007年（探偵業法の届出制度が始まった年）に届出件数が一時的に集中していますが、これは制度開始時にまとまって届出が行われたためです。その後は年間150〜250件程度で推移していましたが、2018年頃から新規届出件数は増加傾向にあり、2023年以降は特に増加が目立ちます。※ 2026年は、データ時点（R8.5.31）までの件数のため、年間の実績としては未確定です。</div>
+</section>
+
+<section class="stats-section">
+<h2>都道府県別 届出件数ランキング（上位10）</h2>
+<div class="pref-rank"><div class="rank-item"><span><span class="rank-num">1.</span>東京都</span><span class="rank-count">1232件</span></div><div class="rank-item"><span><span class="rank-num">2.</span>大阪府</span><span class="rank-count">741件</span></div><div class="rank-item"><span><span class="rank-num">3.</span>北海道</span><span class="rank-count">547件</span></div><div class="rank-item"><span><span class="rank-num">4.</span>神奈川県</span><span class="rank-count">539件</span></div><div class="rank-item"><span><span class="rank-num">5.</span>埼玉県</span><span class="rank-count">316件</span></div><div class="rank-item"><span><span class="rank-num">6.</span>福岡県</span><span class="rank-count">292件</span></div><div class="rank-item"><span><span class="rank-num">7.</span>兵庫県</span><span class="rank-count">289件</span></div><div class="rank-item"><span><span class="rank-num">8.</span>愛知県</span><span class="rank-count">256件</span></div><div class="rank-item"><span><span class="rank-num">9.</span>茨城県</span><span class="rank-count">245件</span></div><div class="rank-item"><span><span class="rank-num">10.</span>千葉県</span><span class="rank-count">228件</span></div></div>
+</section>
+
+<section class="stats-section">
+<h2>探偵事務所・興信所を選ぶ際に知っておきたいこと</h2>
+<div class="knowledge-grid">
+<div class="k-item"><h3>探偵業は届出制です</h3><p>探偵業を営むには、探偵業法に基づき営業所を管轄する都道府県公安委員会への届出が義務付けられています。届出をしていない事業者への依頼は避けましょう。</p></div>
+<div class="k-item"><h3>届出番号は必ず確認を</h3><p>依頼を検討する際は、まず届出番号の有無を確認しましょう。届出番号（8桁）は、最初の2桁が都道府県番号、次の2桁が届出年（西暦下2桁）、最後の4桁がその年の届出順番を表しています。</p></div>
+<div class="k-item"><h3>契約内容は事前にしっかり確認</h3><p>依頼前に、調査内容・料金体系・報告方法などを契約書で明確にしてもらいましょう。口頭のみの説明で契約を進めず、不明点はその場で確認することをおすすめします。</p></div>
+<div class="k-item"><h3>複数の事務所を比較検討する</h3><p>同じ調査内容でも、事務所によって料金体系や得意分野が異なります。当サイトの都道府県別一覧や地図から、複数の事務所を比較してご検討ください。</p></div>
+</div>
+</section>
 </main>
 <footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
 <script>
@@ -203,7 +242,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if(!q && !pref){ results.innerHTML=''; countEl.textContent=''; return; }
     var hits = data.filter(function(r){
       var okPref = !pref || r.p === pref;
-      var okQ = !q || (r.n+r.k+r.a).indexOf(q) !== -1;
+      var okQ = !q || (r.n+r.k+r.a+r.i).indexOf(q) !== -1;
       return okPref && okQ;
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
