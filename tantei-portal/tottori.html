@@ -74,11 +74,35 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
 .free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
 .free-banner .btn--solid{box-shadow:none}
+.stats-section{background:#fff;border:1px solid var(--line);padding:24px 20px;margin:28px 0}
+.stats-section h2{font-size:1.05rem;font-family:var(--serif);font-weight:700;color:var(--ink);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 6px}
+.stats-lead{font-size:.85rem;color:var(--body);line-height:1.8;margin:0 0 18px}
+.year-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.year-chart .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.year-chart .bar{width:100%;background:var(--accent);border-radius:2px 2px 0 0}
+.year-chart .bar.partial{background:var(--accent-2)}
+.year-chart .bar-count{font-size:.62rem;color:var(--body);margin-bottom:2px;white-space:nowrap}
+.year-chart .bar-label{font-size:.62rem;color:var(--body);margin-top:6px;writing-mode:vertical-rl;text-orientation:mixed;height:34px}
+@media(max-width:640px){
+.year-chart{overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+.year-chart .bar-wrap{flex:0 0 26px;min-width:26px;max-width:26px}
+.year-chart .bar-count{writing-mode:vertical-rl;text-orientation:mixed;height:32px;margin-bottom:4px}
+}
+.stats-foot{font-size:.75rem;color:var(--body);margin-top:14px;line-height:1.7}
+.pref-rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px}
+.pref-rank .rank-item{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-soft);padding:8px 12px;font-size:.85rem}
+.pref-rank .rank-num{color:var(--accent-ink);font-weight:700;margin-right:6px}
+.pref-rank .rank-count{color:var(--body);font-size:.78rem}
+.knowledge-grid{display:grid;gap:16px;margin-top:4px}
+.knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
+.knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
+
+.pref-row-featured{background:#f4faf6}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>鳥取県の届出探偵業者一覧（33件）</h1>
 <a href="./index.html">← 都道府県一覧に戻る</a></header>
 <main>
-<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。代表者名・住所の番地以降は、掲載許可をいただくまでモザイク表示にしています。表が画面に収まらない場合は横にスクロールできます。</div>
+<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。代表者名・住所の番地以降は、掲載許可をいただくまでモザイク表示にしています。「掲載済み」の事務所は一覧の上部に表示しています（掲載済み事務所同士の並び順は、掲載ページのご記入内容の充実度によります）。表が画面に収まらない場合は横にスクロールできます。</div>
 <div class="search-box"><input type="text" id="q" placeholder="業者名・住所で絞り込み"></div>
 <div class="search-count" id="searchCount"></div>
 <div class="table-scroll"><table id="tbl">

@@ -83,6 +83,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .year-chart .bar.partial{background:var(--accent-2)}
 .year-chart .bar-count{font-size:.62rem;color:var(--body);margin-bottom:2px;white-space:nowrap}
 .year-chart .bar-label{font-size:.62rem;color:var(--body);margin-top:6px;writing-mode:vertical-rl;text-orientation:mixed;height:34px}
+@media(max-width:640px){
+.year-chart{overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+.year-chart .bar-wrap{flex:0 0 26px;min-width:26px;max-width:26px}
+.year-chart .bar-count{writing-mode:vertical-rl;text-orientation:mixed;height:32px;margin-bottom:4px}
+}
 .stats-foot{font-size:.75rem;color:var(--body);margin-top:14px;line-height:1.7}
 .pref-rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px}
 .pref-rank .rank-item{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-soft);padding:8px 12px;font-size:.85rem}
@@ -92,31 +97,50 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
 .knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
 
-.intro-card{background:var(--bg-soft);border-left:3px solid var(--accent);padding:18px 20px;margin-bottom:18px;font-size:.9rem;line-height:1.8}
+.intro-card{background:var(--bg-soft);border-left:3px solid var(--accent);padding:18px 20px;margin-bottom:18px;font-size:1rem;line-height:1.8}
 .intro-card b{color:var(--accent-ink)}
-.form-card{background:#fff;border:1px solid var(--line);padding:24px 20px}
+.form-card{background:#fff;border:1px solid var(--line);padding:24px 20px;font-size:1rem}
 .form-card fieldset{border:0;padding:0;margin:0 0 22px}
-.form-card fieldset legend{font-size:.8rem;color:var(--accent-ink);font-weight:700;letter-spacing:.05em;padding:0 0 10px;border-bottom:1px solid var(--line);width:100%;margin-bottom:4px}
-.form-card label{display:block;margin:14px 0 6px;font-size:.9rem;color:var(--ink);font-weight:500}
-.form-card label small{color:var(--body);font-weight:400}
-.form-card input[type=text],.form-card textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line);font-size:.95rem;font:inherit;color:var(--ink)}
+.form-card fieldset legend{font-size:.92rem;color:var(--accent-ink);font-weight:700;letter-spacing:.05em;padding:0 0 10px;border-bottom:1px solid var(--line);width:100%;margin-bottom:4px}
+.form-card label{display:block;margin:16px 0 7px;font-size:1rem;color:var(--ink);font-weight:500}
+.form-card label small{color:var(--body);font-weight:400;font-size:.85rem}
+.form-card input[type=text],.form-card input[type=tel],.form-card textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink)}
 .form-card input:focus,.form-card textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
 .form-card textarea{min-height:90px}
 .form-card textarea#service{min-height:140px}
-.form-card .check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px 10px;margin-top:8px}
-.form-card .check-grid label{display:flex;align-items:center;gap:6px;margin:0;font-size:.88rem;font-weight:400}
-.form-card .check-grid input{width:auto;margin:0}
-.condition-box{background:#fff7e6;border:1px solid #e8c76b;padding:16px;margin:6px 0 4px}
-.condition-box p{margin:0 0 10px;font-size:.86rem;line-height:1.8}
-.condition-box label{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:.88rem;font-weight:500}
-.condition-box input{width:auto;margin:3px 0 0}
-.form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:13px 26px;font-size:.95rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
+.form-card .check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px 12px;margin-top:10px}
+.form-card .check-grid label{display:flex;align-items:center;gap:10px;margin:0;font-size:1rem;font-weight:400}
+.form-card .check-grid input{width:22px;height:22px;margin:0;flex:none;transform:scale(1.3);transform-origin:left center}
+.photo-input-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}
+.photo-input-row input[type=file]{font-size:.95rem}
+.photo-preview-thumb{display:none;max-width:120px;max-height:120px;border:1px solid var(--line);object-fit:cover}
+.condition-box{background:#fff7e6;border:1px solid #e8c76b;padding:18px;margin:8px 0 4px}
+.condition-box p{margin:0 0 12px;font-size:.95rem;line-height:1.8}
+.condition-box label{display:flex;align-items:flex-start;gap:10px;margin:0;font-size:1rem;font-weight:500}
+.condition-box input{width:22px;height:22px;margin:2px 0 0;flex:none;transform:scale(1.3);transform-origin:left top}
+.form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:14px 28px;font-size:1rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
 .form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 .form-card button[disabled]{opacity:.6;cursor:default}
-.form-foot{margin-top:10px;font-size:.78rem;color:var(--body);line-height:1.7}
-.form-msg{margin-top:12px;font-size:.9rem}
+.form-card button.btn-secondary{background:transparent;color:var(--accent-ink);border:1px solid var(--accent)}
+.form-card button.btn-secondary:hover{background:var(--bg-soft)}
+.form-foot{margin-top:10px;font-size:.85rem;color:var(--body);line-height:1.8}
+.form-msg{margin-top:12px;font-size:1rem}
 .form-msg.ok{color:#0f7a3d}
 .form-msg.err{color:#c0392b}
+.preview-panel{display:none;margin:20px 0;border:2px dashed var(--accent-2);padding:16px;background:var(--bg-soft)}
+.preview-panel .preview-tag{font-size:.78rem;color:var(--accent-ink);font-weight:700;letter-spacing:.05em;margin:0 0 10px}
+.preview-panel .biz-card{margin-bottom:0}
+.preview-panel .pv-catch{color:var(--accent-ink);font-weight:700;margin:0 0 10px;font-size:1rem}
+.preview-panel .pv-photo img{max-width:200px;max-height:200px;border:1px solid var(--line);margin-bottom:12px;display:block}
+.preview-panel .preview-note{font-size:.8rem;color:var(--body);margin-top:12px;line-height:1.7}
+
+.biz-card{background:#fff;border:1px solid var(--line);padding:20px;margin-bottom:16px}
+.biz-card dl{margin:0;display:grid;grid-template-columns:7em 1fr;row-gap:10px;column-gap:12px}
+.biz-card dt{color:var(--body);font-size:.85rem}
+.biz-card dd{margin:0;color:var(--ink)}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.cta-row a{flex:1;min-width:220px;justify-content:center;text-align:center;padding:15px 12px;font-size:.9rem}
+
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1 id="pageTitle">掲載に関するお問い合わせ</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
@@ -134,7 +158,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 
 <fieldset id="upgradeBlock">
 <legend>掲載ページに追加する内容（無料）</legend>
-<p style="font-size:.85rem;color:var(--body);margin:0 0 4px">掲載ページにそのまま反映しますので、公開してよい内容をご記入ください。空欄の項目は掲載しません。</p>
+<p style="font-size:.85rem;color:var(--body);margin:0 0 4px">掲載ページにそのまま反映しますので、公開してよい内容をご記入ください。空欄の項目は掲載しません。<b style="color:var(--accent-ink)">都道府県別一覧での掲載済み事務所同士の表示順は、ご記入いただいた内容の充実度（項目数・文章量）で決まります。</b>詳しく・具体的にご記入いただくほど、上位に表示されやすくなります。</p>
 
 <label>キャッチコピー・一言PR<small>　※40字程度</small>
 <input type="text" id="catch" placeholder="例：着手金0円・完全成功報酬制。相談実績1,000件以上"></label>
@@ -169,13 +193,19 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label>掲載してよい電話番号（表示用・任意）<input type="text" id="pubphone" placeholder="お客様からの連絡を受けてよい番号をご記入ください"></label>
 <label>ホームページ・SNSのURL（お持ちの場合）<small>　※複数ある場合は改行して入力</small>
 <textarea id="url" placeholder="https://&#10;https://x.com/...&#10;https://instagram.com/..."></textarea></label>
-<label>写真について<input type="text" id="photo" placeholder="例：ロゴ画像を送付希望／事務所外観の写真あり、など（実際の画像は担当者からのご案内に沿ってメールでお送りください）"></label>
+
+<label>写真（任意）<small>　※ロゴ・事務所外観など、掲載してよい画像を1枚アップロードできます（5MBまで）</small></label>
+<div class="photo-input-row">
+<input type="file" id="photoFile" accept="image/*">
+<img id="photoPreviewThumb" class="photo-preview-thumb" alt="選択した写真のプレビュー">
+</div>
+<input type="text" id="photo" placeholder="写真についての補足（複数枚送りたい場合はここにメールでの送付希望などをご記入ください）" style="margin-top:10px">
+
 <label>その他、追記・修正してほしい内容<textarea id="other" placeholder="上記に当てはまらないご要望があればご記入ください"></textarea></label>
 
 <div class="condition-box">
-<p><b>【掲載条件】</b>掲載ページの充実（無料）は、貴社のホームページに「全国探偵検索」（<a href="https://lp.exeresearch.jp/tantei-portal/" target="_blank" rel="noopener">https://lp.exeresearch.jp/tantei-portal/</a>）へのリンクを設置していただくことを条件としております。リンク設置後、リンク先のURLを下記にご記入ください。</p>
-<label><input type="checkbox" id="agree" required> 上記の掲載条件に同意し、自社ホームページへのリンク設置に対応します</label>
-<label style="margin-top:10px;font-weight:400">リンクを設置したページのURL<input type="text" id="linkUrl" placeholder="https://（貴社ホームページのリンク設置ページ）" style="margin-top:6px"></label>
+<p><b>【掲載条件】</b>掲載ページの充実（無料）は、貴社のホームページに「全国探偵検索」（<a href="https://lp.exeresearch.jp/tantei-portal/" target="_blank" rel="noopener">https://lp.exeresearch.jp/tantei-portal/</a>）へのリンクを設置していただくことを条件としております。</p>
+<label><input type="checkbox" id="agree" required> 上記の掲載条件に同意します（リンクの設置は後日で構いません。設置が完了したら、<a href="./linkcheck.html" target="_blank" rel="noopener">リンク設置確認フォーム</a>からURLをお知らせください）</label>
 </div>
 </fieldset>
 
@@ -188,12 +218,34 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <legend>ご連絡先</legend>
 <label>お名前・貴社名<input type="text" id="name" required></label>
 <label>ご担当者様の電話番号<small>　※必須</small><input type="tel" id="contact" placeholder="例：090-1234-5678" required></label>
-<label>メールアドレス（任意）<input type="text" id="email" placeholder="返信を希望される場合はご記入ください"></label>
+<label>メールアドレス<small>　※必須</small><input type="email" id="email" placeholder="担当者様のメールアドレス" required></label>
 </fieldset>
+
+<button type="button" id="previewBtn" class="btn-secondary">この内容の掲載イメージを確認する</button>
+
+<div class="preview-panel" id="previewPanel">
+<p class="preview-tag">掲載イメージ（プレビュー）</p>
+<div class="biz-card">
+<p class="pv-catch" id="pvCatch"></p>
+<div class="pv-photo" id="pvPhoto"></div>
+<dl>
+<dt>サービス内容・強み</dt><dd id="pvService"></dd>
+<dt>対応可能な調査</dt><dd id="pvTypes"></dd>
+<dt>対応エリア</dt><dd id="pvArea"></dd>
+<dt>料金プランの概要</dt><dd id="pvPrice"></dd>
+<dt>営業時間・定休日</dt><dd id="pvHours"></dd>
+<dt>ご相談方法</dt><dd id="pvMethods"></dd>
+<dt>電話番号</dt><dd id="pvPubphone"></dd>
+<dt>URL</dt><dd id="pvUrl"></dd>
+<dt>その他</dt><dd id="pvOther"></dd>
+</dl>
+</div>
+<p class="preview-note">※これは入力内容をもとにした簡易的なイメージです。実際の掲載ページはデザインが多少異なります。空欄の項目は掲載ページにも表示されません。</p>
+</div>
 
 <button type="submit" id="btn">送信する</button>
 <div class="form-msg" id="formMsg"></div>
-<div class="form-foot">送信いただいた内容は担当者が確認し、掲載ページに反映いたします（反映まで数日いただく場合があります）。ご記入いただいた連絡先が外部に公開されることはありません。</div>
+<div class="form-foot">送信いただいた内容は、自動で掲載されることはありません。担当者が内容を確認し、手動で掲載ページに反映いたします（反映まで数日いただく場合があります）。ご記入いただいた連絡先が外部に公開されることはありません。</div>
 </form>
 </div>
 </main>
@@ -266,10 +318,58 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if (photo) parts.push('【写真について】\n' + photo);
     var other = document.getElementById('other').value.trim();
     if (other) parts.push('【その他】\n' + other);
-    var linkUrl = document.getElementById('linkUrl').value.trim();
-    parts.push('【掲載条件（相互リンク）】\n同意：はい\nリンク設置ページ：' + (linkUrl || '（未記入・後日連絡）'));
+    parts.push('【掲載条件（相互リンク）】\n同意：はい（リンク設置は後日、別フォームで確認します）');
     return parts.join('\n\n');
   }
+
+  var selectedPhoto = null; // data / name / mime を持つオブジェクトか null
+  document.getElementById('photoFile').addEventListener('change', function(ev){
+    var file = ev.target.files && ev.target.files[0];
+    var thumb = document.getElementById('photoPreviewThumb');
+    selectedPhoto = null;
+    if (!file) { thumb.style.display = 'none'; return; }
+    if (file.size > 5 * 1024 * 1024) {
+      document.getElementById('formMsg').className = 'form-msg err';
+      document.getElementById('formMsg').textContent = '写真のサイズが大きすぎます（5MBまで）。別の画像をお選びください。';
+      ev.target.value = '';
+      thumb.style.display = 'none';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataUrl = reader.result;
+      thumb.src = dataUrl;
+      thumb.style.display = 'block';
+      selectedPhoto = {
+        data: dataUrl.slice(dataUrl.indexOf(',') + 1),
+        name: file.name,
+        mime: file.type || 'image/jpeg'
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function renderPreview(){
+    var val = function(elId){ return (document.getElementById(elId).value || '').trim(); };
+    document.getElementById('pvCatch').textContent = val('catch') || '（キャッチコピー未入力）';
+    document.getElementById('pvService').textContent = val('service') || '（未入力）';
+    document.getElementById('pvTypes').textContent = checkedValues('svcTypes').join('、') || '（未選択）';
+    document.getElementById('pvArea').textContent = val('area') || '（未入力）';
+    document.getElementById('pvPrice').textContent = val('price') || '（未入力）';
+    document.getElementById('pvHours').textContent = val('hours') || '（未入力）';
+    document.getElementById('pvMethods').textContent = checkedValues('contactMethods').join('、') || '（未選択）';
+    document.getElementById('pvPubphone').textContent = val('pubphone') || '（未入力）';
+    document.getElementById('pvUrl').textContent = val('url') || '（未入力）';
+    document.getElementById('pvOther').textContent = val('other') || '（未入力）';
+    var photoBox = document.getElementById('pvPhoto');
+    var thumb = document.getElementById('photoPreviewThumb');
+    photoBox.innerHTML = (thumb.style.display !== 'none' && thumb.src)
+      ? '<img src="' + thumb.src + '" alt="">' : '';
+    var panel = document.getElementById('previewPanel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('previewBtn').addEventListener('click', renderPreview);
 
   function mailFallback(nm, ct, msg){
     var subject = (isRemove ? '【探偵ポータル】掲載削除の希望：' : '【探偵ポータル】掲載ページ充実の希望：') + (name || '（業者名未指定）');
@@ -293,15 +393,24 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     btn.disabled = true;
     out.className = 'form-msg';
     out.textContent = '送信しています…';
+    var payload = { key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
+      contactName: nm, contact: ct, message: msg, submitId: submitId };
+    if (selectedPhoto) {
+      payload.photoData = selectedPhoto.data;
+      payload.photoName = selectedPhoto.name;
+      payload.photoMime = selectedPhoto.mime;
+    }
     fetch(GAS_URL, {
       method: 'POST',
-      body: JSON.stringify({ key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
-        contactName: nm, contact: ct, message: msg, submitId: submitId })
+      body: JSON.stringify(payload)
     }).then(function(r){ return r.json(); }).then(function(j){
       if(j && j.ok){
         out.className = 'form-msg ok';
         out.textContent = 'お問い合わせを受け付けました。担当者よりご連絡いたします。';
         document.getElementById('f').reset();
+        selectedPhoto = null;
+        document.getElementById('photoPreviewThumb').style.display = 'none';
+        document.getElementById('previewPanel').style.display = 'none';
       } else {
         throw new Error((j && j.error) || '送信に失敗しました');
       }

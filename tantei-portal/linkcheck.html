@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>地図から探す | 全国探偵検索</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<title>リンク設置確認フォーム | 全国探偵検索</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Barlow+Condensed:wght@500;600&display=swap');
 :root{
@@ -100,53 +97,68 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
 .knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
 
-main{max-width:none;padding:0}
-#map{width:100%;height:calc(100vh - 120px)}
-.map-note{margin:0;padding:8px 16px}
-.leaflet-popup-content b{color:var(--accent-ink)}
+.intro-card{background:var(--bg-soft);border-left:3px solid var(--accent);padding:18px 20px;margin-bottom:18px;font-size:1rem;line-height:1.8}
+.form-card{background:#fff;border:1px solid var(--line);padding:24px 20px;font-size:1rem}
+.form-card label{display:block;margin:16px 0 7px;font-size:1rem;color:var(--ink);font-weight:500}
+.form-card label small{color:var(--body);font-weight:400;font-size:.85rem}
+.form-card input[type=text],.form-card input[type=tel]{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink)}
+.form-card input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
+.form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:14px 28px;font-size:1rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
+.form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.form-card button[disabled]{opacity:.6;cursor:default}
+.form-foot{margin-top:10px;font-size:.85rem;color:var(--body);line-height:1.8}
+.form-msg{margin-top:12px;font-size:1rem}
+.form-msg.ok{color:#0f7a3d}
+.form-msg.err{color:#c0392b}
 </style></head><body>
-<header><span class="eyebrow">Tantei Search</span><h1>地図から探す</h1>
+<header><span class="eyebrow">Tantei Search</span><h1>リンク設置確認フォーム</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
-<div class="note map-note">住所から機械的に変換した位置情報のため、実際の地点と多少ずれる場合があります。地図データ: OpenStreetMap contributors。マーカーをクリックすると詳細ページへ移動できます。<span style="display:inline-block;width:10px;height:10px;background:#d0392b;border-radius:50%;vertical-align:middle;margin:0 4px 0 8px"></span>赤色のマーカーは掲載許可済み（業者名・住所を実データで表示）の業者です。その他は、掲載許可をいただくまでモザイク表示にしています。</div>
-<main><div id="map"></div></main>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<main>
+<div class="intro-card">掲載ページ充実のお申し込み時に、貴社ホームページへの「全国探偵検索」へのリンク設置にご同意いただいた方向けのフォームです。リンクの設置が完了しましたら、そのページのURLをこちらからお知らせください。自動でリンクの設置を確認し、担当者に通知いたします。</div>
+<div class="form-card">
+<form id="f">
+<label>お名前・貴社名<input type="text" id="name" required></label>
+<label>お申し込み時の電話番号<small>　※本人確認のため</small><input type="tel" id="contact" required></label>
+<label>リンクを設置したページのURL<small>　※必須</small><input type="text" id="linkUrl" placeholder="https://" required></label>
+<button type="submit" id="btn">確認を依頼する</button>
+<div class="form-msg" id="formMsg"></div>
+<div class="form-foot">送信後、自動でページのリンクを確認します。確認結果は担当者に通知され、内容を確認のうえ掲載に反映いたします。反映までお時間をいただく場合があります。</div>
+</form>
+</div>
+</main>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
 <script>
 (function(){
-  var map = L.map('map').setView([36.5, 137.5], 6);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-  var permittedIcon = L.divIcon({
-    className: 'pin-permitted',
-    html: '<div style="width:16px;height:16px;background:#d0392b;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
-  });
-  var cluster = L.markerClusterGroup();
-  Promise.all([
-    fetch('./geo.json').then(function(r){return r.json();}),
-    fetch('./all.json').then(function(r){return r.json();})
-  ]).then(function(res){
-    var geoData = res[0], allData = res[1];
-    var byId = {};
-    allData.forEach(function(r){ byId[r.i] = r; });
-    Object.keys(geoData).forEach(function(id){
-      var g = geoData[id], r = byId[id];
-      if(!r) return;
-      var marker = L.marker([g.lat, g.lng], r.m === 0 ? { icon: permittedIcon } : {});
-      var nameHtml = r.m ? '<span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非非非非非</span> <span style="font-size:11px;color:#b23b3b">掲載許可待ち</span>' : r.n;
-      var addrHtml = r.m ? (r.a + ' <span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非</span>') : r.a;
-      marker.bindPopup(
-        '<div style="font-size:13px;max-width:220px">' +
-        '<b>' + nameHtml + '</b><br>' +
-        '<span style="color:#666">' + addrHtml + '</span><br>' +
-        '<a href="./biz/' + id + '.html" target="_blank">詳細を見る →</a></div>'
-      );
-      cluster.addLayer(marker);
-    });
-    map.addLayer(cluster);
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbw5fWMGBB5glT-CAK0E_RUurrdMMw8tlRvU2g7dSs0LM2yVP9GJS2K11-pdbtv4BXAJOw/exec";
+  var GAS_KEY = "tanteiportal";
+  var submitId = 'lc' + Date.now() + Math.random().toString(36).slice(2, 8);
+  document.getElementById('f').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var nm = document.getElementById('name').value.trim();
+    var ct = document.getElementById('contact').value.trim();
+    var linkUrl = document.getElementById('linkUrl').value.trim();
+    var btn = document.getElementById('btn');
+    var out = document.getElementById('formMsg');
+    btn.disabled = true;
+    out.className = 'form-msg';
+    out.textContent = 'リンクを確認しています…';
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ key: GAS_KEY, mode: 'linkcheck', contactName: nm, contact: ct, linkUrl: linkUrl, submitId: submitId })
+    }).then(function(r){ return r.json(); }).then(function(j){
+      if(j && j.ok){
+        out.className = 'form-msg ok';
+        out.textContent = j.verified
+          ? 'リンクを確認できました。担当者が内容を確認のうえ掲載いたします。'
+          : 'リンクを自動確認できませんでした。担当者に通知しましたので、確認のうえご連絡いたします。';
+        document.getElementById('f').reset();
+      } else {
+        throw new Error((j && j.error) || '送信に失敗しました');
+      }
+    }).catch(function(){
+      out.className = 'form-msg err';
+      out.textContent = '送信できませんでした。恐れ入りますが racoontantei@gmail.com までご連絡ください。';
+    }).finally(function(){ btn.disabled = false; });
   });
 })();
 </script>
