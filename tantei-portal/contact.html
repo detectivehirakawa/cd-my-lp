@@ -69,15 +69,27 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .btn:hover{background:var(--accent);color:#fff}
 .btn--solid{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 14px 34px -16px rgba(22,104,216,.5)}
 .btn--solid:hover{background:var(--accent-ink);border-color:var(--accent-ink);color:#fff}
+.free-banner{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:22px 20px;margin-bottom:18px;text-align:center;border:1px solid var(--accent)}
+.free-banner .tag{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;letter-spacing:.1em;padding:4px 12px;margin-bottom:10px}
+.free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
+.free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
+.free-banner .btn--solid{box-shadow:none}
 
+.intro-card{background:var(--bg-soft);border-left:3px solid var(--accent);padding:18px 20px;margin-bottom:18px;font-size:.9rem;line-height:1.8}
+.intro-card b{color:var(--accent-ink)}
 .form-card{background:#fff;border:1px solid var(--line);padding:24px 20px}
+.form-card fieldset{border:0;padding:0;margin:0 0 22px}
+.form-card fieldset legend{font-size:.8rem;color:var(--accent-ink);font-weight:700;letter-spacing:.05em;padding:0 0 10px;border-bottom:1px solid var(--line);width:100%;margin-bottom:4px}
 .form-card label{display:block;margin:14px 0 6px;font-size:.9rem;color:var(--ink);font-weight:500}
+.form-card label small{color:var(--body);font-weight:400}
 .form-card input[type=text],.form-card textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line);font-size:.95rem;font:inherit;color:var(--ink)}
 .form-card input:focus,.form-card textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
-.form-card textarea{min-height:120px}
+.form-card textarea{min-height:100px}
+.form-card textarea#service{min-height:140px}
 .form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:13px 26px;font-size:.95rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
 .form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 .form-card button[disabled]{opacity:.6;cursor:default}
+.form-foot{margin-top:10px;font-size:.78rem;color:var(--body);line-height:1.7}
 .form-msg{margin-top:12px;font-size:.9rem}
 .form-msg.ok{color:#0f7a3d}
 .form-msg.err{color:#c0392b}
@@ -85,18 +97,44 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <header><span class="eyebrow">Tantei Search</span><h1 id="pageTitle">掲載に関するお問い合わせ</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
 <main>
+<div class="intro-card" id="introCard"></div>
 <div class="note" id="targetNote"></div>
 <div class="form-card">
 <form id="f">
+
+<fieldset id="idBlock" style="display:none">
+<legend>掲載ページの特定</legend>
+<label>業者名・届出番号（お分かりの範囲でご記入ください）<small>　※業者名だけでも構いません</small>
+<input type="text" id="selfId" placeholder="例：株式会社○○リサーチ、または届出番号"></label>
+</fieldset>
+
+<fieldset id="upgradeBlock">
+<legend>掲載ページに追加する内容（無料）</legend>
+<label>サービス内容・強み<small>　※できるだけ詳しくご記入いただくと反映後の完成度が上がります</small>
+<textarea id="service" placeholder="例：夫婦関係調査・浮気調査を専門に24時間対応。相談実績○件、着手金0円の完全成功報酬制など"></textarea></label>
+<label>対応エリア<input type="text" id="area" placeholder="例：東京都全域・神奈川県横浜市周辺"></label>
+<label>ホームページ・SNSのURL（お持ちの場合）<input type="text" id="url" placeholder="https://"></label>
+<label>その他、追記・修正してほしい内容<textarea id="other" placeholder="料金・実績・写真の希望など、その他ご要望があればご記入ください"></textarea></label>
+</fieldset>
+
+<fieldset id="removeBlock" style="display:none">
+<legend>削除のご希望</legend>
+<label>削除をご希望の理由（任意）<textarea id="reason" placeholder="廃業、掲載を望まない、内容に誤りがある、など"></textarea></label>
+</fieldset>
+
+<fieldset>
+<legend>ご連絡先</legend>
 <label>お名前・貴社名<input type="text" id="name" required></label>
 <label>ご連絡先（電話番号またはメールアドレス）<input type="text" id="contact" required></label>
-<label>ご要望内容<textarea id="message" placeholder="掲載ページに追加したい情報（サービス内容・強み・写真の希望など）、または削除をご希望の理由をご記入ください"></textarea></label>
+</fieldset>
+
 <button type="submit" id="btn">送信する</button>
 <div class="form-msg" id="formMsg"></div>
+<div class="form-foot">送信いただいた内容は担当者が確認し、掲載ページに反映いたします（反映まで数日いただく場合があります）。ご記入いただいた連絡先が外部に公開されることはありません。</div>
 </form>
 </div>
 </main>
-<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
 <script>
 (function(){
   var GAS_URL = "https://script.google.com/macros/s/AKfycbw5fWMGBB5glT-CAK0E_RUurrdMMw8tlRvU2g7dSs0LM2yVP9GJS2K11-pdbtv4BXAJOw/exec";
@@ -106,16 +144,44 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   var name = q.get('name') || '';
   var type = q.get('type') || 'upgrade';
   var isRemove = type === 'remove';
-  document.getElementById('pageTitle').textContent = isRemove ? '掲載情報の削除に関するお問い合わせ' : '掲載ページ充実に関するお問い合わせ';
+
+  document.getElementById('pageTitle').textContent = isRemove ? '掲載情報の削除に関するお問い合わせ' : '掲載ページ充実に関するお問い合わせ（無料）';
+  document.getElementById('upgradeBlock').style.display = isRemove ? 'none' : '';
+  document.getElementById('removeBlock').style.display = isRemove ? '' : 'none';
+  document.getElementById('idBlock').style.display = (!id && !name) ? '' : 'none';
+
+  document.getElementById('introCard').innerHTML = isRemove
+    ? '掲載情報の削除をご希望の場合は、下記フォームからお申し込みください。確認のうえ、担当者より対応いたします。'
+    : '<b>掲載ページの充実は完全無料です。</b>サービス内容・強み・対応エリアなどを追加すると、来訪者からのお問い合わせにつながりやすくなります。分かる範囲でご記入いただくだけで反映できます。';
+
   var targetText;
   if (name) {
     targetText = '対象：' + name + '（届出番号 ' + id + '）';
   } else if (id) {
     targetText = '対象：届出番号 ' + id + '（業者名は非公開のため表示していません。ご自身の業者名はご記入内容に含めてください）';
   } else {
-    targetText = '対象の業者が指定されていません。届出番号がお分かりの場合はご記入内容に含めてください。';
+    targetText = '';
   }
   document.getElementById('targetNote').textContent = targetText;
+  document.getElementById('targetNote').style.display = targetText ? '' : 'none';
+
+  function buildMessage(){
+    if (isRemove) {
+      return document.getElementById('reason').value.trim();
+    }
+    var parts = [];
+    var selfId = document.getElementById('selfId').value.trim();
+    if (selfId) parts.push('【業者名・届出番号】\n' + selfId);
+    var service = document.getElementById('service').value.trim();
+    if (service) parts.push('【サービス内容・強み】\n' + service);
+    var area = document.getElementById('area').value.trim();
+    if (area) parts.push('【対応エリア】\n' + area);
+    var url = document.getElementById('url').value.trim();
+    if (url) parts.push('【URL】\n' + url);
+    var other = document.getElementById('other').value.trim();
+    if (other) parts.push('【その他】\n' + other);
+    return parts.join('\n\n');
+  }
 
   function mailFallback(nm, ct, msg){
     var subject = (isRemove ? '【探偵ポータル】掲載削除の希望：' : '【探偵ポータル】掲載ページ充実の希望：') + (name || '（業者名未指定）');
@@ -128,7 +194,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     ev.preventDefault();
     var nm = document.getElementById('name').value.trim();
     var ct = document.getElementById('contact').value.trim();
-    var msg = document.getElementById('message').value.trim();
+    var msg = buildMessage();
     var btn = document.getElementById('btn');
     var out = document.getElementById('formMsg');
     btn.disabled = true;

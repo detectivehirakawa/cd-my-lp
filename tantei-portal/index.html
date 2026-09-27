@@ -69,11 +69,24 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .btn:hover{background:var(--accent);color:#fff}
 .btn--solid{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 14px 34px -16px rgba(22,104,216,.5)}
 .btn--solid:hover{background:var(--accent-ink);border-color:var(--accent-ink);color:#fff}
+.free-banner{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:22px 20px;margin-bottom:18px;text-align:center;border:1px solid var(--accent)}
+.free-banner .tag{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;letter-spacing:.1em;padding:4px 12px;margin-bottom:10px}
+.free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
+.free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
+.free-banner .btn--solid{box-shadow:none}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>全国探偵検索</h1>
-<p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7547件</p></header>
+<p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7554件</p></header>
 <main>
-<div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。</div>
+<div class="free-banner">
+<span class="tag">掲載業者様へ</span>
+<h2>掲載ページの充実は、完全無料です</h2>
+<p>サービス内容・強み・対応エリア・ホームページURLなどを無料で追加できます。<br>
+情報が充実しているページほど、来訪者からのお問い合わせにつながりやすくなります。<br>
+掲載の削除をご希望の場合も同じフォームから承っています。</p>
+<a class="btn btn--solid" href="./contact.html">無料で掲載ページを充実させる →</a>
+</div>
+<div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。届出番号（8桁）は、最初の2桁が届出先の都道府県番号、次の2桁が届出を行った年（西暦の下2桁）、最後の4桁がその年の届出順番を表しています。</div>
 <div class="search-box">
 <input type="text" id="q" placeholder="業者名で検索（例：ABC探偵事務所）">
 <select id="prefFilter"><option value="">都道府県を選択</option><option value="北海道">北海道</option>
@@ -139,8 +152,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <a href="./gunma.html">群馬県<span>107件</span></a>
 <a href="./saitama.html">埼玉県<span>316件</span></a>
 <a href="./chiba.html">千葉県<span>228件</span></a>
-<a href="./tokyo.html">東京都<span>1225件</span></a>
-<a href="./kanagawa.html">神奈川県<span>540件</span></a></div></section>
+<a href="./tokyo.html">東京都<span>1232件</span></a>
+<a href="./kanagawa.html">神奈川県<span>539件</span></a></div></section>
 <section class="region-block"><h2>中部</h2><div class="pref-grid"><a href="./niigata.html">新潟県<span>107件</span></a>
 <a href="./toyama.html">富山県<span>34件</span></a>
 <a href="./ishikawa.html">石川県<span>50件</span></a>
@@ -153,7 +166,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <section class="region-block"><h2>関西</h2><div class="pref-grid"><a href="./mie.html">三重県<span>102件</span></a>
 <a href="./shiga.html">滋賀県<span>59件</span></a>
 <a href="./kyoto.html">京都府<span>131件</span></a>
-<a href="./osaka.html">大阪府<span>740件</span></a>
+<a href="./osaka.html">大阪府<span>741件</span></a>
 <a href="./hyogo.html">兵庫県<span>289件</span></a>
 <a href="./nara.html">奈良県<span>85件</span></a>
 <a href="./wakayama.html">和歌山県<span>54件</span></a></div></section>
@@ -175,7 +188,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <a href="./kagoshima.html">鹿児島県<span>79件</span></a>
 <a href="./okinawa.html">沖縄県<span>58件</span></a></div></section>
 </main>
-<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成</footer>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
 <script>
 (function(){
   var input = document.getElementById('q');
