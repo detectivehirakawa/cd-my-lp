@@ -74,6 +74,23 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .free-banner h2{margin:0 0 8px;font-size:1.25rem;font-family:var(--serif);font-weight:700}
 .free-banner p{margin:0 0 16px;font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.7}
 .free-banner .btn--solid{box-shadow:none}
+.stats-section{background:#fff;border:1px solid var(--line);padding:24px 20px;margin:28px 0}
+.stats-section h2{font-size:1.05rem;font-family:var(--serif);font-weight:700;color:var(--ink);border-left:3px solid var(--accent);padding-left:10px;margin:0 0 6px}
+.stats-lead{font-size:.85rem;color:var(--body);line-height:1.8;margin:0 0 18px}
+.year-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.year-chart .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.year-chart .bar{width:100%;background:var(--accent);border-radius:2px 2px 0 0}
+.year-chart .bar.partial{background:var(--accent-2)}
+.year-chart .bar-count{font-size:.62rem;color:var(--body);margin-bottom:2px;white-space:nowrap}
+.year-chart .bar-label{font-size:.62rem;color:var(--body);margin-top:6px;writing-mode:vertical-rl;text-orientation:mixed;height:34px}
+.stats-foot{font-size:.75rem;color:var(--body);margin-top:14px;line-height:1.7}
+.pref-rank{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px}
+.pref-rank .rank-item{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg-soft);padding:8px 12px;font-size:.85rem}
+.pref-rank .rank-num{color:var(--accent-ink);font-weight:700;margin-right:6px}
+.pref-rank .rank-count{color:var(--body);font-size:.78rem}
+.knowledge-grid{display:grid;gap:16px;margin-top:4px}
+.knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
+.knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
 
 .intro-card{background:var(--bg-soft);border-left:3px solid var(--accent);padding:18px 20px;margin-bottom:18px;font-size:.9rem;line-height:1.8}
 .intro-card b{color:var(--accent-ink)}
@@ -170,7 +187,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <fieldset>
 <legend>ご連絡先</legend>
 <label>お名前・貴社名<input type="text" id="name" required></label>
-<label>ご連絡先（電話番号またはメールアドレス）<input type="text" id="contact" required></label>
+<label>ご担当者様の電話番号<small>　※必須</small><input type="tel" id="contact" placeholder="例：090-1234-5678" required></label>
+<label>メールアドレス（任意）<input type="text" id="email" placeholder="返信を希望される場合はご記入ください"></label>
 </fieldset>
 
 <button type="submit" id="btn">送信する</button>
@@ -216,10 +234,14 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   }
 
   function buildMessage(){
+    var email = document.getElementById('email').value.trim();
+    var emailLine = email ? '【メールアドレス】\n' + email : '';
     if (isRemove) {
-      return document.getElementById('reason').value.trim();
+      var reason = document.getElementById('reason').value.trim();
+      return [reason, emailLine].filter(Boolean).join('\n\n');
     }
     var parts = [];
+    if (emailLine) parts.push(emailLine);
     var selfId = document.getElementById('selfId').value.trim();
     if (selfId) parts.push('【業者名・届出番号】\n' + selfId);
     var catchCopy = document.getElementById('catch').value.trim();
