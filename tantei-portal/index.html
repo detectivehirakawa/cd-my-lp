@@ -210,7 +210,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     results.innerHTML = hits.map(function(r){
       return '<a class="result-item" href="./biz/'+r.i+'.html">'+
         '<span class="r-name">'+esc(r.n)+'</span>'+
-        '<span class="r-addr">'+esc(r.p)+' '+esc(r.a)+'</span></a>';
+        '<span class="r-addr">'+esc(r.a)+'</span></a>';
     }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
   }
   fetch('./all.json').then(function(r){return r.json();}).then(function(j){

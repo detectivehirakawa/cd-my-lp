@@ -109,7 +109,7 @@ main{max-width:none;padding:0}
       if(!r) return;
       var marker = L.marker([g.lat, g.lng]);
       var nameHtml = r.m ? '<span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非非非非非</span> <span style="font-size:11px;color:#b23b3b">掲載許可待ち</span>' : r.n;
-      var addrHtml = r.m ? (r.p + r.a + ' <span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非</span>') : (r.p + r.a);
+      var addrHtml = r.m ? (r.a + ' <span style="filter:blur(3px);display:inline-block;background:#dfe2e7;padding:0 3px;border-radius:3px">非非非非</span>') : r.a;
       marker.bindPopup(
         '<div style="font-size:13px;max-width:220px">' +
         '<b>' + nameHtml + '</b><br>' +
