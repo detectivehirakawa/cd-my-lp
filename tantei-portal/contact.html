@@ -177,6 +177,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label><input type="checkbox" value="結婚前調査">結婚前調査</label>
 <label><input type="checkbox" value="その他">その他（下記にご記入）</label>
 </div>
+<input type="text" id="svcOther" placeholder="「その他」を選んだ場合は、調査の種類をご記入ください" style="margin-top:8px">
 
 <label>対応エリア<input type="text" id="area" placeholder="例：東京都全域・神奈川県横浜市周辺"></label>
 <label>料金プランの概要<input type="text" id="price" placeholder="例：調査員1名1時間8,000円〜、着手金なしの成功報酬制など"></label>
@@ -285,6 +286,13 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
       .map(function(el){ return el.value; });
   }
 
+  function svcTypesText(){
+    var vals = checkedValues('svcTypes').filter(function(v){ return v !== 'その他'; });
+    var svcOther = document.getElementById('svcOther').value.trim();
+    if (svcOther) vals.push(svcOther);
+    return vals.join('、');
+  }
+
   function buildMessage(){
     var email = document.getElementById('email').value.trim();
     var emailLine = email ? '【メールアドレス】\n' + email : '';
@@ -300,8 +308,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if (catchCopy) parts.push('【キャッチコピー】\n' + catchCopy);
     var service = document.getElementById('service').value.trim();
     if (service) parts.push('【サービス内容・強み】\n' + service);
-    var svcTypes = checkedValues('svcTypes');
-    if (svcTypes.length) parts.push('【対応可能な調査】\n' + svcTypes.join('、'));
+    var svcTypesJoined = svcTypesText();
+    if (svcTypesJoined) parts.push('【対応可能な調査】\n' + svcTypesJoined);
     var area = document.getElementById('area').value.trim();
     if (area) parts.push('【対応エリア】\n' + area);
     var price = document.getElementById('price').value.trim();
@@ -353,7 +361,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     var val = function(elId){ return (document.getElementById(elId).value || '').trim(); };
     document.getElementById('pvCatch').textContent = val('catch') || '（キャッチコピー未入力）';
     document.getElementById('pvService').textContent = val('service') || '（未入力）';
-    document.getElementById('pvTypes').textContent = checkedValues('svcTypes').join('、') || '（未選択）';
+    document.getElementById('pvTypes').textContent = svcTypesText() || '（未選択）';
     document.getElementById('pvArea').textContent = val('area') || '（未入力）';
     document.getElementById('pvPrice').textContent = val('price') || '（未入力）';
     document.getElementById('pvHours').textContent = val('hours') || '（未入力）';

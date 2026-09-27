@@ -110,7 +110,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 </div>
 <div class="note">この一覧は各都道府県公安委員会に届出済みの探偵業者情報を基に作成した参考情報です。電話番号・代表者の詳細住所は個人情報保護のため掲載していません。代表者名・住所の詳細（番地以降）は、各業者様から掲載許可をいただくまでモザイク表示にしています。最新の届出状況は各都道府県警察の公表情報でご確認ください。届出番号（8桁）は、最初の2桁が届出先の都道府県番号、次の2桁が届出を行った年（西暦の下2桁）、最後の4桁がその年の届出順番を表しています。</div>
 <div class="search-box">
-<input type="text" id="q" placeholder="業者名・届出番号で検索（例：ABC探偵事務所、30070034）">
+<input type="text" id="q" placeholder="業者名で検索（例：ABC探偵事務所）">
 <select id="prefFilter"><option value="">都道府県を選択</option><option value="北海道">北海道</option>
 <option value="青森県">青森県</option>
 <option value="岩手県">岩手県</option>
@@ -225,7 +225,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <section class="stats-section">
 <h2>当サイトのデータの見方・使い方</h2>
 <div class="knowledge-grid">
-<div class="k-item"><h3>業者名・届出番号で検索できます</h3><p>ページ上部の検索欄は、業者名だけでなく届出番号でも検索できます。気になる事務所が実際に届出済みかどうか、届出番号から直接調べることができます。</p></div>
+<div class="k-item"><h3>業者名で検索できます</h3><p>ページ上部の検索欄から、業者名で全国の届出業者を検索できます。都道府県を選んで絞り込むこともできます。</p></div>
 <div class="k-item"><h3>届出番号（8桁）の内訳</h3><p>最初の2桁が届出先の都道府県番号、次の2桁が届出を行った年（西暦下2桁）、最後の4桁がその年の届出順番です。上の推移グラフも、この年の部分を集計して作成しています。</p></div>
 <div class="k-item"><h3>都道府県別・地域から探せます</h3><p>トップページの地域ブロックから都道府県別の一覧に進めます。各一覧ページ内でも業者名・住所での絞り込みができます。</p></div>
 <div class="k-item"><h3>地図の赤いピンについて</h3><p><a href="./map.html">地図から探す</a>では、業者名・住所が実データで表示される「掲載許可済み」の業者を赤いピンで区別しています。それ以外はモザイク表示です。</p></div>
@@ -247,7 +247,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if(!q && !pref){ results.innerHTML=''; countEl.textContent=''; return; }
     var hits = data.filter(function(r){
       var okPref = !pref || r.p === pref;
-      var okQ = !q || (r.n+r.k+r.a+r.i).indexOf(q) !== -1;
+      var okQ = !q || (r.n+r.k+r.a).indexOf(q) !== -1;
       return okPref && okQ;
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
