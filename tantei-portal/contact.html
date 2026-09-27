@@ -84,8 +84,15 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .form-card label small{color:var(--body);font-weight:400}
 .form-card input[type=text],.form-card textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line);font-size:.95rem;font:inherit;color:var(--ink)}
 .form-card input:focus,.form-card textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
-.form-card textarea{min-height:100px}
+.form-card textarea{min-height:90px}
 .form-card textarea#service{min-height:140px}
+.form-card .check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px 10px;margin-top:8px}
+.form-card .check-grid label{display:flex;align-items:center;gap:6px;margin:0;font-size:.88rem;font-weight:400}
+.form-card .check-grid input{width:auto;margin:0}
+.condition-box{background:#fff7e6;border:1px solid #e8c76b;padding:16px;margin:6px 0 4px}
+.condition-box p{margin:0 0 10px;font-size:.86rem;line-height:1.8}
+.condition-box label{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:.88rem;font-weight:500}
+.condition-box input{width:auto;margin:3px 0 0}
 .form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:13px 26px;font-size:.95rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
 .form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 .form-card button[disabled]{opacity:.6;cursor:default}
@@ -110,11 +117,49 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 
 <fieldset id="upgradeBlock">
 <legend>掲載ページに追加する内容（無料）</legend>
-<label>サービス内容・強み<small>　※できるだけ詳しくご記入いただくと反映後の完成度が上がります</small>
+<p style="font-size:.85rem;color:var(--body);margin:0 0 4px">掲載ページにそのまま反映しますので、公開してよい内容をご記入ください。空欄の項目は掲載しません。</p>
+
+<label>キャッチコピー・一言PR<small>　※40字程度</small>
+<input type="text" id="catch" placeholder="例：着手金0円・完全成功報酬制。相談実績1,000件以上"></label>
+
+<label>サービス内容・強み・実績<small>　※できるだけ詳しくご記入いただくと反映後の完成度が上がります</small>
 <textarea id="service" placeholder="例：夫婦関係調査・浮気調査を専門に24時間対応。相談実績○件、着手金0円の完全成功報酬制など"></textarea></label>
+
+<label>対応可能な調査<small>　※複数選択可</small></label>
+<div class="check-grid" id="svcTypes">
+<label><input type="checkbox" value="浮気調査">浮気調査</label>
+<label><input type="checkbox" value="素行調査">素行調査</label>
+<label><input type="checkbox" value="人探し">人探し</label>
+<label><input type="checkbox" value="企業・信用調査">企業・信用調査</label>
+<label><input type="checkbox" value="盗聴発見">盗聴発見</label>
+<label><input type="checkbox" value="ストーカー対策">ストーカー対策</label>
+<label><input type="checkbox" value="結婚前調査">結婚前調査</label>
+<label><input type="checkbox" value="その他">その他（下記にご記入）</label>
+</div>
+
 <label>対応エリア<input type="text" id="area" placeholder="例：東京都全域・神奈川県横浜市周辺"></label>
-<label>ホームページ・SNSのURL（お持ちの場合）<input type="text" id="url" placeholder="https://"></label>
-<label>その他、追記・修正してほしい内容<textarea id="other" placeholder="料金・実績・写真の希望など、その他ご要望があればご記入ください"></textarea></label>
+<label>料金プランの概要<input type="text" id="price" placeholder="例：調査員1名1時間8,000円〜、着手金なしの成功報酬制など"></label>
+<label>営業時間・定休日<input type="text" id="hours" placeholder="例：24時間受付・年中無休"></label>
+
+<label>ご相談方法<small>　※複数選択可</small></label>
+<div class="check-grid" id="contactMethods">
+<label><input type="checkbox" value="電話">電話</label>
+<label><input type="checkbox" value="LINE">LINE</label>
+<label><input type="checkbox" value="メール">メール</label>
+<label><input type="checkbox" value="対面">対面</label>
+</div>
+
+<label>掲載してよい電話番号（表示用・任意）<input type="text" id="pubphone" placeholder="お客様からの連絡を受けてよい番号をご記入ください"></label>
+<label>ホームページ・SNSのURL（お持ちの場合）<small>　※複数ある場合は改行して入力</small>
+<textarea id="url" placeholder="https://&#10;https://x.com/...&#10;https://instagram.com/..."></textarea></label>
+<label>写真について<input type="text" id="photo" placeholder="例：ロゴ画像を送付希望／事務所外観の写真あり、など（実際の画像は担当者からのご案内に沿ってメールでお送りください）"></label>
+<label>その他、追記・修正してほしい内容<textarea id="other" placeholder="上記に当てはまらないご要望があればご記入ください"></textarea></label>
+
+<div class="condition-box">
+<p><b>【掲載条件】</b>掲載ページの充実（無料）は、貴社のホームページに「全国探偵検索」（<a href="https://lp.exeresearch.jp/tantei-portal/" target="_blank" rel="noopener">https://lp.exeresearch.jp/tantei-portal/</a>）へのリンクを設置していただくことを条件としております。リンク設置後、リンク先のURLを下記にご記入ください。</p>
+<label><input type="checkbox" id="agree" required> 上記の掲載条件に同意し、自社ホームページへのリンク設置に対応します</label>
+<label style="margin-top:10px;font-weight:400">リンクを設置したページのURL<input type="text" id="linkUrl" placeholder="https://（貴社ホームページのリンク設置ページ）" style="margin-top:6px"></label>
+</div>
 </fieldset>
 
 <fieldset id="removeBlock" style="display:none">
@@ -152,7 +197,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 
   document.getElementById('introCard').innerHTML = isRemove
     ? '掲載情報の削除をご希望の場合は、下記フォームからお申し込みください。確認のうえ、担当者より対応いたします。'
-    : '<b>掲載ページの充実は完全無料です。</b>サービス内容・強み・対応エリアなどを追加すると、来訪者からのお問い合わせにつながりやすくなります。分かる範囲でご記入いただくだけで反映できます。';
+    : '<b>掲載ページの充実は完全無料です。</b>下記の項目にご記入いただいた内容を、そのまま掲載ページに反映します。なお、無料での掲載には<b>貴社ホームページへの当サイトへのリンク設置</b>を条件としております（フォーム内でご案内しています）。';
 
   var targetText;
   if (name) {
@@ -165,6 +210,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   document.getElementById('targetNote').textContent = targetText;
   document.getElementById('targetNote').style.display = targetText ? '' : 'none';
 
+  function checkedValues(containerId){
+    return Array.prototype.slice.call(document.querySelectorAll('#' + containerId + ' input:checked'))
+      .map(function(el){ return el.value; });
+  }
+
   function buildMessage(){
     if (isRemove) {
       return document.getElementById('reason').value.trim();
@@ -172,14 +222,30 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     var parts = [];
     var selfId = document.getElementById('selfId').value.trim();
     if (selfId) parts.push('【業者名・届出番号】\n' + selfId);
+    var catchCopy = document.getElementById('catch').value.trim();
+    if (catchCopy) parts.push('【キャッチコピー】\n' + catchCopy);
     var service = document.getElementById('service').value.trim();
     if (service) parts.push('【サービス内容・強み】\n' + service);
+    var svcTypes = checkedValues('svcTypes');
+    if (svcTypes.length) parts.push('【対応可能な調査】\n' + svcTypes.join('、'));
     var area = document.getElementById('area').value.trim();
     if (area) parts.push('【対応エリア】\n' + area);
+    var price = document.getElementById('price').value.trim();
+    if (price) parts.push('【料金プランの概要】\n' + price);
+    var hours = document.getElementById('hours').value.trim();
+    if (hours) parts.push('【営業時間・定休日】\n' + hours);
+    var methods = checkedValues('contactMethods');
+    if (methods.length) parts.push('【ご相談方法】\n' + methods.join('、'));
+    var pubphone = document.getElementById('pubphone').value.trim();
+    if (pubphone) parts.push('【掲載してよい電話番号】\n' + pubphone);
     var url = document.getElementById('url').value.trim();
     if (url) parts.push('【URL】\n' + url);
+    var photo = document.getElementById('photo').value.trim();
+    if (photo) parts.push('【写真について】\n' + photo);
     var other = document.getElementById('other').value.trim();
     if (other) parts.push('【その他】\n' + other);
+    var linkUrl = document.getElementById('linkUrl').value.trim();
+    parts.push('【掲載条件（相互リンク）】\n同意：はい\nリンク設置ページ：' + (linkUrl || '（未記入・後日連絡）'));
     return parts.join('\n\n');
   }
 
@@ -192,11 +258,16 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   var submitId = 'c' + Date.now() + Math.random().toString(36).slice(2, 8);
   document.getElementById('f').addEventListener('submit', function(ev){
     ev.preventDefault();
+    var out = document.getElementById('formMsg');
+    if (!isRemove && !document.getElementById('agree').checked) {
+      out.className = 'form-msg err';
+      out.textContent = '掲載条件（自社ホームページへのリンク設置）へのご同意が必要です。';
+      return;
+    }
     var nm = document.getElementById('name').value.trim();
     var ct = document.getElementById('contact').value.trim();
     var msg = buildMessage();
     var btn = document.getElementById('btn');
-    var out = document.getElementById('formMsg');
     btn.disabled = true;
     out.className = 'form-msg';
     out.textContent = '送信しています…';
