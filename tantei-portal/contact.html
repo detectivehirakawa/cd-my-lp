@@ -413,7 +413,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     out.className = 'form-msg';
     out.textContent = '送信しています…';
     var payload = { key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
-      contactName: nm, contact: ct, message: msg, submitId: submitId };
+      contactName: nm, contact: ct, email: document.getElementById('email').value.trim(),
+      message: msg, submitId: submitId };
     if (selectedPhotos.length) {
       payload.photos = selectedPhotos.map(function(p){ return { data: p.data, name: p.name, mime: p.mime }; });
     }

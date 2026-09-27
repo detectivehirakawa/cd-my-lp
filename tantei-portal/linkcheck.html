@@ -110,16 +110,35 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .form-msg{margin-top:12px;font-size:1rem}
 .form-msg.ok{color:#0f7a3d}
 .form-msg.err{color:#c0392b}
+.step-box{background:#fff;border:1px solid var(--line);padding:20px;margin-bottom:18px}
+.step-box ol{margin:0;padding-left:1.4em}
+.step-box li{margin-bottom:14px;font-size:.95rem;line-height:1.8}
+.step-box li:last-child{margin-bottom:0}
+.snippet{background:var(--bg-soft);border:1px solid var(--line);padding:10px 12px;font-family:monospace;font-size:.85rem;word-break:break-all;margin-top:8px;user-select:all}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>リンク設置確認フォーム</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
 <main>
-<div class="intro-card">掲載ページ充実のお申し込み時に、貴社ホームページへの「全国探偵検索」へのリンク設置にご同意いただいた方向けのフォームです。リンクの設置が完了しましたら、そのページのURLをこちらからお知らせください。自動でリンクの設置を確認し、担当者に通知いたします。</div>
+<div class="intro-card">掲載ページ充実のお申し込み時に、貴社ホームページへの「全国探偵検索」へのリンク設置にご同意いただいた方向けのフォームです。<b>すでにリンクの設置が完了している方のみ</b>、下記フォームからお知らせください。</div>
+<div class="step-box">
+<ol>
+<li><b>①貴社ホームページに、以下のリンクを設置してください</b>（まだの場合）<br>
+下記のHTMLコードをそのままページに貼るか、下記URLへのリンクを設置してください。<br>
+<div class="snippet">&lt;a href="https://lp.exeresearch.jp/tantei-portal/"&gt;全国探偵検索&lt;/a&gt;</div>
+</li>
+<li><b>②リンクを設置した「貴社ホームページのページ」のURLを、下記フォームで送信してください</b><br>
+（当サイトのURLではなく、リンクを貼った<u>貴社側のページ</u>のURLです。例：貴社サイトのトップページなど）
+</li>
+<li><b>③自動でリンクの設置を確認し、担当者に通知されます</b><br>
+確認ができたら、担当者が掲載ページに反映いたします（反映まで数日いただく場合があります）。
+</li>
+</ol>
+</div>
 <div class="form-card">
 <form id="f">
-<label>ご担当者名<input type="text" id="name" required></label>
+<label>ご担当者名<small>　※お申し込み時と同じ内容でご記入ください</small><input type="text" id="name" required></label>
 <label>お申し込み時の電話番号<small>　※本人確認のため</small><input type="tel" id="contact" required></label>
-<label>リンクを設置したページのURL<small>　※必須</small><input type="text" id="linkUrl" placeholder="https://" required></label>
+<label>リンクを設置した「貴社ホームページ」のページURL<small>　※必須</small><input type="text" id="linkUrl" placeholder="例：https://御社のホームページ.jp/" required></label>
 <button type="submit" id="btn">確認を依頼する</button>
 <div class="form-msg" id="formMsg"></div>
 <div class="form-foot">送信後、自動でページのリンクを確認します。確認結果は担当者に通知され、内容を確認のうえ掲載に反映いたします。反映までお時間をいただく場合があります。</div>
