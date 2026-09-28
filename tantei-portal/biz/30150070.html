@@ -25,7 +25,7 @@ body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);let
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
-header h1{margin:0;font-size:1.4rem;font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff}
+header h1{margin:0;font-size:clamp(1rem,4.6vw,1.4rem);font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff;overflow-wrap:anywhere}
 header p{color:rgba(255,255,255,.72);font-size:.85rem;margin:12px 0 0}
 header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:inline-block;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px;transition:color .3s,border-color .3s}
 header a:hover{color:var(--accent-2);border-color:var(--accent-2)}
@@ -103,17 +103,92 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .biz-card dd{margin:0;color:var(--ink)}
 .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
 .cta-row a{flex:1;min-width:220px;justify-content:center;text-align:center;padding:15px 12px;font-size:.9rem}
+
+@keyframes certShine{0%{background-position:0% 0}100%{background-position:250% 0}}
+@keyframes certTwinkle{0%,100%{opacity:.3;transform:scale(.8) rotate(0deg)}50%{opacity:1;transform:scale(1.25) rotate(15deg)}}
+@keyframes certGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0),0 18px 40px -24px rgba(15,20,30,.4)}50%{box-shadow:0 0 34px 8px rgba(255,215,0,.65),0 18px 40px -24px rgba(15,20,30,.4)}}
+@keyframes certSweep{0%{transform:translateX(0) rotate(20deg)}100%{transform:translateX(480%) rotate(20deg)}}
+
+.cert-frame{
+  position:relative;background:#fffdf3;
+  background-image:
+    radial-gradient(circle at 10% 15%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,.9) 0 1.6px,transparent 2.6px),
+    radial-gradient(circle at 30% 85%,rgba(255,255,255,.9) 0 1.6px,transparent 2.6px),
+    radial-gradient(circle at 70% 75%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    radial-gradient(circle at 92% 60%,rgba(255,255,255,.85) 0 1.4px,transparent 2.4px),
+    radial-gradient(circle at 6% 55%,rgba(255,255,255,.85) 0 1.4px,transparent 2.4px),
+    repeating-linear-gradient(45deg,rgba(212,175,55,.08) 0 2px,transparent 2px 24px),
+    radial-gradient(circle at 50% 0%,rgba(255,215,0,.22),transparent 62%);
+  border:10px double #d4af37;
+  padding:56px 24px 34px;margin-bottom:16px;text-align:center;overflow:hidden;
+  animation:certGlow 3s ease-in-out infinite;
+}
+.cert-corner{position:absolute;width:30px;height:30px;border:3px solid #d4af37;z-index:1}
+.cert-corner.tl{top:12px;left:12px;border-right:0;border-bottom:0}
+.cert-corner.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.cert-corner.bl{bottom:12px;left:12px;border-right:0;border-top:0}
+.cert-corner.br{bottom:12px;right:12px;border-left:0;border-top:0}
+.cert-sparkle{position:absolute;font-size:1.15rem;color:#fff1a6;text-shadow:0 0 6px #fff,0 0 14px gold;animation:certTwinkle 1.7s ease-in-out infinite;z-index:1}
+.cert-seal{
+  width:92px;height:92px;border-radius:50%;position:relative;z-index:3;overflow:hidden;
+  margin:-84px auto 16px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#fff6d0,#ffd700 38%,#b8860b 78%,#6e5314 100%);
+  border:3px solid #7a5c14;color:#4a3608;font-family:var(--serif);font-weight:900;font-size:1.4rem;letter-spacing:.05em;
+  box-shadow:0 8px 20px -6px rgba(0,0,0,.5),inset 0 0 0 3px rgba(255,255,255,.45),0 0 22px 5px rgba(255,215,0,.75);
+}
+.cert-seal::before{
+  content:'';position:absolute;top:-60%;left:-70%;width:45%;height:220%;
+  background:linear-gradient(75deg,transparent,rgba(255,255,255,.9),transparent);
+  animation:certSweep 2.4s ease-in-out infinite;
+}
+.cert-eyebrow{
+  font-family:var(--en);letter-spacing:.35em;font-size:.72rem;text-transform:uppercase;margin-bottom:12px;
+  color:#a9820f;position:relative;z-index:2;
+}
+.cert-name{
+  position:relative;z-index:2;font-family:var(--serif);font-weight:900;font-size:clamp(.85rem,4vw,1.5rem);letter-spacing:.02em;line-height:1.6;margin-bottom:4px;
+  word-break:break-word;overflow-wrap:anywhere;
+  background:linear-gradient(100deg,#8a6d1f 0%,#fff3c4 18%,#d4af37 36%,#fffbe6 52%,#8a6d1f 70%,#d4af37 88%,#fff3c4 100%);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:certShine 5s linear infinite;
+}
+.cert-name span{background:none;-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
+.cert-divider{position:relative;z-index:2;color:#d4af37;font-size:1rem;margin:16px auto 20px;width:70%}
+.cert-divider::before,.cert-divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:linear-gradient(90deg,transparent,#d4af37)}
+.cert-divider::before{left:0}
+.cert-divider::after{right:0;background:linear-gradient(90deg,#d4af37,transparent)}
+.cert-frame dl{position:relative;z-index:2;margin:0;text-align:left;max-width:420px;margin-left:auto;margin-right:auto;word-break:break-word;overflow-wrap:anywhere}
+.cert-frame dt{font-family:var(--en);font-size:.68rem;letter-spacing:.15em;color:#a9820f;text-transform:uppercase;margin-top:16px}
+.cert-frame dd{margin:2px 0 0;color:var(--ink);font-size:1rem}
+.cert-foot{position:relative;z-index:2;margin-top:26px;font-family:var(--en);font-size:.66rem;letter-spacing:.22em;color:#a9820f;text-transform:uppercase}
+@media(max-width:480px){
+  .cert-frame{padding:60px 14px 26px}
+  .cert-seal{width:76px;height:76px;font-size:1.15rem;margin-top:-68px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cert-frame,.cert-seal::before,.cert-name,.cert-sparkle{animation:none}
+}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>探偵事務所Mi:T</h1>
 <a href="../tokyo.html">← 東京都の一覧に戻る</a></header>
 <main>
-<div class="biz-card">
+<div class="cert-frame">
+<span class="cert-corner tl"></span><span class="cert-corner tr"></span><span class="cert-corner bl"></span><span class="cert-corner br"></span>
+<span class="cert-sparkle" style="top:18px;left:18%;animation-delay:.2s">✨</span>
+<span class="cert-sparkle" style="top:26px;right:16%;animation-delay:.8s">✨</span>
+<span class="cert-sparkle" style="bottom:20px;left:12%;animation-delay:1.3s">✨</span>
+<span class="cert-sparkle" style="bottom:26px;right:14%;animation-delay:.5s">✨</span>
+<div class="cert-seal">認定</div>
+<div class="cert-eyebrow">Listing Certificate</div>
+<div class="cert-name">探偵事務所Mi:T<span style='display:block;color:#888;font-size:.7em;margin-top:4px'>（タンテイジムショエムアイティ）</span></div>
+<div class="cert-divider">◆</div>
 <dl>
-<dt>業者名</dt><dd>探偵事務所Mi:T<span style='color:#888;font-size:.85em'>（タンテイジムショエムアイティ）</span></dd>
 <dt>届出番号</dt><dd><span class="mosaic" aria-hidden="true">非非非非非非非非</span><span class="mosaic-note">非公開</span></dd>
 <dt>営業所住所</dt><dd>東京都板橋区成増 <span class="mosaic" aria-hidden="true">非非非非非非非非</span></dd>
 
 </dl>
+<div class="cert-foot">全国探偵検索 掲載証</div>
 </div>
 <div class="note">代表者名・住所の詳細（番地以降）は、掲載業者様からの許可をいただくまで非公開（モザイク表示）にしています。掲載をご希望の場合や内容の確認・修正をご希望の場合は下記の「掲載ページを充実させたい」からご連絡ください。</div>
 <div class="note">届出番号は、無断でのデータ収集を防ぐため、モザイク表示にしています。届出番号（8桁）は、最初の2桁が届出先の都道府県番号、次の2桁が届出を行った年（西暦の下2桁）、最後の4桁がその年の届出順番を表しています。</div>
@@ -124,5 +199,5 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <a class="btn" href="../contact.html?id=30150070&name=%E6%8E%A2%E5%81%B5%E4%BA%8B%E5%8B%99%E6%89%80Mi%3AT&type=remove">この掲載情報の削除を希望する</a>
 </div>
 </main>
-<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">合同会社EXE RESEARCH</a></footer>
 </body></html>

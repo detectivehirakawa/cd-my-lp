@@ -25,7 +25,7 @@ body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);let
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
-header h1{margin:0;font-size:1.4rem;font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff}
+header h1{margin:0;font-size:clamp(1rem,4.6vw,1.4rem);font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff;overflow-wrap:anywhere}
 header p{color:rgba(255,255,255,.72);font-size:.85rem;margin:12px 0 0}
 header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:inline-block;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px;transition:color .3s,border-color .3s}
 header a:hover{color:var(--accent-2);border-color:var(--accent-2)}
@@ -144,6 +144,72 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
 .cta-row a{flex:1;min-width:220px;justify-content:center;text-align:center;padding:15px 12px;font-size:.9rem}
 
+@keyframes certShine{0%{background-position:0% 0}100%{background-position:250% 0}}
+@keyframes certTwinkle{0%,100%{opacity:.3;transform:scale(.8) rotate(0deg)}50%{opacity:1;transform:scale(1.25) rotate(15deg)}}
+@keyframes certGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0),0 18px 40px -24px rgba(15,20,30,.4)}50%{box-shadow:0 0 34px 8px rgba(255,215,0,.65),0 18px 40px -24px rgba(15,20,30,.4)}}
+@keyframes certSweep{0%{transform:translateX(0) rotate(20deg)}100%{transform:translateX(480%) rotate(20deg)}}
+
+.cert-frame{
+  position:relative;background:#fffdf3;
+  background-image:
+    radial-gradient(circle at 10% 15%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,.9) 0 1.6px,transparent 2.6px),
+    radial-gradient(circle at 30% 85%,rgba(255,255,255,.9) 0 1.6px,transparent 2.6px),
+    radial-gradient(circle at 70% 75%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    radial-gradient(circle at 92% 60%,rgba(255,255,255,.85) 0 1.4px,transparent 2.4px),
+    radial-gradient(circle at 6% 55%,rgba(255,255,255,.85) 0 1.4px,transparent 2.4px),
+    repeating-linear-gradient(45deg,rgba(212,175,55,.08) 0 2px,transparent 2px 24px),
+    radial-gradient(circle at 50% 0%,rgba(255,215,0,.22),transparent 62%);
+  border:10px double #d4af37;
+  padding:56px 24px 34px;margin-bottom:16px;text-align:center;overflow:hidden;
+  animation:certGlow 3s ease-in-out infinite;
+}
+.cert-corner{position:absolute;width:30px;height:30px;border:3px solid #d4af37;z-index:1}
+.cert-corner.tl{top:12px;left:12px;border-right:0;border-bottom:0}
+.cert-corner.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.cert-corner.bl{bottom:12px;left:12px;border-right:0;border-top:0}
+.cert-corner.br{bottom:12px;right:12px;border-left:0;border-top:0}
+.cert-sparkle{position:absolute;font-size:1.15rem;color:#fff1a6;text-shadow:0 0 6px #fff,0 0 14px gold;animation:certTwinkle 1.7s ease-in-out infinite;z-index:1}
+.cert-seal{
+  width:92px;height:92px;border-radius:50%;position:relative;z-index:3;overflow:hidden;
+  margin:-84px auto 16px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#fff6d0,#ffd700 38%,#b8860b 78%,#6e5314 100%);
+  border:3px solid #7a5c14;color:#4a3608;font-family:var(--serif);font-weight:900;font-size:1.4rem;letter-spacing:.05em;
+  box-shadow:0 8px 20px -6px rgba(0,0,0,.5),inset 0 0 0 3px rgba(255,255,255,.45),0 0 22px 5px rgba(255,215,0,.75);
+}
+.cert-seal::before{
+  content:'';position:absolute;top:-60%;left:-70%;width:45%;height:220%;
+  background:linear-gradient(75deg,transparent,rgba(255,255,255,.9),transparent);
+  animation:certSweep 2.4s ease-in-out infinite;
+}
+.cert-eyebrow{
+  font-family:var(--en);letter-spacing:.35em;font-size:.72rem;text-transform:uppercase;margin-bottom:12px;
+  color:#a9820f;position:relative;z-index:2;
+}
+.cert-name{
+  position:relative;z-index:2;font-family:var(--serif);font-weight:900;font-size:clamp(.85rem,4vw,1.5rem);letter-spacing:.02em;line-height:1.6;margin-bottom:4px;
+  word-break:break-word;overflow-wrap:anywhere;
+  background:linear-gradient(100deg,#8a6d1f 0%,#fff3c4 18%,#d4af37 36%,#fffbe6 52%,#8a6d1f 70%,#d4af37 88%,#fff3c4 100%);
+  background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:certShine 5s linear infinite;
+}
+.cert-name span{background:none;-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
+.cert-divider{position:relative;z-index:2;color:#d4af37;font-size:1rem;margin:16px auto 20px;width:70%}
+.cert-divider::before,.cert-divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:linear-gradient(90deg,transparent,#d4af37)}
+.cert-divider::before{left:0}
+.cert-divider::after{right:0;background:linear-gradient(90deg,#d4af37,transparent)}
+.cert-frame dl{position:relative;z-index:2;margin:0;text-align:left;max-width:420px;margin-left:auto;margin-right:auto;word-break:break-word;overflow-wrap:anywhere}
+.cert-frame dt{font-family:var(--en);font-size:.68rem;letter-spacing:.15em;color:#a9820f;text-transform:uppercase;margin-top:16px}
+.cert-frame dd{margin:2px 0 0;color:var(--ink);font-size:1rem}
+.cert-foot{position:relative;z-index:2;margin-top:26px;font-family:var(--en);font-size:.66rem;letter-spacing:.22em;color:#a9820f;text-transform:uppercase}
+@media(max-width:480px){
+  .cert-frame{padding:60px 14px 26px}
+  .cert-seal{width:76px;height:76px;font-size:1.15rem;margin-top:-68px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cert-frame,.cert-seal::before,.cert-name,.cert-sparkle{animation:none}
+}
+
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1 id="pageTitle">掲載に関するお問い合わせ</h1>
 <a href="./index.html">← 一覧に戻る</a></header>
@@ -186,8 +252,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label>料金プランの概要<input type="text" id="price" placeholder="例：1時間8,000円〜、着手金なし"></label>
 <label>営業時間・定休日<input type="text" id="hours" placeholder="例：24時間受付・年中無休"></label>
 
-<label>事務所の所在地（番地・建物名まで、任意）<small>　※ご記入いただくと、掲載ページの住所（現在は番地以降を非公開にしています）が正式な所在地として公開されます</small>
-<input type="text" id="officeAddress" placeholder="例：〇〇ビル3F"></label>
+<label>事務所の住所（都道府県から番地・建物名まで、任意）<small>　※届出情報ではなく、ここにご記入いただいた内容を掲載ページの住所として優先して公開します（現在は番地以降を非公開にしています）</small>
+<input type="text" id="officeAddress" placeholder="例：埼玉県三郷市〇〇1-2-3 〇〇ビル3F"></label>
 <label>代表者名（任意）<small>　※ご記入いただくと、掲載ページに公開されます</small>
 <input type="text" id="repName" placeholder="例：山田太郎"></label>
 
@@ -246,7 +312,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <dt>ご相談方法</dt><dd id="pvMethods"></dd>
 <dt>電話番号</dt><dd id="pvPubphone"></dd>
 <dt>URL</dt><dd id="pvUrl"></dd>
-<dt>事務所の所在地（番地・建物名）</dt><dd id="pvOfficeAddress"></dd>
+<dt>事務所の住所（掲載用・優先）</dt><dd id="pvOfficeAddress"></dd>
 <dt>代表者名</dt><dd id="pvRepName"></dd>
 <dt>その他</dt><dd id="pvOther"></dd>
 </dl>
@@ -260,7 +326,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 </form>
 </div>
 </main>
-<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">合同会社EXE RESEARCH</a></footer>
 <script>
 (function(){
   var GAS_URL = "https://script.google.com/macros/s/AKfycbw5fWMGBB5glT-CAK0E_RUurrdMMw8tlRvU2g7dSs0LM2yVP9GJS2K11-pdbtv4BXAJOw/exec";
@@ -327,7 +393,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     var hours = document.getElementById('hours').value.trim();
     if (hours) parts.push('【営業時間・定休日】\n' + hours);
     var officeAddress = document.getElementById('officeAddress').value.trim();
-    if (officeAddress) parts.push('【事務所の所在地（番地・建物名）】\n' + officeAddress);
+    if (officeAddress) parts.push('【事務所の住所（掲載用・優先）】\n' + officeAddress);
     var repName = document.getElementById('repName').value.trim();
     if (repName) parts.push('【代表者名】\n' + repName);
     var methods = checkedValues('contactMethods');

@@ -25,7 +25,7 @@ body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);let
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
-header h1{margin:0;font-size:1.4rem;font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff}
+header h1{margin:0;font-size:clamp(1rem,4.6vw,1.4rem);font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff;overflow-wrap:anywhere}
 header p{color:rgba(255,255,255,.72);font-size:.85rem;margin:12px 0 0}
 header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:inline-block;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px;transition:color .3s,border-color .3s}
 header a:hover{color:var(--accent-2);border-color:var(--accent-2)}
@@ -129,8 +129,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <li><b>②リンクを設置した「貴社ホームページのページ」のURLを、下記フォームで送信してください</b><br>
 （当サイトのURLではなく、リンクを貼った<u>貴社側のページ</u>のURLです。例：貴社サイトのトップページなど）
 </li>
-<li><b>③自動でリンクの設置を確認し、担当者に通知されます</b><br>
-確認ができたら、担当者が掲載ページに反映いたします（反映まで数日いただく場合があります）。
+<li><b>③自動でリンクの設置を確認します</b><br>
+確認できましたら、担当者の確認を待たずにそのまま掲載ページに反映されます。
 </li>
 </ol>
 </div>
@@ -141,11 +141,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label>リンクを設置した「貴社ホームページ」のページURL<small>　※必須</small><input type="text" id="linkUrl" placeholder="例：https://御社のホームページ.jp/" required></label>
 <button type="submit" id="btn">確認を依頼する</button>
 <div class="form-msg" id="formMsg"></div>
-<div class="form-foot">送信後、自動でページのリンクを確認します。確認結果は担当者に通知され、内容を確認のうえ掲載に反映いたします。反映までお時間をいただく場合があります。</div>
+<div class="form-foot">送信後、自動でページのリンクを確認します。確認できましたら、担当者の確認を待たずにそのまま掲載ページに反映されます。</div>
 </form>
 </div>
 </main>
-<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">ラクーン探偵社（合同会社EXE RESEARCH）</a></footer>
+<footer>探偵業法に基づく届出情報（R8.5.31時点データ）を基に作成　｜　運営：<a href="https://exeresearch.jp/">合同会社EXE RESEARCH</a></footer>
 <script>
 (function(){
   var GAS_URL = "https://script.google.com/macros/s/AKfycbw5fWMGBB5glT-CAK0E_RUurrdMMw8tlRvU2g7dSs0LM2yVP9GJS2K11-pdbtv4BXAJOw/exec";
@@ -168,7 +168,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
       if(j && j.ok){
         out.className = 'form-msg ok';
         out.textContent = j.verified
-          ? 'リンクを確認できました。担当者が内容を確認のうえ掲載いたします。'
+          ? 'リンクを確認できました。掲載ページに反映されます（数分程度かかります）。'
           : 'リンクを自動確認できませんでした。担当者に通知しましたので、確認のうえご連絡いたします。';
         document.getElementById('f').reset();
       } else {
