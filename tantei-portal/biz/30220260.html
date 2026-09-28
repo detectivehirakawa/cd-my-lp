@@ -26,6 +26,8 @@ a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
 header h1{margin:0;font-size:clamp(1rem,4.6vw,1.4rem);font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff;overflow-wrap:anywhere}
+.hw-line{display:block}
+@media(min-width:600px){.hw-line{display:inline}}
 header p{color:rgba(255,255,255,.72);font-size:.85rem;margin:12px 0 0}
 header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:inline-block;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px;transition:color .3s,border-color .3s}
 header a:hover{color:var(--accent-2);border-color:var(--accent-2)}
@@ -131,11 +133,12 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .cert-corner.br{bottom:12px;right:12px;border-left:0;border-top:0}
 .cert-sparkle{position:absolute;font-size:1.15rem;color:#fff1a6;text-shadow:0 0 6px #fff,0 0 14px gold;animation:certTwinkle 1.7s ease-in-out infinite;z-index:1}
 .cert-seal{
-  width:92px;height:92px;border-radius:50%;position:relative;z-index:3;overflow:hidden;
-  margin:-84px auto 16px;display:flex;align-items:center;justify-content:center;
+  width:104px;height:104px;border-radius:50%;position:relative;z-index:3;overflow:hidden;
+  margin:-88px auto 16px;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at 35% 30%,#fff6d0,#ffd700 38%,#b8860b 78%,#6e5314 100%);
-  border:3px solid #7a5c14;color:#4a3608;font-family:var(--serif);font-weight:900;font-size:1.4rem;letter-spacing:.05em;
-  box-shadow:0 8px 20px -6px rgba(0,0,0,.5),inset 0 0 0 3px rgba(255,255,255,.45),0 0 22px 5px rgba(255,215,0,.75);
+  border:3px solid #7a5c14;color:#3a2a05;font-family:var(--serif);font-weight:900;font-size:1.15rem;letter-spacing:.02em;
+  line-height:1.25;text-align:center;text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 8px 20px -6px rgba(0,0,0,.5),inset 0 0 0 3px rgba(255,255,255,.45),0 0 26px 6px rgba(255,215,0,.8);
 }
 .cert-seal::before{
   content:'';position:absolute;top:-60%;left:-70%;width:45%;height:220%;
@@ -143,28 +146,28 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   animation:certSweep 2.4s ease-in-out infinite;
 }
 .cert-eyebrow{
-  font-family:var(--en);letter-spacing:.35em;font-size:.72rem;text-transform:uppercase;margin-bottom:12px;
-  color:#a9820f;position:relative;z-index:2;
+  font-family:var(--en);letter-spacing:.35em;font-size:.85rem;font-weight:700;text-transform:uppercase;margin-bottom:14px;
+  color:#6b4e0e;text-shadow:0 1px 0 #fff;position:relative;z-index:2;
 }
 .cert-name{
-  position:relative;z-index:2;font-family:var(--serif);font-weight:900;font-size:clamp(.85rem,4vw,1.5rem);letter-spacing:.02em;line-height:1.6;margin-bottom:4px;
-  word-break:break-word;overflow-wrap:anywhere;
-  background:linear-gradient(100deg,#8a6d1f 0%,#fff3c4 18%,#d4af37 36%,#fffbe6 52%,#8a6d1f 70%,#d4af37 88%,#fff3c4 100%);
+  position:relative;z-index:2;font-family:var(--serif);font-weight:900;font-size:clamp(1.15rem,6vw,2.1rem);letter-spacing:.02em;line-height:1.6;margin-bottom:4px;
+  word-break:break-word;overflow-wrap:anywhere;text-shadow:0 1px 3px rgba(0,0,0,.18);
+  background:linear-gradient(100deg,#6b4e0e 0%,#e0b53a 18%,#8a6d1f 36%,#f0cf6e 52%,#6b4e0e 70%,#b8860b 88%,#e0b53a 100%);
   background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
   animation:certShine 5s linear infinite;
 }
-.cert-name span{background:none;-webkit-text-fill-color:#8a6d1f;color:#8a6d1f}
-.cert-divider{position:relative;z-index:2;color:#d4af37;font-size:1rem;margin:16px auto 20px;width:70%}
-.cert-divider::before,.cert-divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:linear-gradient(90deg,transparent,#d4af37)}
+.cert-name span{background:none;-webkit-text-fill-color:#6b4e0e;color:#6b4e0e;text-shadow:0 1px 0 #fff}
+.cert-divider{position:relative;z-index:2;color:#b8860b;font-size:1.1rem;margin:16px auto 20px;width:70%}
+.cert-divider::before,.cert-divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:linear-gradient(90deg,transparent,#b8860b)}
 .cert-divider::before{left:0}
-.cert-divider::after{right:0;background:linear-gradient(90deg,#d4af37,transparent)}
+.cert-divider::after{right:0;background:linear-gradient(90deg,#b8860b,transparent)}
 .cert-frame dl{position:relative;z-index:2;margin:0;text-align:left;max-width:420px;margin-left:auto;margin-right:auto;word-break:break-word;overflow-wrap:anywhere}
-.cert-frame dt{font-family:var(--en);font-size:.68rem;letter-spacing:.15em;color:#a9820f;text-transform:uppercase;margin-top:16px}
-.cert-frame dd{margin:2px 0 0;color:var(--ink);font-size:1rem}
-.cert-foot{position:relative;z-index:2;margin-top:26px;font-family:var(--en);font-size:.66rem;letter-spacing:.22em;color:#a9820f;text-transform:uppercase}
+.cert-frame dt{font-family:var(--en);font-size:.75rem;font-weight:700;letter-spacing:.15em;color:#6b4e0e;text-transform:uppercase;margin-top:18px}
+.cert-frame dd{margin:3px 0 0;color:var(--ink);font-size:1.15rem;font-weight:600}
+.cert-foot{position:relative;z-index:2;margin-top:26px;font-family:var(--en);font-size:.72rem;font-weight:700;letter-spacing:.22em;color:#6b4e0e;text-transform:uppercase}
 @media(max-width:480px){
-  .cert-frame{padding:60px 14px 26px}
-  .cert-seal{width:76px;height:76px;font-size:1.15rem;margin-top:-68px}
+  .cert-frame{padding:64px 14px 26px}
+  .cert-seal{width:86px;height:86px;font-size:1rem;margin-top:-72px}
 }
 @media(prefers-reduced-motion:reduce){
   .cert-frame,.cert-seal::before,.cert-name,.cert-sparkle{animation:none}
@@ -179,9 +182,9 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <span class="cert-sparkle" style="top:26px;right:16%;animation-delay:.8s">✨</span>
 <span class="cert-sparkle" style="bottom:20px;left:12%;animation-delay:1.3s">✨</span>
 <span class="cert-sparkle" style="bottom:26px;right:14%;animation-delay:.5s">✨</span>
-<div class="cert-seal">認定</div>
+<div class="cert-seal">掲載<br>済み</div>
 <div class="cert-eyebrow">Listing Certificate</div>
-<div class="cert-name">法源樹海総合事務所<span style='display:block;color:#888;font-size:.7em;margin-top:4px'>（ホウケンジュカイソウゴウジムショ）</span></div>
+<div class="cert-name">法源樹海総合事務所<span style='display:block;color:#888;font-size:.68em;margin-top:6px'>（<span class='hw-line'>ホウケンジュカイ</span><span class='hw-line'>ソウゴウジムショ</span>）</span></div>
 <div class="cert-divider">◆</div>
 <dl>
 <dt>届出番号</dt><dd><span class="mosaic" aria-hidden="true">非非非非非非非非</span><span class="mosaic-note">非公開</span></dd>

@@ -26,6 +26,8 @@ a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
 header h1{margin:0;font-size:clamp(1rem,4.6vw,1.4rem);font-family:var(--serif);font-weight:700;letter-spacing:.05em;color:#fff;overflow-wrap:anywhere}
+.hw-line{display:block}
+@media(min-width:600px){.hw-line{display:inline}}
 header p{color:rgba(255,255,255,.72);font-size:.85rem;margin:12px 0 0}
 header a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:inline-block;margin-top:16px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px;transition:color .3s,border-color .3s}
 header a:hover{color:var(--accent-2);border-color:var(--accent-2)}
@@ -102,7 +104,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <header><span class="eyebrow">Tantei Search</span><h1>京都府の届出探偵業者一覧（131件）</h1>
 <a href="./index.html">← 都道府県一覧に戻る</a></header>
 <main>
-<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。届出番号は無断でのデータ収集を防ぐためモザイク表示にしています。代表者名・住所の番地以降は、掲載許可をいただくまでモザイク表示にしています。「掲載済み」の事務所は一覧の上部に表示しています（掲載済み事務所同士の並び順は、掲載ページのご記入内容の充実度によります）。表が画面に収まらない場合は横にスクロールできます。</div>
+<div class="note">営業所住所は都道府県公安委員会への届出情報を基にしています。電話番号・代表者の詳細住所は掲載していません。届出番号・代表者名・住所の番地以降は、無断でのデータ収集を防ぐため、掲載許可をいただくまでモザイク表示にしています（「掲載済み」の事務所は届出番号も含めて公開しています）。「掲載済み」の事務所は一覧の上部に表示しています（掲載済み事務所同士の並び順は、掲載ページのご記入内容の充実度によります）。表が画面に収まらない場合は横にスクロールできます。</div>
 <div class="search-box"><input type="text" id="q" placeholder="業者名・住所で絞り込み"></div>
 <div class="search-count" id="searchCount"></div>
 <div class="table-scroll"><table id="tbl">
