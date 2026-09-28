@@ -21,7 +21,7 @@
   --en:"Barlow Condensed",sans-serif;
 }
 *{box-sizing:border-box}
-body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em}
+body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em;overflow-x:hidden}
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
@@ -101,7 +101,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .form-card{background:#fff;border:1px solid var(--line);padding:24px 20px;font-size:1rem}
 .form-card label{display:block;margin:16px 0 7px;font-size:1rem;color:var(--ink);font-weight:500}
 .form-card label small{color:var(--body);font-weight:400;font-size:.85rem}
-.form-card input[type=text],.form-card input[type=tel]{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink)}
+.form-card input[type=text],.form-card input[type=tel]{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink);text-overflow:ellipsis}
 .form-card input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
 .form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:14px 28px;font-size:1rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
 .form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}

@@ -21,7 +21,7 @@
   --en:"Barlow Condensed",sans-serif;
 }
 *{box-sizing:border-box}
-body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em}
+body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em;overflow-x:hidden}
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
@@ -252,8 +252,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
     results.innerHTML = hits.map(function(r){
+      var nameHtml = r.m
+        ? '<span class="mosaic" aria-hidden="true">'+esc(r.n)+'</span><span class="mosaic-note">非公開</span>'
+        : esc(r.n);
       return '<a class="result-item" href="./biz/'+r.i+'.html">'+
-        '<span class="r-name">'+esc(r.n)+'</span>'+
+        '<span class="r-name">'+nameHtml+'</span>'+
         '<span class="r-addr">'+esc(r.a)+'</span></a>';
     }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
   }
