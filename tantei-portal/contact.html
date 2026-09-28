@@ -186,6 +186,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label>料金プランの概要<input type="text" id="price" placeholder="例：1時間8,000円〜、着手金なし"></label>
 <label>営業時間・定休日<input type="text" id="hours" placeholder="例：24時間受付・年中無休"></label>
 
+<label>事務所の所在地（番地・建物名まで、任意）<small>　※ご記入いただくと、掲載ページの住所（現在は番地以降を非公開にしています）が正式な所在地として公開されます</small>
+<input type="text" id="officeAddress" placeholder="例：〇〇ビル3F"></label>
+<label>代表者名（任意）<small>　※ご記入いただくと、掲載ページに公開されます</small>
+<input type="text" id="repName" placeholder="例：山田太郎"></label>
+
 <label>ご相談方法<small>　※複数選択可</small></label>
 <div class="check-grid" id="contactMethods">
 <label><input type="checkbox" value="電話">電話</label>
@@ -241,6 +246,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <dt>ご相談方法</dt><dd id="pvMethods"></dd>
 <dt>電話番号</dt><dd id="pvPubphone"></dd>
 <dt>URL</dt><dd id="pvUrl"></dd>
+<dt>事務所の所在地（番地・建物名）</dt><dd id="pvOfficeAddress"></dd>
+<dt>代表者名</dt><dd id="pvRepName"></dd>
 <dt>その他</dt><dd id="pvOther"></dd>
 </dl>
 </div>
@@ -319,6 +326,10 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if (price) parts.push('【料金プランの概要】\n' + price);
     var hours = document.getElementById('hours').value.trim();
     if (hours) parts.push('【営業時間・定休日】\n' + hours);
+    var officeAddress = document.getElementById('officeAddress').value.trim();
+    if (officeAddress) parts.push('【事務所の所在地（番地・建物名）】\n' + officeAddress);
+    var repName = document.getElementById('repName').value.trim();
+    if (repName) parts.push('【代表者名】\n' + repName);
     var methods = checkedValues('contactMethods');
     if (methods.length) parts.push('【ご相談方法】\n' + methods.join('、'));
     var pubphone = document.getElementById('pubphone').value.trim();
@@ -331,6 +342,24 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     if (other) parts.push('【その他】\n' + other);
     parts.push('【掲載条件（相互リンク）】\n同意：はい（リンク設置は後日、別フォームで確認します）');
     return parts.join('\n\n');
+  }
+
+  function svcTypesArray(){
+    var vals = checkedValues('svcTypes').filter(function(v){ return v !== 'その他'; });
+    var svcOther = document.getElementById('svcOther').value.trim();
+    if (svcOther) vals.push(svcOther);
+    return vals;
+  }
+
+  function buildFields(){
+    var val = function(elId){ return (document.getElementById(elId).value || '').trim(); };
+    return {
+      catch: val('catch'), service: val('service'), types: svcTypesArray(),
+      area: val('area'), price: val('price'), hours: val('hours'),
+      methods: checkedValues('contactMethods'), pubphone: val('pubphone'),
+      url: val('url'), other: val('other'),
+      officeAddress: val('officeAddress'), repName: val('repName')
+    };
   }
 
   var MAX_PHOTOS = 5;
@@ -382,6 +411,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     document.getElementById('pvMethods').textContent = checkedValues('contactMethods').join('、') || '（未選択）';
     document.getElementById('pvPubphone').textContent = val('pubphone') || '（未入力）';
     document.getElementById('pvUrl').textContent = val('url') || '（未入力）';
+    document.getElementById('pvOfficeAddress').textContent = val('officeAddress') || '（未入力）';
+    document.getElementById('pvRepName').textContent = val('repName') || '（未入力）';
     document.getElementById('pvOther').textContent = val('other') || '（未入力）';
     var photoBox = document.getElementById('pvPhoto');
     photoBox.innerHTML = selectedPhotos.map(function(p){ return '<img src="' + p.dataUrl + '" alt="">'; }).join('');
@@ -416,6 +447,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     var payload = { key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
       contactName: nm, contact: ct, email: document.getElementById('email').value.trim(),
       message: msg, submitId: submitId };
+    if (!isRemove) payload.fields = buildFields();
     if (selectedPhotos.length) {
       payload.photos = selectedPhotos.map(function(p){ return { data: p.data, name: p.name, mime: p.mime }; });
     }
