@@ -252,11 +252,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     }).slice(0, 200);
     countEl.textContent = hits.length + '件表示（最大200件）';
     results.innerHTML = hits.map(function(r){
-      var nameHtml = r.m
-        ? '<span class="mosaic" aria-hidden="true">'+esc(r.n)+'</span><span class="mosaic-note">非公開</span>'
-        : esc(r.n);
       return '<a class="result-item" href="./biz/'+r.i+'.html">'+
-        '<span class="r-name">'+nameHtml+'</span>'+
+        '<span class="r-name">'+esc(r.n)+'</span>'+
         '<span class="r-addr">'+esc(r.a)+'</span></a>';
     }).join('') || '<div class="no-hit">該当する業者が見つかりません</div>';
   }
