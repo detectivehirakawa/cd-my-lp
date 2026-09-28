@@ -222,10 +222,10 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <div class="form-card">
 <form id="f">
 
-<fieldset id="idBlock" style="display:none">
+<fieldset id="idBlock">
 <legend>掲載ページの特定</legend>
-<label>業者名・届出番号（お分かりの範囲でご記入ください）<small>　※業者名だけでも構いません</small>
-<input type="text" id="selfId" placeholder="例：株式会社○○リサーチ"></label>
+<label>届出番号（8桁）<small>　※必須。掲載ページ取り違えを防ぐため、必ずご記入ください。ご自身の掲載ページのURL（.../biz/xxxxxxxx.html）の8桁の数字です。ご不明な場合は<a href="./index.html" target="_blank">トップページの検索</a>から業者名でお探しください</small>
+<input type="text" id="selfId" inputmode="numeric" pattern="\d{8}" maxlength="8" placeholder="例：13012345" required></label>
 </fieldset>
 
 <fieldset id="upgradeBlock">
@@ -343,7 +343,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
   document.getElementById('pageTitle').textContent = isRemove ? '掲載情報の削除に関するお問い合わせ' : '掲載ページ充実に関するお問い合わせ（無料）';
   document.getElementById('upgradeBlock').style.display = isRemove ? 'none' : '';
   document.getElementById('removeBlock').style.display = isRemove ? '' : 'none';
-  document.getElementById('idBlock').style.display = (!id && !name) ? '' : 'none';
+  if (id) document.getElementById('selfId').value = id;
 
   document.getElementById('introCard').innerHTML = isRemove
     ? '掲載情報の削除をご希望の場合は、下記フォームからお申し込みください。確認のうえ、担当者より対応いたします。'
@@ -381,8 +381,6 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     }
     var parts = [];
     if (emailLine) parts.push(emailLine);
-    var selfId = document.getElementById('selfId').value.trim();
-    if (selfId) parts.push('【業者名・届出番号】\n' + selfId);
     var catchCopy = document.getElementById('catch').value.trim();
     if (catchCopy) parts.push('【キャッチコピー】\n' + catchCopy);
     var service = document.getElementById('service').value.trim();
@@ -506,6 +504,12 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
       out.textContent = '掲載条件（自社ホームページへのリンク設置）へのご同意が必要です。';
       return;
     }
+    var idInput = document.getElementById('selfId').value.trim();
+    if (!/^\d{8}$/.test(idInput)) {
+      out.className = 'form-msg err';
+      out.textContent = '届出番号は半角数字8桁でご記入ください。';
+      return;
+    }
     var nm = document.getElementById('name').value.trim();
     var ct = document.getElementById('contact').value.trim();
     var msg = buildMessage();
@@ -513,7 +517,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
     btn.disabled = true;
     out.className = 'form-msg';
     out.textContent = '送信しています…';
-    var payload = { key: GAS_KEY, mode: 'contact', id: id, name: name, type: type,
+    var payload = { key: GAS_KEY, mode: 'contact', id: idInput, name: name, type: type,
       contactName: nm, contact: ct, email: document.getElementById('email').value.trim(),
       message: msg, submitId: submitId };
     if (!isRemove) payload.fields = buildFields();
