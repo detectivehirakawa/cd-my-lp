@@ -21,7 +21,7 @@
   --en:"Barlow Condensed",sans-serif;
 }
 *{box-sizing:border-box}
-body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em}
+body{font-family:var(--sans);margin:0;background:var(--bg);color:var(--body);letter-spacing:.02em;overflow-x:hidden}
 a{color:inherit}
 header{background:var(--navy);color:#fff;padding:34px 16px 30px;text-align:center}
 header .eyebrow{display:block;font-family:var(--en);font-size:11px;letter-spacing:.35em;color:var(--accent-2);text-transform:uppercase;margin:0 0 12px}
@@ -104,13 +104,14 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .form-card fieldset legend{font-size:.92rem;color:var(--accent-ink);font-weight:700;letter-spacing:.05em;padding:0 0 10px;border-bottom:1px solid var(--line);width:100%;margin-bottom:4px}
 .form-card label{display:block;margin:16px 0 7px;font-size:1rem;color:var(--ink);font-weight:500}
 .form-card label small{color:var(--body);font-weight:400;font-size:.85rem}
-.form-card input[type=text],.form-card input[type=tel],.form-card textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink)}
+.form-card input[type=text],.form-card input[type=tel],.form-card input[type=email],.form-card textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);font-size:1.05rem;font:inherit;color:var(--ink)}
+.form-card input[type=text],.form-card input[type=tel],.form-card input[type=email]{text-overflow:ellipsis}
 .form-card input:focus,.form-card textarea:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,104,216,.18)}
 .form-card textarea{min-height:90px}
 .form-card textarea#service{min-height:140px}
 .form-card .check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px 12px;margin-top:10px}
 .form-card .check-grid label{display:flex;align-items:center;gap:10px;margin:0;font-size:1rem;font-weight:400}
-.form-card .check-grid input{width:22px;height:22px;margin:0;flex:none;transform:scale(1.3);transform-origin:left center}
+.form-card .check-grid input{width:22px;height:22px;margin:0;flex:none}
 .photo-input-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}
 .photo-input-row input[type=file]{font-size:.95rem}
 .photo-thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
@@ -118,7 +119,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .condition-box{background:#fff7e6;border:1px solid #e8c76b;padding:18px;margin:8px 0 4px}
 .condition-box p{margin:0 0 12px;font-size:.95rem;line-height:1.8}
 .condition-box label{display:flex;align-items:flex-start;gap:10px;margin:0;font-size:1rem;font-weight:500}
-.condition-box input{width:22px;height:22px;margin:2px 0 0;flex:none;transform:scale(1.3);transform-origin:left top}
+.condition-box input{width:22px;height:22px;margin:2px 0 0;flex:none}
 .form-card button{margin-top:18px;background:var(--accent);color:#fff;border:1px solid var(--accent);padding:14px 28px;font-size:1rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,border-color .3s}
 .form-card button:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
 .form-card button[disabled]{opacity:.6;cursor:default}
@@ -155,7 +156,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <fieldset id="idBlock" style="display:none">
 <legend>掲載ページの特定</legend>
 <label>業者名・届出番号（お分かりの範囲でご記入ください）<small>　※業者名だけでも構いません</small>
-<input type="text" id="selfId" placeholder="例：株式会社○○リサーチ、または届出番号"></label>
+<input type="text" id="selfId" placeholder="例：株式会社○○リサーチ"></label>
 </fieldset>
 
 <fieldset id="upgradeBlock">
@@ -163,7 +164,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <p style="font-size:.85rem;color:var(--body);margin:0 0 4px">掲載ページにそのまま反映しますので、公開してよい内容をご記入ください。空欄の項目は掲載しません。<b style="color:var(--accent-ink)">都道府県別一覧での掲載済み事務所同士の表示順は、ご記入いただいた内容の充実度（項目数・文章量）で決まります。</b>詳しく・具体的にご記入いただくほど、上位に表示されやすくなります。</p>
 
 <label>キャッチコピー・一言PR<small>　※40字程度</small>
-<input type="text" id="catch" placeholder="例：着手金0円・完全成功報酬制。相談実績1,000件以上"></label>
+<input type="text" id="catch" placeholder="例：着手金0円・完全成功報酬制"></label>
 
 <label>サービス内容・強み・実績<small>　※できるだけ詳しくご記入いただくと反映後の完成度が上がります</small>
 <textarea id="service" placeholder="例：夫婦関係調査・浮気調査を専門に24時間対応。相談実績○件、着手金0円の完全成功報酬制など"></textarea></label>
@@ -179,10 +180,10 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label><input type="checkbox" value="結婚前調査">結婚前調査</label>
 <label><input type="checkbox" value="その他">その他（下記にご記入）</label>
 </div>
-<input type="text" id="svcOther" placeholder="「その他」を選んだ場合は、調査の種類をご記入ください" style="margin-top:8px">
+<input type="text" id="svcOther" placeholder="その他の調査内容をご記入" style="margin-top:8px">
 
-<label>対応エリア<input type="text" id="area" placeholder="例：東京都全域・神奈川県横浜市周辺"></label>
-<label>料金プランの概要<input type="text" id="price" placeholder="例：調査員1名1時間8,000円〜、着手金なしの成功報酬制など"></label>
+<label>対応エリア<input type="text" id="area" placeholder="例：東京都全域・横浜市周辺"></label>
+<label>料金プランの概要<input type="text" id="price" placeholder="例：1時間8,000円〜、着手金なし"></label>
 <label>営業時間・定休日<input type="text" id="hours" placeholder="例：24時間受付・年中無休"></label>
 
 <label>ご相談方法<small>　※複数選択可</small></label>
@@ -193,7 +194,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <label><input type="checkbox" value="対面">対面</label>
 </div>
 
-<label>掲載してよい電話番号（表示用・任意）<input type="text" id="pubphone" placeholder="お客様からの連絡を受けてよい番号をご記入ください"></label>
+<label>掲載してよい電話番号（表示用・任意）<input type="text" id="pubphone" placeholder="表示してよい電話番号"></label>
 <label>ホームページ・SNSのURL（お持ちの場合）<small>　※複数ある場合は改行して入力</small>
 <textarea id="url" placeholder="https://&#10;https://x.com/...&#10;https://instagram.com/..."></textarea></label>
 
@@ -208,7 +209,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 
 <div class="condition-box">
 <p><b>【掲載条件】</b>掲載ページの充実（無料）は、貴社のホームページに「全国探偵検索」（<a href="https://lp.exeresearch.jp/tantei-portal/" target="_blank" rel="noopener">https://lp.exeresearch.jp/tantei-portal/</a>）へのリンクを設置していただくことを条件としております。</p>
-<label><input type="checkbox" id="agree" required> 上記の掲載条件に同意します（リンクの設置は後日で構いません。設置が完了したら、<a href="./linkcheck.html" target="_blank" rel="noopener">リンク設置確認フォーム</a>からURLをお知らせください）</label>
+<label><input type="checkbox" id="agree" required><span>上記の掲載条件に同意します（リンクの設置は後日で構いません。設置が完了したら、<a href="./linkcheck.html" target="_blank" rel="noopener">リンク設置確認フォーム</a>からURLをお知らせください）</span></label>
 </div>
 </fieldset>
 
