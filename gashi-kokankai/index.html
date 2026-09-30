@@ -112,11 +112,28 @@ section{padding:clamp(80px,11vw,140px) 0;position:relative}
 .note{font-size:12px;color:var(--sub);margin-top:14px;text-align:right}
 
 /* SPONSORS */
-.sponsor-list{display:grid;grid-template-columns:repeat(2,minmax(0,360px));justify-content:center;gap:18px}
-.sponsor{display:block;text-decoration:none;border:1px solid var(--line);padding:28px 24px;text-align:center;transition:background .3s,border-color .3s}
-.sponsor:hover{background:rgba(222,188,112,.06);border-color:var(--gold)}
-.sponsor b{display:block;font-family:var(--serif);font-size:21px}
-.sponsor span{display:block;color:var(--sub);font-size:13px;margin-top:6px}
+.sp-list{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.sp{border:1px solid var(--line);background:rgba(255,255,255,.02);padding:clamp(24px,3vw,38px);display:flex;flex-direction:column}
+.sp-tag{font-family:var(--en);letter-spacing:.3em;font-size:12px;color:var(--gold)}
+.sp h3{font-size:clamp(22px,2.6vw,28px);margin:6px 0 4px}
+.sp-catch{margin:0;color:var(--gold2);font-family:var(--serif);font-size:15px}
+.sp-body{color:var(--sub);font-size:14.5px;margin:18px 0 0}
+.sp-svc{display:grid;gap:14px;margin-top:20px}
+.sp-svc section{padding:0;border-top:1px solid rgba(255,255,255,.1);padding-top:16px}
+.sp-svc h4{margin:0 0 6px;font-family:var(--serif);font-size:17px;line-height:1.6}
+.sp-svc h4 span{font-family:var(--en);color:var(--gold);margin-right:10px;font-size:18px}
+.sp-svc p{margin:0;color:var(--sub);font-size:14px}
+.sp-link{margin-top:auto;padding-top:22px;align-self:flex-start;color:var(--gold);text-decoration:none;font-size:14px;border-bottom:1px solid var(--line)}
+.sp-link::after{content:" ↗"}
+.sp-link:hover{color:var(--gold2)}
+.sp-yt{margin-top:20px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px}
+.sp-yt h4{margin:0 0 10px;font-family:var(--serif);font-size:17px}
+.sp-yt h4 span{font-family:var(--en);color:var(--gold);margin-right:10px;letter-spacing:.12em}
+.sp-yt-frame{position:relative;aspect-ratio:16/9;background:#000;border:1px solid var(--line)}
+.sp-yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sp-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 22px}
+.sp-links .sp-link{margin-top:0}
+.sp-note{text-align:center;color:var(--sub);font-size:13.5px;margin:26px auto 0;max-width:40em}
 
 /* NEXT / CTA */
 .next{text-align:center;overflow:hidden}
@@ -134,7 +151,7 @@ footer a{color:var(--gold);text-decoration:none}
 @media (max-width:820px){
   .about-grid,.movies{grid-template-columns:1fr}
   .ev{grid-template-columns:1fr}
-  .sponsor-list{grid-template-columns:1fr}
+  .sp-list{grid-template-columns:1fr}
   .note{text-align:left}
 }
 </style>
@@ -253,10 +270,55 @@ footer a{color:var(--gold);text-decoration:none}
       <h2>2026年 協賛</h2>
       <p>第二回の開催にあたり、ご協賛いただきました。心より御礼申し上げます。</p>
     </div>
-    <div class="sponsor-list">
-      <a class="sponsor" href="https://alaia-inc.com/" target="_blank" rel="sponsored noopener"><b>株式会社アライア</b><span>alaia-inc.com</span></a>
-      <a class="sponsor" href="https://kenzo-tantei.com/" target="_blank" rel="sponsored noopener"><b>KENZO探偵事務所</b><span>kenzo-tantei.com</span></a>
+    <div class="sp-list">
+      <article class="sp">
+        <div class="sp-head">
+          <span class="sp-tag">SPONSOR</span>
+          <h3>株式会社アライア</h3>
+          <p class="sp-catch">テクノロジーの力で、プロフェッショナルの調査現場を支援</p>
+        </div>
+        <p class="sp-body">デジタルフォレンジックやサイバー調査、GPS追跡デバイスの開発・販売を手がける会社です（東京都府中市、代表 新谷アレン氏）。探偵をはじめとする調査のプロが現場で使う技術とデバイスを提供しています。</p>
+        <div class="sp-svc">
+          <section>
+            <h4><span>01</span>防犯・セキュリティにも使えるGPS「ALAIA GPS」</h4>
+            <p>現場で求められる精度と信頼性を追求したGPS追跡デバイスです。位置情報は最短3秒で更新でき、長期間の利用にも耐える大容量バッテリーを搭載。指定したエリアへの出入りを即時に知らせるジオフェンス通知にも対応しています。</p>
+          </section>
+          <section>
+            <h4><span>02</span>デジタルフォレンジック</h4>
+            <p>スマートフォンやパソコンなどの端末、クラウド、SNSに残るデジタルの証跡を保全・解析します。社内不正や情報漏えい、係争への対応、オンライン調査まで、証拠保全・端末解析・SNS／OSINT調査から調査レポートの作成までを担います。</p>
+          </section>
+        </div>
+        <a class="sp-link" href="https://alaia-inc.com/" target="_blank" rel="sponsored noopener">株式会社アライア 公式サイト</a>
+      </article>
+
+      <article class="sp">
+        <div class="sp-head">
+          <span class="sp-tag">SPONSOR</span>
+          <h3>KENZO探偵事務所</h3>
+          <p class="sp-catch">最新のサイバー調査技術 × 探偵のプロフェッショナル</p>
+        </div>
+        <p class="sp-body">東京都新宿区西新宿の探偵事務所です（東京都公安委員会 第30250124号）。プロの探偵とホワイトハッカーが連携する「IT×探偵のハイブリッド調査」で、リアルとデジタルの両面から問題解決にあたっています。</p>
+        <div class="sp-svc">
+          <section>
+            <h4><span>01</span>OSINTを駆使した情報収集</h4>
+            <p>SNSや掲示板などの公開情報を分析するOSINT（オープンソース・インテリジェンス）で、調査に必要な情報を集めます。</p>
+          </section>
+          <section>
+            <h4><span>02</span>詐欺・トラブル解決</h4>
+            <p>詐欺やトラブルへの迅速な対応と、確実な証拠収集を強みとしています。浮気・不倫調査や所在調査、SNS上の誹謗中傷対策、盗聴・盗撮調査などにも対応しています。</p>
+          </section>
+        </div>
+        <div class="sp-yt">
+          <h4><span>YouTube</span>KENZO【新宿109】チャンネル</h4>
+          <div class="sp-yt-frame"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=UUoewz-Ub4Nudqqcdq4gWT5w" title="KENZO【新宿109】YouTubeチャンネルの動画" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+        </div>
+        <div class="sp-links">
+          <a class="sp-link" href="https://www.youtube.com/@kenzo1093" target="_blank" rel="noopener">YouTubeチャンネルを見る</a>
+          <a class="sp-link" href="https://kenzo-tantei.com/" target="_blank" rel="sponsored noopener">KENZO探偵事務所 公式サイト</a>
+        </div>
+      </article>
     </div>
+    <p class="sp-note">両社は2025年4月から協業し、サイバー調査の知見と詐欺調査の実務力を連携させた調査体制を築いています。</p>
   </div>
 </section>
 
