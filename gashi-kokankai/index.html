@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>探偵賀詞交歓会｜年に一度、全国の探偵が集まる交流会</title>
-<meta name="description" content="探偵賀詞交歓会は、年に一度全国の探偵が集まる交流会です。情報交換や探偵同士のマッチング、士業・YouTuber・エンターテインメント業界の方との出会いの場。第一回70名、第二回100名が参加。2027年は1月中旬に開催予定です。">
+<title>探偵賀詞交歓会｜探偵新年会・探偵パーティーで広がる探偵マッチング</title>
+<meta name="description" content="探偵賀詞交歓会は、年に一度全国の探偵が集まる探偵新年会です。情報交換や探偵マッチング、士業・YouTuber・エンターテインメント業界の方との出会いの場。第一回70名、第二回100名が参加。2027年は1月中旬に開催予定です。">
 <link rel="canonical" href="https://lp.exeresearch.jp/gashi-kokankai/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="探偵賀詞交歓会｜年に一度、全国の探偵が集まる交流会">
+<meta property="og:title" content="探偵賀詞交歓会｜探偵新年会・探偵パーティーで広がる探偵マッチング">
 <meta property="og:description" content="情報交換、探偵同士のマッチング、業界を越えた出会い。第二回は100名が参加。2027年1月中旬開催予定。">
 <meta property="og:url" content="https://lp.exeresearch.jp/gashi-kokankai/">
 <meta property="og:image" content="https://lp.exeresearch.jp/gashi-kokankai/img/og.jpg">
@@ -133,6 +133,16 @@ section{padding:clamp(80px,11vw,140px) 0;position:relative}
 .sp-yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .sp-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px 22px}
 .sp-links .sp-link{margin-top:0}
+.sp-year{font-size:clamp(20px,2.4vw,26px);margin:0 0 22px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+.sp-year span{font-family:var(--en);letter-spacing:.24em;font-size:13px;color:var(--gold)}
+.sp-year:not(:first-of-type){margin-top:clamp(56px,7vw,80px);padding-top:clamp(40px,5vw,56px);border-top:1px solid var(--line)}
+.sp-thanks{color:var(--sub);margin:0 0 18px}
+.sp-past{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
+.sp-past a{display:inline-block;padding:12px 22px;border:1px solid var(--line);text-decoration:none;font-family:var(--serif);transition:border-color .3s}
+.sp-past a:hover{border-color:var(--gold)}
+.sp-hl{color:var(--gold2);font-weight:700}
+.sp-mini{display:inline-block;margin-top:8px;color:var(--gold);font-size:13px;text-decoration:none;border-bottom:1px solid var(--line)}
+.sp-mini::after{content:" ↗"}
 .sp-note{text-align:center;color:var(--sub);font-size:13.5px;margin:26px auto 0;max-width:40em}
 
 /* NEXT / CTA */
@@ -144,6 +154,16 @@ section{padding:clamp(80px,11vw,140px) 0;position:relative}
 .btn{display:inline-flex;align-items:center;gap:14px;margin-top:34px;padding:18px 40px;background:var(--gold);color:#111;text-decoration:none;font-weight:700;letter-spacing:.12em;transition:background .3s}
 .btn:hover{background:var(--gold2)}
 .btn::after{content:"→"}
+
+/* COLUMN（検索向けの読み物） */
+.column{background:var(--bg2)}
+.column .head h2 small{display:block;font-size:.55em;color:var(--gold2);margin-top:8px;font-weight:500}
+.col-body{max-width:760px;margin:0 auto;font-size:15.5px}
+.col-body p{margin:0 0 1.2em;color:rgba(244,241,234,.86)}
+.col-body h3{font-size:clamp(19px,2.2vw,23px);margin:2.2em 0 .8em;padding-left:14px;border-left:3px solid var(--gold)}
+.col-body strong{color:var(--gold2);font-weight:700}
+.col-body ul{margin:0 0 1.2em;padding-left:1.3em;color:rgba(244,241,234,.86)}
+.col-body li{margin:.3em 0}
 
 footer{border-top:1px solid var(--line);padding:34px 0 40px;text-align:center;color:var(--sub);font-size:13px}
 footer a{color:var(--gold);text-decoration:none}
@@ -266,10 +286,10 @@ footer a{color:var(--gold);text-decoration:none}
 <section class="sponsors">
   <div class="wrap">
     <div class="head">
-      <span class="en">Special Thanks</span>
-      <h2>2026年 協賛</h2>
-      <p>第二回の開催にあたり、ご協賛いただきました。心より御礼申し上げます。</p>
+      <span class="en">Sponsors</span>
+      <h2>協賛</h2>
     </div>
+    <h3 class="sp-year"><span>VOL.3 ― 2027</span>第三回 協賛（決定分）</h3>
     <div class="sp-list">
       <article class="sp">
         <div class="sp-head">
@@ -280,8 +300,9 @@ footer a{color:var(--gold);text-decoration:none}
         <p class="sp-body">デジタルフォレンジックやサイバー調査、GPS追跡デバイスの開発・販売を手がける会社です（東京都府中市、代表 新谷アレン氏）。探偵をはじめとする調査のプロが現場で使う技術とデバイスを提供しています。</p>
         <div class="sp-svc">
           <section>
-            <h4><span>01</span>防犯・セキュリティにも使えるGPS「ALAIA GPS」</h4>
-            <p>現場で求められる精度と信頼性を追求したGPS追跡デバイスです。位置情報は最短3秒で更新でき、長期間の利用にも耐える大容量バッテリーを搭載。指定したエリアへの出入りを即時に知らせるジオフェンス通知にも対応しています。</p>
+            <h4><span>01</span>防犯・セキュリティGPS「ALAIA GPS」</h4>
+            <p>プロの業務を支える日本発のGPSです。位置情報は最短3秒で更新され、KDDIとSoftBankの2回線に対応。盗難抑止や家族の車の使用履歴の確認、社用車の不正調査などにも使われています。端末を紛失・盗難された際に利用者とのつながりを即座に消せる「キルスイッチ」と、記録を分けて保管する「ノーログポリシー」で、使う側の安全にも配慮した設計です。IP65の防水防塵、用途に合わせて選べる4モデル展開。こうした安全性と機能性が評価され、<strong class="sp-hl">取引先企業は100社を超えています。</strong></p>
+            <a class="sp-mini" href="https://alaia-gps.com/" target="_blank" rel="sponsored noopener">ALAIA GPS 製品サイト</a>
           </section>
           <section>
             <h4><span>02</span>デジタルフォレンジック</h4>
@@ -319,6 +340,46 @@ footer a{color:var(--gold);text-decoration:none}
       </article>
     </div>
     <p class="sp-note">両社は2025年4月から協業し、サイバー調査の知見と詐欺調査の実務力を連携させた調査体制を築いています。</p>
+
+    <h3 class="sp-year"><span>VOL.2 ― 2026</span>第二回 協賛</h3>
+    <p class="sp-thanks">第二回の開催にあたり、ご協賛いただきました。心より御礼申し上げます。</p>
+    <ul class="sp-past">
+      <li><a href="https://alaia-inc.com/" target="_blank" rel="sponsored noopener">株式会社アライア</a></li>
+      <li><a href="https://kenzo-tantei.com/" target="_blank" rel="sponsored noopener">KENZO探偵事務所</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="column" id="column">
+  <div class="wrap">
+    <div class="head">
+      <span class="en">Column</span>
+      <h2>探偵の新年会「探偵賀詞交歓会」とは<br><small>探偵パーティーから広がる、探偵マッチングの輪</small></h2>
+    </div>
+    <article class="col-body">
+      <p>探偵賀詞交歓会は、年に一度、全国の探偵が集まる<strong>探偵の新年会</strong>です。毎年1月に東京・渋谷で開催し、第一回（2025年）は70名、第二回（2026年）は100名が参加しました。新年のあいさつを交わしながら、同業者どうしが名刺を交換し、仕事につながる関係をつくる場になっています。</p>
+
+      <h3>探偵が新年会に集まる理由</h3>
+      <p>探偵の仕事は、依頼者の秘密を守ることが前提です。そのため調査の中身を外で話す機会は少なく、同じ業界で働いていても、ほかの事務所の探偵と顔を合わせる場はほとんどありません。一方で、調査の現場では「遠方で張り込みができる協力者がほしい」「自分の得意分野以外の相談を任せられる相手を知りたい」といった場面が少なくありません。探偵新年会は、そうした横のつながりを年のはじめにつくるための集まりです。</p>
+
+      <h3>探偵パーティーの雰囲気</h3>
+      <p>会場は渋谷。第一回は GREEN'S LINE、第二回は大型LEDスクリーンのあるドクタージーカンズで開催しました。堅苦しい式典ではなく、飲み物を片手に自由に歓談する<strong>探偵パーティー</strong>のスタイルです。はじめて参加する方でも、名刺交換をきっかけに自然と会話が広がります。参加者の多くは探偵ですが、士業の方、大手YouTuberやエンターテインメント業界の方も集まり、探偵業の外にも出会いが広がります。</p>
+
+      <h3>探偵マッチングでできること</h3>
+      <p>探偵賀詞交歓会のもう一つの目的が、<strong>探偵マッチング</strong>です。地域や得意分野の違う探偵どうしが知り合うことで、次のような協力につながります。</p>
+      <ul>
+        <li>自社の対応エリア外の案件で、現地の探偵に協力を依頼する</li>
+        <li>尾行・張り込み、デジタル調査など、得意分野の違う事務所と組んで案件に取り組む</li>
+        <li>GPSやデジタルフォレンジックなど、調査を支える機材・技術の情報を交換する</li>
+      </ul>
+      <p>2026年は、GPSやデジタルフォレンジックを手がける株式会社アライアと、IT×探偵のハイブリッド調査を行うKENZO探偵事務所にご協賛いただきました。</p>
+
+      <h3>探偵業界の発展と健全化のために</h3>
+      <p>探偵業は、依頼者の人生に深く関わる仕事です。だからこそ、探偵どうしが情報を交換し、信頼できる同業者とつながることは、調査の質を高め、業界全体の信頼を守ることにつながると私たちは考えています。探偵賀詞交歓会は、<strong>探偵業界の発展と健全化</strong>を目指して開催しています。</p>
+
+      <h3>2027年の探偵新年会について</h3>
+      <p>第三回は2027年1月中旬に開催予定です。日程と会場は決まり次第このページでお知らせします。これまで参加したことのない方も、ぜひ次回の探偵新年会で新しいつながりをつくってください。</p>
+    </article>
   </div>
 </section>
 
