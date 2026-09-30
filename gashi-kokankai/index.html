@@ -57,17 +57,27 @@ section{padding:clamp(80px,11vw,140px) 0;position:relative}
 /* HERO：実写真（顔ぼかし済み）から作った文字なしの背景動画 hero.mp4（無音・ループ） */
 .hero{min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:110px 0 90px;overflow:hidden}
 .hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at center,rgba(7,9,13,.55) 0%,rgba(7,9,13,.88) 70%),linear-gradient(to bottom,rgba(7,9,13,.2),var(--bg))}
-.hero .en{display:block;margin-bottom:18px}
-.hero h1{font-size:clamp(40px,8vw,96px);font-weight:900;color:var(--gold2);letter-spacing:.08em;text-shadow:0 4px 40px rgba(0,0,0,.6)}
-.hero .lead{font-family:var(--serif);font-size:clamp(16px,2.2vw,22px);margin:14px 0 0}
-.next-badge{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;align-items:center;margin-top:34px;padding:16px 28px;border:1px solid var(--line);background:rgba(7,9,13,.55);backdrop-filter:blur(4px)}
-.next-badge b{font-family:var(--serif);font-size:clamp(18px,2.4vw,24px);color:#fff}
-.next-badge span{font-family:var(--en);letter-spacing:.3em;color:var(--gold);font-size:14px}
-.stats{display:flex;justify-content:center;gap:clamp(24px,6vw,70px);margin-top:40px}
-.stats div{text-align:center}
-.stats b{display:block;font-family:var(--en);font-size:clamp(34px,5vw,54px);color:var(--gold2);line-height:1.1;font-weight:500}
-.stats small{color:var(--sub);font-size:12.5px}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at center,rgba(7,9,13,.25) 0%,rgba(7,9,13,.6) 75%),linear-gradient(to bottom,rgba(7,9,13,0) 60%,var(--bg) 100%)}
+.hero .en{display:block;margin-bottom:18px;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.8)}
+.hero h1{font-size:clamp(40px,8vw,96px);font-weight:900;color:var(--gold2);letter-spacing:.08em;text-shadow:0 2px 6px rgba(0,0,0,.55),0 4px 40px rgba(0,0,0,.7)}
+.hero .lead{text-shadow:0 2px 10px rgba(0,0,0,.8);font-family:var(--serif);font-size:clamp(16px,2.2vw,22px);margin:14px 0 0}
+/* 開催の推移。3回目（次回）だけ金の枠で目立たせる */
+.timeline{list-style:none;margin:40px auto 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,220px));justify-content:center;gap:0}
+.timeline li{position:relative;padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.14);background:rgba(7,9,13,.5);backdrop-filter:blur(4px)}
+.timeline li+li{border-left:0}
+.timeline li+li::before{content:"";position:absolute;left:-7px;top:50%;width:12px;height:12px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);transform:translateY(-50%) rotate(45deg);background:var(--bg)}
+.timeline .tl-vol{font-family:var(--en);letter-spacing:.24em;font-size:12.5px;color:var(--gold)}
+.timeline b{font-family:var(--en);font-weight:500;font-size:clamp(38px,5vw,54px);line-height:1.05;color:#fff}
+.timeline b small{font-family:var(--sans);font-size:.34em;margin-left:4px;color:var(--sub)}
+.timeline b.soon{font-size:clamp(22px,2.6vw,30px);letter-spacing:.14em;color:var(--gold2);line-height:1.9}
+.timeline .tl-sub{font-size:12px;color:var(--sub)}
+.timeline li.is-next{border-color:var(--gold);background:rgba(222,188,112,.1)}
+@media (max-width:600px){
+  .timeline{grid-template-columns:1fr;max-width:320px}
+  .timeline li+li{border-left:1px solid rgba(255,255,255,.14);border-top:0}
+  .timeline li.is-next{border-color:var(--gold)}
+  .timeline li+li::before{left:50%;top:-7px;transform:translateX(-50%) rotate(135deg)}
+}
 
 /* ABOUT */
 .about{background:var(--bg2)}
@@ -125,7 +135,6 @@ footer a{color:var(--gold);text-decoration:none}
   .about-grid,.movies{grid-template-columns:1fr}
   .ev{grid-template-columns:1fr}
   .sponsor-list{grid-template-columns:1fr}
-  .stats{gap:22px}
 }
 </style>
 </head>
@@ -139,12 +148,11 @@ footer a{color:var(--gold);text-decoration:none}
     <span class="en">The Annual Gathering of Detectives</span>
     <h1>探偵賀詞交歓会</h1>
     <p class="lead">年に一度、全国の探偵が集まる夜。</p>
-    <div class="next-badge"><span>NEXT</span><b>2027年1月中旬 開催予定</b><span>COMING SOON</span></div>
-    <div class="stats">
-      <div><b>2</b><small>これまでの開催</small></div>
-      <div><b>70<span style="font-size:.5em">→</span>100</b><small>参加者数（名）</small></div>
-      <div><b>SHIBUYA</b><small>開催地</small></div>
-    </div>
+    <ol class="timeline">
+      <li><span class="tl-vol">VOL.1 ― 2025</span><b>70<small>名</small></b><span class="tl-sub">渋谷 GREEN'S LINE</span></li>
+      <li><span class="tl-vol">VOL.2 ― 2026</span><b>100<small>名</small></b><span class="tl-sub">渋谷 ドクタージーカンズ</span></li>
+      <li class="is-next"><span class="tl-vol">VOL.3 ― 2027</span><b class="soon">COMING SOON</b><span class="tl-sub">1月中旬 開催予定</span></li>
+    </ol>
   </div>
 </section>
 
