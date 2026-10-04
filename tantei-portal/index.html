@@ -98,6 +98,11 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 .knowledge-grid{display:grid;gap:16px;margin-top:4px}
 .knowledge-grid .k-item h3{font-size:.92rem;color:var(--accent-ink);margin:0 0 6px}
 .knowledge-grid .k-item p{font-size:.85rem;color:var(--ink);line-height:1.8;margin:0}
+.col-mini-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.col-mini{display:block;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--ink);transition:border-color .3s}
+.col-mini:hover{border-color:var(--accent)}
+.col-mini img{display:block;width:100%;height:auto}
+.col-mini span{display:block;padding:10px 12px;font-size:.85rem;font-weight:700;line-height:1.6}
 </style></head><body>
 <header><span class="eyebrow">Tantei Search</span><h1>全国探偵検索</h1>
 <p>都道府県公安委員会への届出情報（R8.5.31時点）をもとに作成。全国合計 7554件</p></header>
@@ -161,7 +166,7 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <option value="鹿児島県">鹿児島県</option>
 <option value="沖縄県">沖縄県</option></select>
 </div>
-<p><a href="./map.html">📍 地図から探す</a></p>
+<p><a href="./map.html">📍 地図から探す</a>　<a href="./column/">📖 コラム（探偵の選び方）</a></p>
 <div class="search-count" id="searchCount"></div>
 <div id="results"></div>
 <section class="region-block"><h2>北海道・東北</h2><div class="pref-grid"><a href="./hokkaido.html">北海道<span>547件</span></a>
@@ -211,6 +216,8 @@ footer a:hover{color:var(--accent-2);border-color:var(--accent-2)}
 <a href="./miyazaki.html">宮崎県<span>70件</span></a>
 <a href="./kagoshima.html">鹿児島県<span>79件</span></a>
 <a href="./okinawa.html">沖縄県<span>58件</span></a></div></section>
+
+<section class="stats-section"><h2>探偵選びに役立つコラム</h2><p class="stats-lead">探偵業の届出制度や探偵の選び方を、現役の探偵の監修で解説しています。</p><div class="col-mini-list"><a class="col-mini" href="./column/todokede-bango-erabikata.html"><img src="./column/img/todokede-bango-eyecatch.webp" width="1200" height="630" alt="" loading="lazy"><span>探偵業の届出番号とは？8桁の読み方と、失敗しない探偵の選び方</span></a></div><p style="margin:14px 0 0;font-size:.85rem"><a href="./column/" style="color:var(--accent-ink)">コラム一覧を見る →</a></p></section>
 
 <section class="stats-section">
 <h2>届出データから見る探偵業界の動向</h2>
