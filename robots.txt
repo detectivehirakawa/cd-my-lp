@@ -5,3 +5,4 @@ Disallow: /renewal/
 Disallow: /nippo/
 
 Sitemap: https://lp.exeresearch.jp/sitemap.xml
+Sitemap: https://lp.exeresearch.jp/tantei-portal/sitemap.xml
