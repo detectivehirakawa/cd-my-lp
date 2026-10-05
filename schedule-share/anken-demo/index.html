@@ -191,16 +191,16 @@ function seed(){
     ui:{role:'prime',sub:'s1',tab:'dash',param:null},
     seq:5, mails:[], alerts:[],
     cases:[
-      {id:'c1',code:'R8-1006-01',title:'浮気調査（行動確認）',start:dayAt(0,18,0),hours:5,area:'埼玉県三郷市',fee:30000,head:2,extRate:5000,public:false,
+      {id:'c1',code:'R8-1006-01',title:'浮気調査（行動確認）',start:dayAt(0,18,0),hours:5,area:'埼玉県三郷市',fee:3000,head:2,public:false,
        secret:{name:'甲野 一郎',feature:'40代男性・170cm前後・短髪・眼鏡',addr:'埼玉県三郷市〇〇町1-2-3',work:'〇〇株式会社 三郷営業所',car:'白のプリウス（越谷 300 さ 12-34）',pre:'平日は18時前後に退社。火曜は駅前の飲食店に寄る傾向あり（依頼者談）。'},
        assign:{s1:{status:'accepted',at:ago(300)},s2:{status:'offered',at:ago(60)}},events:[],logs:[],claims:{},delivery:null,confirmed:false},
-      {id:'c2',code:'R8-1006-02',title:'素行調査（勤務後の行動）',start:ago(150),hours:6,area:'東京都葛飾区',fee:28000,head:1,extRate:5000,public:false,
+      {id:'c2',code:'R8-1006-02',title:'素行調査（勤務後の行動）',start:ago(150),hours:6,area:'東京都葛飾区',fee:2800,head:1,public:false,
        secret:{name:'乙山 次郎',feature:'30代男性・細身・黒のリュック',addr:'東京都葛飾区〇〇4-5-6',work:'自営（〇〇工務店）',car:'黒の軽バン（足立 480 あ 56-78）',pre:'午前中は現場仕事。昼過ぎに新小岩方面へ移動することが多い。'},
        assign:{s3:{status:'accepted',at:ago(1500)}},
        events:[{sub:'s3',type:'arrived',at:ago(140)},{sub:'s3',type:'stakeout',at:ago(128)},{sub:'s3',type:'moving',at:ago(22),note:'車両で南方向へ'}],
        logs:[{id:'l1',sub:'s3',at:ago(126),body:'対象者宅前にて張り込み開始。対象車両は駐車場に在り。'},{id:'l2',sub:'s3',at:ago(24),body:'対象者が自宅から出て対象車両に乗車。'},{id:'l3',sub:'s3',at:ago(21),body:'対象車両が発進、環七通りを南方向へ。追尾開始。'}],
        claims:{},delivery:null,confirmed:false},
-      {id:'c3',code:'R8-1002-01',title:'浮気調査（行動確認）',start:dayAt(-4,17,30),hours:5,area:'埼玉県八潮市',fee:30000,head:1,extRate:5000,public:false,
+      {id:'c3',code:'R8-1002-01',title:'浮気調査（行動確認）',start:dayAt(-4,17,30),hours:5,area:'埼玉県八潮市',fee:3200,head:1,public:false,
        secret:{name:'丙田 三郎',feature:'30代男性・紺のスーツ・ビジネスバッグ',addr:'埼玉県八潮市〇〇7-8-9',work:'〇〇株式会社 八潮営業所',car:'なし（電車通勤）',pre:'金曜は帰宅が遅い（依頼者談）。'},
        assign:{s1:{status:'finished',at:ago(9000)}},
        events:[{sub:'s1',type:'arrived',at:dayAt(-4,17,20)},{sub:'s1',type:'stakeout',at:dayAt(-4,17,32)},{sub:'s1',type:'moving',at:dayAt(-4,18,2)},{sub:'s1',type:'end',at:dayAt(-4,22,30)}],
@@ -215,7 +215,7 @@ function seed(){
         {id:'l11',sub:'s1',at:dayAt(-4,22,30),body:'張り込みを継続するも出てこず。本日の調査を終了。'}],
        claims:{s1:{ext:60,items:[{k:'train',amt:1240},{k:'other',amt:2800,memo:'タクシー追尾'}],status:'submitted'}},
        delivery:{sub:'s1',url:'https://drive.google.com/drive/folders/（例）',at:ago(4000)},confirmed:false},
-      {id:'c4',code:'R8-1010-01',title:'所在調査（張り込み）',start:dayAt(4,9,0),hours:8,area:'埼玉県越谷市',fee:26000,head:2,extRate:5000,public:true,
+      {id:'c4',code:'R8-1010-01',title:'所在調査（張り込み）',start:dayAt(4,9,0),hours:8,area:'埼玉県越谷市',fee:2700,head:2,public:true,
        secret:{name:'丁原 四郎',feature:'50代男性・やや大柄',addr:'埼玉県越谷市〇〇10-11',work:'不明',car:'シルバーのセダン（ナンバー未確認）',pre:'朝8時台に外出する可能性あり。'},
        assign:{},events:[],logs:[],claims:{},delivery:null,confirmed:false}
     ]
@@ -322,7 +322,7 @@ PV.new = () => `
         <label class="f">想定時間（h）<input id="f_hours" type="number" value="5" min="1"></label>
         <label class="f">必要人数<input id="f_head" type="number" value="2" min="1"></label>
         <label class="f">開始エリア（市区町村まで）<input id="f_area" value="埼玉県草加市"></label>
-        <label class="f">日当（1名）<input id="f_fee" type="number" value="30000" step="1000"></label>
+        <label class="f">時給（1名・2,700〜3,200円）<input id="f_fee" type="number" value="3000" min="2700" max="3200" step="100"></label>
         <label class="check wide"><input type="checkbox" id="f_public"> 募集一覧にも載せる（指名以外の下請けも応募できる）</label>
       </div></section>
     <section class="panel secret"><div class="lock">${LOCK}秘匿情報：受諾した下請けにだけ、調査終了まで表示されます</div>
@@ -354,7 +354,7 @@ PV.case = id => {
     <section class="panel"><h2>公開情報</h2><dl class="kv">
       <dt>開始</dt><dd class="mono">${md(c.start)} ${hm(c.start)}〜（${c.hours}時間）</dd>
       <dt>開始エリア</dt><dd>${esc(c.area)}</dd><dt>人数</dt><dd>${c.head}名</dd>
-      <dt>日当</dt><dd>${yen(c.fee)}／名（延長 ${yen(c.extRate)}／30分）</dd>
+      <dt>時給</dt><dd>${yen(c.fee)}／名（想定${c.hours}時間で${yen(c.fee*c.hours)}・延長も同じ時給）</dd>
       <dt>募集一覧</dt><dd>${c.public?'掲載中':'指名のみ'}</dd></dl></section>
     <section class="panel secret"><div class="lock">${LOCK}秘匿情報（元請けは常に閲覧可。下請けは受諾後〜調査終了まで）</div>
       <div class="flex" style="align-items:flex-start"><div class="face">${faceSvg}</div>
@@ -391,8 +391,8 @@ PV.live = () => {
     <div style="margin-top:10px"><button class="btn sm" data-act="go" data-tab="case" data-id="${c.id}">詳細</button></div></section>`}).join(''):'<p class="muted">稼働中の案件はありません。</p>'}</div>
   <div class="hint"><b class="eyebrow" style="flex:none">メモ</b><span>GASではWebSocketが使えないため、<b>15秒ごとに自動で最新状況を取りに行きます</b>。失尾だけは元請けにメールでも即時通知します。</span></div>`;
 };
-function claimTotal(c,cl){return Math.ceil(cl.ext/30)*c.extRate + cl.items.reduce((a,i)=>a+Number(i.amt||0),0)}
-function claimDetail(c,cl){return `<ul class="small" style="margin:6px 0;padding-left:1.2em">${cl.ext?`<li>延長 ${cl.ext}分：${yen(Math.ceil(cl.ext/30)*c.extRate)}</li>`:''}${cl.items.map(i=>`<li>${KINDS[i.k]}${i.memo?`（${esc(i.memo)}）`:''}：${yen(i.amt)}</li>`).join('')}</ul>`}
+function claimTotal(c,cl){return Math.ceil(cl.ext/30)*c.fee/2 + cl.items.reduce((a,i)=>a+Number(i.amt||0),0)}
+function claimDetail(c,cl){return `<ul class="small" style="margin:6px 0;padding-left:1.2em">${cl.ext?`<li>延長 ${cl.ext}分：${yen(Math.ceil(cl.ext/30)*c.fee/2)}</li>`:''}${cl.items.map(i=>`<li>${KINDS[i.k]}${i.memo?`（${esc(i.memo)}）`:''}：${yen(i.amt)}</li>`).join('')}</ul>`}
 PV.money = () => {
   const all=[];S.cases.forEach(c=>Object.entries(c.claims).forEach(([sid,cl])=>{if(cl.status!=='draft')all.push({c,sid,cl})}));
   const lab={submitted:['承認待ち','warn'],approved:['承認済み','ok'],rejected:['差し戻し','crit']};
@@ -433,20 +433,20 @@ function mailSubject(m,c){return m.kind==='offer'?`【調査依頼】${md(c.star
 function mailBody(m,c){
   const s=subOf(m.to);
   if(m.kind==='confirmed') return `${s.name} 様\n\n応募いただいた下記案件のアサインが確定しました。\n対象者などの詳細は、ログイン後の案件ページでご確認ください。\n\n■ 日時：${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）\n■ 開始エリア：${c.area}\n\n${PRIME.name}`;
-  return `${s.name} 様\n\nいつもありがとうございます。${PRIME.name}です。\n下記の案件をお願いしたく、ご連絡しました。\n\n■ 調査の種類：${c.title}\n■ 日時：${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）\n■ 開始エリア：${c.area}\n■ 日当：${yen(c.fee)}\n\nお受けいただける場合は、下のページから「受諾」を押してください。\n対象者の情報は、受諾後にページ上でのみ表示します。\n\n▶ 回答ページ（ログインが必要です）\n\n${PRIME.name}`;
+  return `${s.name} 様\n\nいつもありがとうございます。${PRIME.name}です。\n下記の案件をお願いしたく、ご連絡しました。\n\n■ 調査の種類：${c.title}\n■ 日時：${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）\n■ 開始エリア：${c.area}\n■ 時給：${yen(c.fee)}（想定${c.hours}時間で${yen(c.fee*c.hours)}）\n\nお受けいただける場合は、下のページから「受諾」を押してください。\n対象者の情報は、受諾後にページ上でのみ表示します。\n\n▶ 回答ページ（ログインが必要です）\n\n${PRIME.name}`;
 }
 SV.board = () => {
   const sid=me();
   const list=S.cases.filter(c=>c.public&&!ended(c)&&accepted(c).length<c.head);
   return `<h1>募集中の案件</h1><p class="small muted" style="margin:0">ここには公開情報だけが表示されます。</p>
-  <section class="panel tw"><table><thead><tr><th>開始</th><th>エリア</th><th>種類</th><th>人数</th><th>日当</th><th></th></tr></thead><tbody>
-  ${list.length?list.map(c=>{const a=c.assign[sid];return `<tr><td class="mono">${md(c.start)} ${hm(c.start)}</td><td>${esc(c.area)}</td><td>${esc(c.title)}</td><td class="mono">${accepted(c).length}/${c.head}</td><td>${yen(c.fee)}</td><td>${a?pill({applied:'応募済み',offered:'指名あり',accepted:'確定',declined:'辞退'}[a.status]||a.status,'info'):`<button class="btn sm primary" data-act="apply" data-id="${c.id}">応募する</button>`}</td></tr>`}).join(''):'<tr><td colspan="6" class="muted">募集中の案件はありません。</td></tr>'}
+  <section class="panel tw"><table><thead><tr><th>開始</th><th>エリア</th><th>種類</th><th>人数</th><th>時給</th><th></th></tr></thead><tbody>
+  ${list.length?list.map(c=>{const a=c.assign[sid];return `<tr><td class="mono">${md(c.start)} ${hm(c.start)}</td><td>${esc(c.area)}</td><td>${esc(c.title)}</td><td class="mono">${accepted(c).length}/${c.head}</td><td class="mono">${yen(c.fee)}/h</td><td>${a?pill({applied:'応募済み',offered:'指名あり',accepted:'確定',declined:'辞退'}[a.status]||a.status,'info'):`<button class="btn sm primary" data-act="apply" data-id="${c.id}">応募する</button>`}</td></tr>`}).join(''):'<tr><td colspan="6" class="muted">募集中の案件はありません。</td></tr>'}
   </tbody></table></section>`;
 };
 SV.answer = id => {
   const c=caseOf(id), sid=me(), a=c&&c.assign[sid];
   if(!c||!a) return `<p class="muted">この案件への依頼はありません。</p>`;
-  const pub=`<section class="panel"><h2>案件の概要</h2><dl class="kv"><dt>種類</dt><dd>${esc(c.title)}</dd><dt>開始</dt><dd class="mono">${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）</dd><dt>開始エリア</dt><dd>${esc(c.area)}</dd><dt>日当</dt><dd>${yen(c.fee)}</dd></dl></section>`;
+  const pub=`<section class="panel"><h2>案件の概要</h2><dl class="kv"><dt>種類</dt><dd>${esc(c.title)}</dd><dt>開始</dt><dd class="mono">${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）</dd><dt>開始エリア</dt><dd>${esc(c.area)}</dd><dt>時給</dt><dd>${yen(c.fee)}（想定${c.hours}時間で${yen(c.fee*c.hours)}）</dd></dl></section>`;
   let act='';
   if(a.status==='offered') act=`<section class="panel"><h2>回答</h2>
     <label class="check"><input type="checkbox" id="nda"> 調査で知り得た情報を第三者に漏らさず、調査終了後は複製・保存しないことに同意します（探偵業法の秘密保持義務）</label>
@@ -470,7 +470,7 @@ SV.scase = id => {
   if(!c||!c.assign[sid]) return SV.board();
   return `<div><button class="btn sm" data-act="go" data-tab="dash">← ダッシュボード</button></div>
   <div><div class="eyebrow mono">${esc(c.code)}</div><h1>${esc(c.title)}</h1></div>
-  <section class="panel"><dl class="kv"><dt>開始</dt><dd class="mono">${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）</dd><dt>開始エリア</dt><dd>${esc(c.area)}</dd><dt>日当</dt><dd>${yen(c.fee)}</dd></dl></section>
+  <section class="panel"><dl class="kv"><dt>開始</dt><dd class="mono">${md(c.start)} ${hm(c.start)}〜（約${c.hours}時間）</dd><dt>開始エリア</dt><dd>${esc(c.area)}</dd><dt>時給</dt><dd>${yen(c.fee)}（想定${c.hours}時間で${yen(c.fee*c.hours)}）</dd></dl></section>
   ${secretBox(c,sid)}
   <div><button class="btn primary" data-act="go" data-tab="field" data-id="${c.id}">現場モードを開く</button></div>`;
 };
@@ -541,7 +541,7 @@ const ACT = {
     const date=g('f_date');if(!date){toast('開始日を入れてください');return 'keep'}
     const start=new Date(`${date}T${g('f_time')||'09:00'}:00`).toISOString();
     S.seq++;const d=D(start);
-    const c={id:'c'+Date.now(),code:`R8-${p2(d.getMonth()+1)}${p2(d.getDate())}-${p2(S.seq)}`,title:g('f_title'),start,hours:+g('f_hours')||1,area:g('f_area'),fee:+g('f_fee')||0,head:+g('f_head')||1,extRate:5000,public:document.getElementById('f_public').checked,
+    const c={id:'c'+Date.now(),code:`R8-${p2(d.getMonth()+1)}${p2(d.getDate())}-${p2(S.seq)}`,title:g('f_title'),start,hours:+g('f_hours')||1,area:g('f_area'),fee:+g('f_fee')||0,head:+g('f_head')||1,public:document.getElementById('f_public').checked,
       secret:{name:g('s_name'),feature:g('s_feature'),addr:g('s_addr'),work:g('s_work'),car:g('s_car'),pre:g('s_pre')},assign:{},events:[],logs:[],claims:{},delivery:null,confirmed:false};
     S.cases.push(c);S.ui.tab='case';S.ui.param=c.id;toast('案件を作成しました。依頼する相手を選んでください');
   },
