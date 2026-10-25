@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- LP と 浮気ポリスは exeresearch.jp/lp/ ・ exeresearch.jp/check/ に移設しました。
      新しいURLは https://exeresearch.jp/lp-sitemap.xml で管理しています。
-     このドメインに残っているのは社内用のツール（/nippo/ など）だけです。 -->
+     このドメインに残っているのは社内用のツール（/nippo/ など）と、公開している探偵業法テスト（/tantei-test/）です。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://lp.exeresearch.jp/tantei-test/</loc>
+    <lastmod>2026-10-26</lastmod>
+  </url>
 </urlset>

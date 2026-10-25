@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /tantei-test/
 Disallow: /renewal/
 Disallow: /nippo/
 
