@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /renewal/
+Disallow: /nippo/
+
+Sitemap: https://lp.exeresearch.jp/sitemap.xml

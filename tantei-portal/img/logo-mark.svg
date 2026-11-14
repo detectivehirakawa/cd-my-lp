@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<defs><clipPath id="lens"><circle cx="37" cy="35" r="12.2"/></clipPath></defs>
+<path d="M4 13 L19 8 L34 13 L49 8 L49 44 L34 49 L19 44 L4 49 Z" fill="#fff" stroke="#1559c4" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M19 8 L19 44 L34 49 L34 13 Z" fill="#eaf2fc"/>
+<path d="M19 8 V44 M34 13 V49" stroke="#1559c4" stroke-width="1.6"/>
+<path d="M8 40 C12 33 14 26 21 24" fill="none" stroke="#1559c4" stroke-width="1.8" stroke-dasharray="2 2.4" stroke-linecap="round"/>
+<path d="M11 21.5 c0-3 2.2-5 4.6-5 s4.6 2 4.6 5 c0 3.4-4.6 7.6-4.6 7.6 s-4.6-4.2-4.6-7.6z" fill="#d0392b"/>
+<circle cx="15.6" cy="21.4" r="1.8" fill="#fff"/>
+<line x1="46" y1="44" x2="57.5" y2="55.5" stroke="#f0a020" stroke-width="7" stroke-linecap="round"/>
+<circle cx="37" cy="35" r="12.2" fill="#fff"/>
+<g clip-path="url(#lens)" fill="#14263d">
+<path d="M24 50 C25 43 29.5 40.5 33 40 L37 46 L41 40 C44.5 40.5 49 43 50 50 Z"/>
+<path d="M33 40 L37 46 L41 40 L39.2 39 L37 41.6 L34.8 39 Z" fill="#fff"/>
+<ellipse cx="37" cy="35.3" rx="4.4" ry="4.9"/>
+<path d="M27.6 31.6 C30 30.4 33 30 37 30 C41 30 44 30.4 46.4 31.6 C44.2 32.9 40.8 33.4 37 33.4 C33.2 33.4 29.8 32.9 27.6 31.6 Z"/>
+<path d="M31.6 30.6 C31.8 26.6 33 23.8 34.6 23.4 C35.6 23.2 36.3 24.4 37 24.4 C37.7 24.4 38.4 23.2 39.4 23.4 C41 23.8 42.2 26.6 42.4 30.6 Z"/>
+<path d="M31.8 29 H42.2 V30.6 H31.8 Z" fill="#1559c4"/>
+</g>
+<circle cx="37" cy="35" r="12.2" fill="none" stroke="#1559c4" stroke-width="4"/>
+</svg>

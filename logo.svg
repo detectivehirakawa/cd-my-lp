@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Hat brim -->
+  <ellipse cx="32" cy="17" rx="21" ry="4" fill="#0d1b2a"/>
+  <!-- Hat crown -->
+  <rect x="16" y="4" width="32" height="14" rx="5" fill="#0d1b2a"/>
+  <!-- Hat band -->
+  <rect x="16" y="13" width="32" height="3.5" fill="#e85d26"/>
+
+  <!-- Left ear -->
+  <ellipse cx="15" cy="26" rx="6.5" ry="7.5" fill="#9a8878"/>
+  <ellipse cx="15" cy="26" rx="3.5" ry="4.5" fill="#c9b8a8"/>
+  <!-- Right ear -->
+  <ellipse cx="49" cy="26" rx="6.5" ry="7.5" fill="#9a8878"/>
+  <ellipse cx="49" cy="26" rx="3.5" ry="4.5" fill="#c9b8a8"/>
+
+  <!-- Face -->
+  <circle cx="32" cy="42" r="21" fill="#b0a090"/>
+  <!-- Forehead lighter area -->
+  <ellipse cx="32" cy="34" rx="11" ry="8" fill="#c9b8a8"/>
+
+  <!-- Raccoon eye mask -->
+  <ellipse cx="23" cy="41" rx="9.5" ry="7" fill="#1e1e1e"/>
+  <ellipse cx="41" cy="41" rx="9.5" ry="7" fill="#1e1e1e"/>
+  <!-- Mask bridge -->
+  <rect x="28" y="38" width="8" height="5" fill="#1e1e1e"/>
+
+  <!-- Eyes -->
+  <circle cx="23" cy="41" r="5" fill="#ffffff"/>
+  <circle cx="41" cy="41" r="5" fill="#ffffff"/>
+  <circle cx="24" cy="41" r="3" fill="#1a1a2e"/>
+  <circle cx="42" cy="41" r="3" fill="#1a1a2e"/>
+  <!-- Eye shine -->
+  <circle cx="25" cy="40" r="1" fill="#ffffff"/>
+  <circle cx="43" cy="40" r="1" fill="#ffffff"/>
+
+  <!-- Nose -->
+  <ellipse cx="32" cy="50" rx="4" ry="3" fill="#3a3a3a"/>
+  <!-- Mouth -->
+  <path d="M29 53 Q32 56 35 53" stroke="#5a5a5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Whiskers left -->
+  <line x1="10" y1="49" x2="24" y2="51" stroke="#7a6a5a" stroke-width="1" opacity="0.7"/>
+  <line x1="10" y1="52" x2="24" y2="52" stroke="#7a6a5a" stroke-width="1" opacity="0.7"/>
+  <!-- Whiskers right -->
+  <line x1="54" y1="49" x2="40" y2="51" stroke="#7a6a5a" stroke-width="1" opacity="0.7"/>
+  <line x1="54" y1="52" x2="40" y2="52" stroke="#7a6a5a" stroke-width="1" opacity="0.7"/>
+</svg>
